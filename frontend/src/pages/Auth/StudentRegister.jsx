@@ -283,11 +283,11 @@ const StudentRegister = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-xl text-white font-semibold 
-                       text-base bg-gradient-to-r from-blue-500 
-                       to-teal-400 hover:from-blue-600 
-                       hover:to-teal-500 transition-all duration-200 
-                       mt-2 disabled:opacity-60 
+            className="w-full py-3 rounded-xl text-white font-semibold
+                       text-base bg-gradient-to-r from-blue-400
+                       to-purple-500 hover:from-blue-500
+                       hover:to-purple-600 transition-all duration-200
+                       mt-2 disabled:opacity-60
                        disabled:cursor-not-allowed">
             {loading ? 'Creating Account...' : 'Create Student Account'}
           </button>
