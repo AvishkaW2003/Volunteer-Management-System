@@ -2,8 +2,9 @@ import jwt from "jsonwebtoken";
 
 const authMiddleware = (req, res, next) => {
   try {
+   
     const authHeader = req.headers.authorization;
-
+    
     // Check token exists
     if (!authHeader) {
       return res.status(401).json({
