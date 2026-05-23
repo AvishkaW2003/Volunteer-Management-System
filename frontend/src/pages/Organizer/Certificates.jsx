@@ -53,11 +53,11 @@ const Certificates = () => {
     <div>
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-gray-800">Certificates</h1>
-        <p className="text-gray-500 text-sm mt-0.5">Manage and issue volunteer certificates</p>
+        <p className="text-gray-500 text-md mt-0.5">Manage and issue volunteer certificates</p>
       </div>
 
       {issued && (
-        <div className="bg-green-50 border border-green-200 text-green-700 rounded-xl px-4 py-3 mb-5 text-sm font-medium">
+        <div className="bg-green-50 border border-green-200 text-green-700 rounded-xl px-4 py-3 mb-5 text-md font-medium">
           Certificate issued successfully!
         </div>
       )}
@@ -71,7 +71,7 @@ const Certificates = () => {
         ].map(({ label, value, color }) => (
           <div key={label} className={`bg-gradient-to-br ${color} rounded-2xl p-5 text-white`}>
             <div className="text-3xl font-bold mb-1">{value}</div>
-            <div className="text-white/80 text-sm font-medium">{label}</div>
+            <div className="text-white/80 text-md font-medium">{label}</div>
           </div>
         ))}
       </div>
@@ -81,7 +81,7 @@ const Certificates = () => {
           <h2 className="font-bold text-gray-800">Issued Certificates</h2>
           <button
             onClick={() => setShowModal(true)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-md font-semibold
               text-white bg-gradient-to-r from-cyan-400 to-blue-500
               hover:from-cyan-500 hover:to-blue-600 transition-all"
           >
