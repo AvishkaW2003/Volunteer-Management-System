@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { registerUser } from '../../services/authService';
 
 const StudentRegister = () => {
   const navigate = useNavigate();
@@ -24,12 +25,32 @@ const StudentRegister = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
+
+    // Client-side validation for Student ID
+    if (formData.studentId && !/^STU\d{6}$/.test(formData.studentId)) {
+      setError('Student ID must be in the format STU followed by exactly 6 digits (e.g., STU123456).');
+      setLoading(false);
+      return;
+    }
+
     try {
-      // TODO: connect to backend API
-      console.log('Student registered:', formData);
+      const payload = {
+        role: 'student',
+        fullName: formData.fullName,
+        studentId: formData.studentId,
+        faculty: formData.faculty,
+        skills: formData.skills,
+        email: formData.email,
+        password: formData.password,
+      };
+      await registerUser(payload);
       navigate('/login/student');
     } catch (err) {
-      setError('Registration failed. Please try again.');
+      if (!err.response) {
+        setError('Could not connect to backend server. Please ensure the backend is running on port 5000.');
+      } else {
+        setError(err.response?.data?.message || 'Registration failed. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
