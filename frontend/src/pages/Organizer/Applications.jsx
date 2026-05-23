@@ -51,7 +51,7 @@ const Applications = () => {
     <div>
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-gray-800">Applications</h1>
-        <p className="text-gray-500 text-sm mt-0.5">Review and manage volunteer applications</p>
+        <p className="text-gray-500 text-md mt-0.5">Review and manage volunteer applications</p>
       </div>
 
       {/* Summary chips */}
@@ -65,8 +65,8 @@ const Applications = () => {
                 : 'bg-white text-gray-700 border-gray-100 hover:border-purple-200'
             }`}
           >
-            <div className="text-xl font-bold">{val}</div>
-            <div className="text-xs mt-0.5 opacity-80">{key}</div>
+            <div className="text-2xl font-bold">{val}</div>
+            <div className="text-s mt-0.5 opacity-80">{key}</div>
           </button>
         ))}
       </div>
