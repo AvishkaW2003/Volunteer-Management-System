@@ -1,6 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Plus, Pencil, Trash2, Calendar } from 'lucide-react';
+import { Search, Plus, Pencil, Trash2, Calendar, X } from 'lucide-react';
+
+const CATEGORIES = ['Community Service', 'Environment', 'Education', 'Health', 'Technology', 'Sports', 'Arts & Culture'];
+const STATUSES   = ['Active', 'Upcoming', 'Completed'];
+
+const fieldClass =
+  'w-full border border-gray-200 rounded-xl px-3 py-2.5 text-base text-gray-700 bg-gray-50 ' +
+  'outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100 transition-all';
 
 const MOCK_EVENTS = [
   { id: 1, title: 'Beach Cleanup Drive',     category: 'Environment',       date: '2025-06-10', location: 'Galle Beach',         volunteers: 25, maxVolunteers: 30, status: 'Active' },
@@ -22,6 +29,8 @@ const ManageEvents = () => {
   const [events, setEvents] = useState(MOCK_EVENTS);
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('All');
+  const [editingEvent, setEditingEvent] = useState(null);
+  const [editForm, setEditForm] = useState({});
 
   const filtered = events.filter((e) => {
     const matchSearch =
@@ -33,13 +42,31 @@ const ManageEvents = () => {
 
   const handleDelete = (id) => setEvents((prev) => prev.filter((e) => e.id !== id));
 
+  const openEdit = (event) => {
+    setEditingEvent(event);
+    setEditForm({ ...event });
+  };
+
+  const closeEdit = () => {
+    setEditingEvent(null);
+    setEditForm({});
+  };
+
+  const handleEditChange = (e) => setEditForm({ ...editForm, [e.target.name]: e.target.value });
+
+  const handleEditSave = (e) => {
+    e.preventDefault();
+    setEvents((prev) => prev.map((ev) => (ev.id === editingEvent.id ? { ...ev, ...editForm } : ev)));
+    closeEdit();
+  };
+
   return (
     <div>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-800">Manage Events</h1>
-          <p className="text-gray-500 text-sm mt-0.5">{events.length} total events</p>
+          <p className="text-gray-500 text-md mt-0.5">{events.length} total events</p>
         </div>
         <button
           onClick={() => navigate('/organizer/create-event')}
@@ -118,7 +145,10 @@ const ManageEvents = () => {
                   </td>
                   <td className="px-5 py-3.5">
                     <div className="flex items-center gap-2">
-                      <button className="p-1.5 rounded-lg hover:bg-purple-50 text-gray-400 hover:text-cyan-600 transition-colors">
+                      <button
+                        onClick={() => openEdit(event)}
+                        className="p-1.5 rounded-lg hover:bg-cyan-50 text-gray-400 hover:text-cyan-600 transition-colors"
+                      >
                         <Pencil className="w-3.5 h-3.5" />
                       </button>
                       <button
@@ -135,6 +165,82 @@ const ManageEvents = () => {
           </table>
         </div>
       </div>
+      {/* Edit Event Modal */}
+      {editingEvent && (
+        <div
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center"
+          onClick={(e) => e.target === e.currentTarget && closeEdit()}
+        >
+          <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-5">
+              <h2 className="text-lg font-bold text-gray-800">Edit Event</h2>
+              <button
+                onClick={closeEdit}
+                className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleEditSave} className="space-y-4">
+              <div>
+                <label className="block text-base font-medium text-gray-700 mb-1.5">Event Title <span className="text-red-400">*</span></label>
+                <input name="title" value={editForm.title} onChange={handleEditChange} required className={fieldClass} />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-base font-medium text-gray-700 mb-1.5">Category <span className="text-red-400">*</span></label>
+                  <select name="category" value={editForm.category} onChange={handleEditChange} required className={fieldClass}>
+                    {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-base font-medium text-gray-700 mb-1.5">Status <span className="text-red-400">*</span></label>
+                  <select name="status" value={editForm.status} onChange={handleEditChange} required className={fieldClass}>
+                    {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-base font-medium text-gray-700 mb-1.5">Date <span className="text-red-400">*</span></label>
+                  <input type="date" name="date" value={editForm.date} onChange={handleEditChange} required className={fieldClass} />
+                </div>
+                <div>
+                  <label className="block text-base font-medium text-gray-700 mb-1.5">Max Volunteers <span className="text-red-400">*</span></label>
+                  <input type="number" name="maxVolunteers" value={editForm.maxVolunteers} onChange={handleEditChange} required min="1" className={fieldClass} />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-base font-medium text-gray-700 mb-1.5">Location <span className="text-red-400">*</span></label>
+                <input name="location" value={editForm.location} onChange={handleEditChange} required className={fieldClass} />
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="submit"
+                  className="flex-1 py-2.5 rounded-xl text-white font-semibold text-sm
+                    bg-gradient-to-r from-cyan-400 to-blue-500
+                    hover:from-cyan-500 hover:to-blue-600 transition-all"
+                >
+                  Save Changes
+                </button>
+                <button
+                  type="button"
+                  onClick={closeEdit}
+                  className="px-5 py-2.5 rounded-xl text-cyan-600 font-semibold text-sm
+                    border border-cyan-200 hover:bg-cyan-50 transition-all"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

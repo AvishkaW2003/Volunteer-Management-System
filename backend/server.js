@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import User from "./models/userModel.js";
 import sequelize from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
+import eventRoutes from "./routes/eventRoutes.js";
 
 dotenv.config();
 
@@ -12,6 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
+app.use("/api/events", eventRoutes);
 
 app.get("/", (req, res) => {
   res.send("VolunteerHub Backend Running...");
