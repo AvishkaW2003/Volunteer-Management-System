@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import User from "./models/userModel.js";
 import sequelize from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
+import Event from "./models/eventModel.js";
 import eventRoutes from "./routes/eventRoutes.js";
 
 dotenv.config();

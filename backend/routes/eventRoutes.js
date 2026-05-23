@@ -1,12 +1,33 @@
 import express from "express";
-import { getEvents, createEvent, updateEvent, deleteEvent } from "../controllers/eventController.js";
-import authMiddleware from "../middleware/authMiddleware.js";
 
-const router = express.Router();
+import {
+  createEvent,
+  getEvents,
+} from "../controllers/eventController.js";
 
-router.get("/",        authMiddleware, getEvents);
-router.post("/",       authMiddleware, createEvent);
-router.put("/:id",     authMiddleware, updateEvent);
-router.delete("/:id",  authMiddleware, deleteEvent);
+import authMiddleware
+from "../middleware/authMiddleware.js";
+
+import roleMiddleware
+from "../middleware/roleMiddleware.js";
+
+const router =
+express.Router();
+
+// Create Event
+router.post(
+"/",
+authMiddleware,
+roleMiddleware(
+"organizer"
+),
+createEvent
+);
+
+// View Events
+router.get(
+"/",
+getEvents
+);
 
 export default router;
