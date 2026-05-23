@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { loginUser } from '../../services/authService';
+import { useAuth } from '../../context/AuthContext';
 
 const OrganizerLogin = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const [formData, setFormData] = useState({
     email: '',
@@ -21,11 +24,22 @@ const OrganizerLogin = () => {
     setLoading(true);
     setError('');
     try {
-      // TODO: connect to backend API
-      console.log('Organizer login:', formData);
+      const data = await loginUser({
+        email: formData.email,
+        password: formData.password,
+      });
+      if (data.user.role !== 'organizer') {
+        setError('Access denied. Please use the student login page.');
+        return;
+      }
+      login(data.user, data.token);
       navigate('/organizer/dashboard');
     } catch (err) {
-      setError('Invalid email or password. Please try again.');
+      if (!err.response) {
+        setError('Could not connect to backend server. Please ensure the backend is running on port 5000.');
+      } else {
+        setError(err.response?.data?.message || 'Invalid email or password. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
