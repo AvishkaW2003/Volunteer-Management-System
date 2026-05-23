@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { registerUser } from '../../services/authService';
 
 const OrganizerRegister = () => {
   const navigate = useNavigate();
@@ -23,12 +24,31 @@ const OrganizerRegister = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
+
+    // Client-side validation for phone number
+    const phoneRegex = /^\+?[\d\s\-()]{7,20}$/;
+    if (formData.contactNumber && !phoneRegex.test(formData.contactNumber)) {
+      setError('Contact number must be a valid phone number (7 to 20 characters).');
+      setLoading(false);
+      return;
+    }
+
     try {
-      // TODO: connect to backend API
-      console.log('Organizer registered:', formData);
+      const payload = {
+        role: 'organizer',
+        clubName: formData.clubName,
+        contactNumber: formData.contactNumber,
+        email: formData.email,
+        password: formData.password,
+      };
+      await registerUser(payload);
       navigate('/login/organizer');
     } catch (err) {
-      setError('Registration failed. Please try again.');
+      if (!err.response) {
+        setError('Could not connect to backend server. Please ensure the backend is running on port 5000.');
+      } else {
+        setError(err.response?.data?.message || 'Registration failed. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
