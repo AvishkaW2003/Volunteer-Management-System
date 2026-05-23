@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import {
   LayoutDashboard, Users, CalendarCheck, BarChart2,
   Settings, Bell, LogOut, Menu, ShieldCheck,
@@ -17,6 +18,12 @@ const navItems = [
 const AdminLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
+  const { logout, user } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   return (
     <div className="flex h-screen bg-slate-50 overflow-hidden">
@@ -68,7 +75,7 @@ const AdminLayout = () => {
         {/* Logout */}
         <div className="px-3 py-4 border-t border-gray-100">
           <button
-            onClick={() => navigate('/')}
+            onClick={handleLogout}
             className="flex items-center gap-3 px-3 py-2.5 w-full rounded-xl
               text-base font-medium text-gray-500 hover:bg-red-50 hover:text-red-500
               transition-colors"
@@ -113,7 +120,7 @@ const AdminLayout = () => {
             </div>
             <div className="flex flex-col leading-tight">
               <span className="text-sm text-indigo-500 font-medium">Logged in as</span>
-              <span className="text-base font-bold text-indigo-700">Admin</span>
+              <span className="text-base font-bold text-indigo-700">{user?.name || 'Admin'}</span>
             </div>
           </div>
         </header>
