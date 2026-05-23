@@ -8,6 +8,15 @@ import StudentLogin      from '../pages/Auth/StudentLogin';
 import OrganizerLogin    from '../pages/Auth/OrganizerLogin';
 import AdminLogin        from '../pages/Auth/AdminLogin';
 
+// Student Layout + Pages
+import StudentLayout  from '../layouts/StudentLayout';
+import Dashboard      from '../pages/Student/Dashboard';
+import Events         from '../pages/Student/Events';
+import ApplyEvent     from '../pages/Student/ApplyEvent';
+import History        from '../pages/Student/History';
+import Leaderboard    from '../pages/Student/Leaderboard';
+import StudentProfile from '../pages/Student/Profile';
+
 // Organizer Layout + Pages
 import OrganizerLayout      from '../layouts/OrganizerLayout';
 import OrganizerDashboard   from '../pages/Organizer/OrganizerDashboard';
@@ -41,6 +50,17 @@ const AppRouter = () => {
       <Route path="/login/student"   element={<StudentLogin />} />
       <Route path="/login/organizer" element={<OrganizerLogin />} />
       <Route path="/login/admin"     element={<AdminLogin />} />
+
+      {/* ── Student Panel (nested layout) ────────────── */}
+      <Route path="/student" element={<StudentLayout />}>
+        <Route index element={<Navigate to="dashboard" replace />} />
+        <Route path="dashboard"    element={<Dashboard />} />
+        <Route path="events"       element={<Events />} />
+        <Route path="applications" element={<ApplyEvent />} />
+        <Route path="history"      element={<History />} />
+        <Route path="leaderboard"  element={<Leaderboard />} />
+        <Route path="profile"      element={<StudentProfile />} />
+      </Route>
 
       {/* ── Organizer Panel (nested layout) ──────────── */}
       <Route path="/organizer" element={<OrganizerLayout />}>

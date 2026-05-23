@@ -1,23 +1,21 @@
 import { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 import {
-  LayoutDashboard, PlusCircle, Calendar, Users,
-  ClipboardCheck, Award, Bell, Settings, LogOut, Menu, ClipboardList,
+  LayoutDashboard, Calendar, ClipboardList, Clock,
+  Trophy, User, LogOut, Menu,
 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const navItems = [
-  { to: '/organizer/dashboard',    icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/organizer/create-event', icon: PlusCircle,      label: 'Create Event' },
-  { to: '/organizer/events',       icon: Calendar,        label: 'Manage Events' },
-  { to: '/organizer/applications', icon: Users,           label: 'Applications' },
-  { to: '/organizer/attendance',   icon: ClipboardCheck,  label: 'Attendance' },
-  { to: '/organizer/certificates', icon: Award,           label: 'Certificates' },
-  { to: '/organizer/notifications',icon: Bell,            label: 'Notifications' },
-  { to: '/organizer/settings',     icon: Settings,        label: 'Settings' },
+  { to: '/student/dashboard',    icon: LayoutDashboard, label: 'Dashboard'    },
+  { to: '/student/events',       icon: Calendar,         label: 'Browse Events' },
+  { to: '/student/applications', icon: ClipboardList,    label: 'Applications'  },
+  { to: '/student/history',      icon: Clock,            label: 'History'       },
+  { to: '/student/leaderboard',  icon: Trophy,           label: 'Leaderboard'   },
+  { to: '/student/profile',      icon: User,             label: 'Profile'       },
 ];
 
-const OrganizerLayout = () => {
+const StudentLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const { logout, user } = useAuth();
@@ -46,7 +44,7 @@ const OrganizerLayout = () => {
       >
         {/* Logo */}
         <div className="flex items-center gap-3 px-4 py-4 border-b border-gray-100">
-          <div className="w-9 h-9 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-xl flex items-center justify-center flex-shrink-0">
+          <div className="w-9 h-9 bg-gradient-to-br from-blue-400 to-purple-500 rounded-xl flex items-center justify-center flex-shrink-0">
             <span className="text-white text-sm font-bold">VH</span>
           </div>
           <span className="font-bold text-gray-800 text-base">VolunteerHub</span>
@@ -63,8 +61,8 @@ const OrganizerLayout = () => {
                 `flex items-center gap-3 px-3 py-2.5 rounded-xl text-base font-medium
                 transition-all duration-150 ${
                   isActive
-                    ? 'bg-gradient-to-r from-cyan-400 to-blue-500 text-white shadow-sm'
-                    : 'text-gray-600 hover:bg-cyan-50 hover:text-cyan-700'
+                    ? 'bg-gradient-to-r from-blue-400 to-purple-500 text-white shadow-sm'
+                    : 'text-gray-600 hover:bg-purple-50 hover:text-purple-700'
                 }`
               }
             >
@@ -91,7 +89,7 @@ const OrganizerLayout = () => {
       {/* Main area */}
       <div className="flex-1 flex flex-col min-w-0">
 
-        {/* Top bar — visible on all screen sizes */}
+        {/* Top bar */}
         <header className="flex items-center justify-between gap-3 px-4 lg:px-7 py-3
           bg-white border-b border-gray-200 flex-shrink-0">
 
@@ -99,31 +97,32 @@ const OrganizerLayout = () => {
           <div className="flex items-center gap-3 lg:hidden">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="p-1 text-gray-600 hover:text-cyan-600"
+              className="p-1 text-gray-600 hover:text-purple-600"
             >
               <Menu className="w-5 h-5" />
             </button>
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-lg flex items-center justify-center">
+              <div className="w-7 h-7 bg-gradient-to-br from-blue-400 to-purple-500 rounded-lg flex items-center justify-center">
                 <span className="text-white text-xs font-bold">VH</span>
               </div>
               <span className="font-bold text-gray-800 text-sm">VolunteerHub</span>
             </div>
           </div>
 
-          {/* Spacer for desktop (sidebar already shows logo) */}
           <div className="hidden lg:block" />
 
-          {/* Right: Role badge */}
-          <div className="flex items-center gap-2.5 bg-gradient-to-r from-cyan-50 to-blue-50
-            border border-cyan-200 rounded-2xl px-3 py-1.5">
-            <div className="w-7 h-7 bg-gradient-to-br from-cyan-400 to-blue-500
+          {/* Right: user badge */}
+          <div className="flex items-center gap-2.5 bg-gradient-to-r from-blue-50 to-purple-50
+            border border-purple-200 rounded-2xl px-3 py-1.5">
+            <div className="w-7 h-7 bg-gradient-to-br from-blue-400 to-purple-500
               rounded-lg flex items-center justify-center flex-shrink-0">
-              <ClipboardList className="w-3.5 h-3.5 text-white" />
+              <span className="text-white text-xs font-bold">
+                {user?.name ? user.name.charAt(0).toUpperCase() : 'S'}
+              </span>
             </div>
             <div className="flex flex-col leading-tight">
-              <span className="text-sm text-cyan-500 font-medium">Logged in as</span>
-              <span className="text-base font-bold text-blue-700">{user?.name || 'Organizer'}</span>
+              <span className="text-sm text-purple-500 font-medium">Logged in as</span>
+              <span className="text-base font-bold text-purple-700">{user?.name || 'Student'}</span>
             </div>
           </div>
         </header>
@@ -137,4 +136,4 @@ const OrganizerLayout = () => {
   );
 };
 
-export default OrganizerLayout;
+export default StudentLayout;
