@@ -19,6 +19,15 @@ import Certificates         from '../pages/Organizer/Certificates';
 import Notifications        from '../pages/Organizer/Notifications';
 import OrganizerSettings    from '../pages/Organizer/OrganizerSettings';
 
+// Admin Layout + Pages
+import AdminLayout           from '../layouts/AdminLayout';
+import AdminDashboard        from '../pages/Admin/AdminDashboard';
+import ManageUsers           from '../pages/Admin/ManageUsers';
+import ApproveEvents         from '../pages/Admin/ApproveEvents';
+import ReportsAnalytics      from '../pages/Admin/ReportsAnalytics';
+import SystemSettings        from '../pages/Admin/SystemSettings';
+import AdminNotifications    from '../pages/Admin/AdminNotifications';
+
 const AppRouter = () => {
   return (
     <Routes>
@@ -44,6 +53,17 @@ const AppRouter = () => {
         <Route path="certificates" element={<Certificates />} />
         <Route path="notifications"element={<Notifications />} />
         <Route path="settings"     element={<OrganizerSettings />} />
+      </Route>
+
+      {/* ── Admin Panel (nested layout) ──────────── */}
+      <Route path="/admin" element={<AdminLayout />}>
+        <Route index element={<Navigate to="dashboard" replace />} />
+        <Route path="dashboard"      element={<AdminDashboard />} />
+        <Route path="users"          element={<ManageUsers />} />
+        <Route path="event-approval" element={<ApproveEvents />} />
+        <Route path="reports"        element={<ReportsAnalytics />} />
+        <Route path="settings"       element={<SystemSettings />} />
+        <Route path="notifications"  element={<AdminNotifications />} />
       </Route>
 
     </Routes>
