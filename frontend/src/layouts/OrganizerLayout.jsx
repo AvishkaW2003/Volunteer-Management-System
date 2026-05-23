@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import {
   LayoutDashboard, PlusCircle, Calendar, Users,
   ClipboardCheck, Award, Bell, Settings, LogOut, Menu, ClipboardList,
@@ -19,6 +20,12 @@ const navItems = [
 const OrganizerLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
+  const { logout, user } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   return (
     <div className="flex h-screen bg-slate-50 overflow-hidden">
@@ -70,7 +77,7 @@ const OrganizerLayout = () => {
         {/* Logout */}
         <div className="px-3 py-4 border-t border-gray-100">
           <button
-            onClick={() => navigate('/')}
+            onClick={handleLogout}
             className="flex items-center gap-3 px-3 py-2.5 w-full rounded-xl
               text-base font-medium text-gray-500 hover:bg-red-50 hover:text-red-500
               transition-colors"
@@ -116,7 +123,7 @@ const OrganizerLayout = () => {
             </div>
             <div className="flex flex-col leading-tight">
               <span className="text-sm text-cyan-500 font-medium">Logged in as</span>
-              <span className="text-base font-bold text-blue-700">Organizer</span>
+              <span className="text-base font-bold text-blue-700">{user?.name || 'Organizer'}</span>
             </div>
           </div>
         </header>
