@@ -1,11 +1,14 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-
-import User from "../models/UserModel.js";
+import sequelize from "../config/db.js";
+import User from "../models/userModel.js";
+import StudentProfile from "../models/studentProfileModel.js";
+import OrganizerProfile from "../models/organizerProfileModel.js";
 
 export const register = async (req, res) => {
+  const transaction = await sequelize.transaction();
   try {
-    const { name, email, password, phone, role } = req.body;
+    const { role, name, email, password, phone, clubName, contactNumber, studentId, faculty, skills } = req.body;
 
     // Check existing user
     const existingUser = await User.findOne({
@@ -13,6 +16,7 @@ export const register = async (req, res) => {
     });
 
     if (existingUser) {
+      await transaction.rollback();
       return res.status(400).json({
         message: "User already exists",
       });
@@ -21,39 +25,85 @@ export const register = async (req, res) => {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user
+    // Resolve name and phone based on role/payload structure
+    let finalName = name;
+    let finalPhone = phone;
+
+    if (role === "student") {
+      finalName = name || req.body.fullName;
+    } else if (role === "organizer") {
+      finalName = clubName || req.body.organizationName || name;
+      finalPhone = phone || contactNumber;
+    }
+
+    // Create User within transaction
     const user = await User.create({
-      name,
+      name: finalName,
       email,
       password: hashedPassword,
-      phone,
+      phone: finalPhone,
       role,
-    });
+    }, { transaction });
+
+    let profile = null;
+
+    if (role === "student") {
+      profile = await StudentProfile.create({
+        userId: user.id,
+        studentId,
+        faculty,
+        skills,
+      }, { transaction });
+    } else if (role === "organizer") {
+      profile = await OrganizerProfile.create({
+        userId: user.id,
+        organizationName: finalName,
+      }, { transaction });
+    }
+
+    await transaction.commit();
+
+    // Prepare response user object
+    const userJson = user.toJSON();
+    delete userJson.password;
 
     res.status(201).json({
       message: "User registered successfully",
-      user,
+      user: {
+        ...userJson,
+        studentProfile: role === "student" ? profile : null,
+        organizerProfile: role === "organizer" ? profile : null,
+      },
     });
   } catch (error) {
+    if (!transaction.finished) {
+      await transaction.rollback();
+    }
     res.status(500).json({
       message: error.message,
     });
   }
 };
 
-
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    // Find user    const user = await User.findOne
+
+    // Find user including profiles
     const user = await User.findOne({
       where: { email },
+      include: [
+        { model: StudentProfile, as: "studentProfile" },
+        { model: OrganizerProfile, as: "organizerProfile" },
+      ],
     });
+
     if (!user) {
       return res.status(400).json({
         message: "Invalid email or password",
       });
     }
+
     // Check password
     const isMatch = await bcrypt.compare(password, user.password);
 
@@ -79,6 +129,8 @@ export const login = async (req, res) => {
         email: user.email,
         phone: user.phone,
         role: user.role,
+        studentProfile: user.studentProfile,
+        organizerProfile: user.organizerProfile,
       },
     });
   } catch (error) {
@@ -88,17 +140,17 @@ export const login = async (req, res) => {
   }
 };
 
-
-
-
 export const getProfile = async (req, res) => {
   try {
-
-    // Find logged user
+    // Find logged user including profiles
     const user = await User.findByPk(req.user.id, {
       attributes: {
         exclude: ["password"],
       },
+      include: [
+        { model: StudentProfile, as: "studentProfile" },
+        { model: OrganizerProfile, as: "organizerProfile" },
+      ],
     });
 
     // Check user exists
@@ -110,7 +162,6 @@ export const getProfile = async (req, res) => {
 
     // Return user
     res.status(200).json(user);
-
   } catch (error) {
     res.status(500).json({
       message: error.message,
