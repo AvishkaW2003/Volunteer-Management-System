@@ -2,17 +2,17 @@ import { useState } from 'react';
 import { Users, Search, ShieldCheck, GraduationCap, Briefcase, MoreVertical } from 'lucide-react';
 
 const MOCK_USERS = [
-  { id: 1, name: 'Alice Johnson',   email: 'alice@uni.edu',   role: 'student',   status: 'Active' },
-  { id: 2, name: 'Bob Smith',       email: 'bob@uni.edu',     role: 'organizer', status: 'Active' },
-  { id: 3, name: 'Carol Davis',     email: 'carol@uni.edu',   role: 'student',   status: 'Inactive' },
-  { id: 4, name: 'David Lee',       email: 'david@uni.edu',   role: 'organizer', status: 'Active' },
+  { id: 1, name: 'Alice Johnson', email: 'alice@uni.edu', role: 'student', status: 'Active' },
+  { id: 2, name: 'Bob Smith', email: 'bob@uni.edu', role: 'organizer', status: 'Active' },
+  { id: 3, name: 'Carol Davis', email: 'carol@uni.edu', role: 'student', status: 'Inactive' },
+  { id: 4, name: 'David Lee', email: 'david@uni.edu', role: 'organizer', status: 'Active' },
 ];
 
 const roleIcon = { student: GraduationCap, organizer: Briefcase, admin: ShieldCheck };
 const roleBadge = {
-  student:   'bg-blue-100 text-blue-700',
+  student: 'bg-blue-100 text-blue-700',
   organizer: 'bg-cyan-100 text-cyan-700',
-  admin:     'bg-indigo-100 text-indigo-700',
+  admin: 'bg-indigo-100 text-indigo-700',
 };
 
 const ManageUsers = () => {
@@ -20,7 +20,7 @@ const ManageUsers = () => {
 
   const filtered = MOCK_USERS.filter(
     u => u.name.toLowerCase().includes(search.toLowerCase()) ||
-         u.email.toLowerCase().includes(search.toLowerCase())
+      u.email.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -28,7 +28,7 @@ const ManageUsers = () => {
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-2">
-            <Users className="w-8 h-8 text-indigo-500" /> User Management
+            User Management
           </h1>
           <p className="text-gray-500 mt-1">View and manage all platform users</p>
         </div>

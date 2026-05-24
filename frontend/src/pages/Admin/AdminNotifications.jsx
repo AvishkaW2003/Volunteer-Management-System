@@ -1,10 +1,10 @@
 import { Bell, CheckCheck } from 'lucide-react';
 
 const NOTIFICATIONS = [
-  { id: 1, title: 'New event submitted',       message: 'Beach Cleanup Drive is awaiting approval.', time: '2 min ago',  read: false },
-  { id: 2, title: 'User registered',           message: 'A new organizer has joined the platform.',  time: '1 hr ago',   read: false },
-  { id: 3, title: 'Event approved',            message: 'Tree Planting Marathon has been approved.',  time: '3 hrs ago',  read: true  },
-  { id: 4, title: 'Report generated',          message: 'Monthly analytics report is ready.',         time: 'Yesterday',  read: true  },
+  { id: 1, title: 'New event submitted', message: 'Beach Cleanup Drive is awaiting approval.', time: '2 min ago', read: false },
+  { id: 2, title: 'User registered', message: 'A new organizer has joined the platform.', time: '1 hr ago', read: false },
+  { id: 3, title: 'Event approved', message: 'Tree Planting Marathon has been approved.', time: '3 hrs ago', read: true },
+  { id: 4, title: 'Report generated', message: 'Monthly analytics report is ready.', time: 'Yesterday', read: true },
 ];
 
 const AdminNotifications = () => (
@@ -12,7 +12,7 @@ const AdminNotifications = () => (
     <div className="flex items-center justify-between flex-wrap gap-4">
       <div>
         <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-2">
-          <Bell className="w-8 h-8 text-indigo-500" /> Notifications
+          Notifications
         </h1>
         <p className="text-gray-500 mt-1">Admin alerts and platform updates</p>
       </div>

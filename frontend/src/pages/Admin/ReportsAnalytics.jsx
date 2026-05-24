@@ -1,16 +1,16 @@
 import { BarChart2, Users, CalendarCheck, TrendingUp } from 'lucide-react';
 
 const summaryCards = [
-  { label: 'Total Registrations', value: '—', icon: Users,         color: 'text-blue-500',   bg: 'bg-blue-50' },
-  { label: 'Events Completed',    value: '—', icon: CalendarCheck, color: 'text-green-500',  bg: 'bg-green-50' },
-  { label: 'Avg Attendance',      value: '—', icon: TrendingUp,    color: 'text-purple-500', bg: 'bg-purple-50' },
+  { label: 'Total Registrations', value: '—', icon: Users, color: 'text-blue-500', bg: 'bg-blue-50' },
+  { label: 'Events Completed', value: '—', icon: CalendarCheck, color: 'text-green-500', bg: 'bg-green-50' },
+  { label: 'Avg Attendance', value: '—', icon: TrendingUp, color: 'text-purple-500', bg: 'bg-purple-50' },
 ];
 
 const ReportsAnalytics = () => (
   <div className="space-y-6">
     <div>
       <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-2">
-        <BarChart2 className="w-8 h-8 text-indigo-500" /> Reports & Analytics
+        Reports & Analytics
       </h1>
       <p className="text-gray-500 mt-1">Platform-wide statistics and insights</p>
     </div>
