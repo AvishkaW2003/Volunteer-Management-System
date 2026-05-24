@@ -1,23 +1,23 @@
 import { CalendarCheck, CheckCircle, XCircle, Clock } from 'lucide-react';
 
 const MOCK_EVENTS = [
-  { id: 1, title: 'Beach Cleanup Drive',      organizer: 'Eco Club',       date: '2026-06-10', status: 'pending' },
-  { id: 2, title: 'Blood Donation Camp',       organizer: 'Health Society', date: '2026-06-15', status: 'pending' },
-  { id: 3, title: 'Tree Planting Marathon',    organizer: 'Green Team',     date: '2026-06-20', status: 'approved' },
-  { id: 4, title: 'Food Distribution Drive',  organizer: 'Care Club',      date: '2026-06-25', status: 'rejected' },
+  { id: 1, title: 'Beach Cleanup Drive', organizer: 'Eco Club', date: '2026-06-10', status: 'pending' },
+  { id: 2, title: 'Blood Donation Camp', organizer: 'Health Society', date: '2026-06-15', status: 'pending' },
+  { id: 3, title: 'Tree Planting Marathon', organizer: 'Green Team', date: '2026-06-20', status: 'approved' },
+  { id: 4, title: 'Food Distribution Drive', organizer: 'Care Club', date: '2026-06-25', status: 'rejected' },
 ];
 
 const statusBadge = {
-  pending:  { cls: 'bg-amber-100 text-amber-700',   icon: Clock,       label: 'Pending'  },
-  approved: { cls: 'bg-green-100 text-green-700',   icon: CheckCircle, label: 'Approved' },
-  rejected: { cls: 'bg-red-100 text-red-500',       icon: XCircle,     label: 'Rejected' },
+  pending: { cls: 'bg-amber-100 text-amber-700', icon: Clock, label: 'Pending' },
+  approved: { cls: 'bg-green-100 text-green-700', icon: CheckCircle, label: 'Approved' },
+  rejected: { cls: 'bg-red-100 text-red-500', icon: XCircle, label: 'Rejected' },
 };
 
 const ApproveEvents = () => (
   <div className="space-y-6">
     <div>
       <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-2">
-        <CalendarCheck className="w-8 h-8 text-indigo-500" /> Event Approvals
+        Event Approvals
       </h1>
       <p className="text-gray-500 mt-1">Review and approve or reject submitted events</p>
     </div>
