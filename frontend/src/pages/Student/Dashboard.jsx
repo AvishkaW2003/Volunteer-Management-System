@@ -1,28 +1,29 @@
 import { Calendar, Trophy, Award, Clock } from 'lucide-react';
 
 const stats = [
-  { label: 'Events Joined',      value: 12,  icon: Calendar, color: 'from-blue-400 to-purple-500' },
-  { label: 'Reputation Points',  value: 850, icon: Trophy,   color: 'from-blue-400 to-purple-500' },
-  { label: 'Certificates Earned',value: 8,   icon: Award,    color: 'from-blue-400 to-purple-500' },
-  { label: 'Volunteer Hours',    value: 48,  icon: Clock,    color: 'from-blue-400 to-purple-500' },
+  { label: 'Events Joined',       value: 12,  icon: Calendar },
+  { label: 'Reputation Points',   value: 850, icon: Trophy   },
+  { label: 'Certificates Earned', value: 8,   icon: Award    },
+  { label: 'Volunteer Hours',     value: 48,  icon: Clock    },
 ];
 
 const Dashboard = () => (
   <div className="space-y-6">
     <div>
       <h1 className="text-3xl font-bold text-gray-800">Student Dashboard</h1>
-      <p className="text-gray-500 mt-1">Here's what's happening with your volunteer journey</p>
+      <p className="text-gray-500 mt-1">Welcome back! Here's your volunteer summary.</p>
     </div>
 
-    {/* Stat Cards — full-gradient, icon top-left, value top-right */}
+    {/* Stat Cards — full gradient, icon top-left, value top-right, label bottom */}
     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
-      {stats.map(({ label, value, icon: Icon, color }) => (
+      {stats.map(({ label, value, icon: Icon }) => (
         <div
           key={label}
-          className={`bg-gradient-to-br ${color} rounded-2xl p-5 shadow-sm flex flex-col justify-between min-h-[110px]`}
+          className="bg-gradient-to-br from-blue-400 to-purple-500 rounded-2xl p-5 shadow-sm
+            flex flex-col justify-between min-h-[110px]"
         >
           <div className="flex items-start justify-between">
-            <div className="w-11 h-11 rounded-full bg-white/25 flex items-center justify-center flex-shrink-0">
+            <div className="w-11 h-11 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
               <Icon className="w-5 h-5 text-white" />
             </div>
             <span className="text-3xl font-bold text-white">{value}</span>
@@ -32,7 +33,7 @@ const Dashboard = () => (
       ))}
     </div>
 
-    {/* Upcoming Events Placeholder */}
+    {/* Upcoming Events */}
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
       <h2 className="text-lg font-bold text-gray-800 mb-4">Upcoming Events</h2>
       <div className="flex flex-col items-center justify-center py-10 text-center">
