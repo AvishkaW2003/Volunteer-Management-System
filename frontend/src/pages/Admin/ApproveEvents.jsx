@@ -200,6 +200,7 @@ const ApproveEvents = () => {
                   </p>
                 </div>
 
+
                 <p className="text-slate-500 text-sm line-clamp-2 leading-relaxed flex-1">
                   {event.description}
                 </p>
