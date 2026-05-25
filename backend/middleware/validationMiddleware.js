@@ -8,8 +8,8 @@ export const validateRegistration = (req, res, next) => {
   if (!password || password.length < 6) {
     return res.status(400).json({ message: "Password must be at least 6 characters long" });
   }
-  if (!role || !["student", "organizer"].includes(role)) {
-    return res.status(400).json({ message: "A valid role (student or organizer) is required" });
+  if (!role || !["student", "organizer", "admin"].includes(role)) {
+    return res.status(400).json({ message: "A valid role (student, organizer, or admin) is required" });
   }
 
   if (role === "student") {
@@ -37,6 +37,22 @@ export const validateRegistration = (req, res, next) => {
     if (!phoneRegex.test(finalPhone)) {
       return res.status(400).json({ message: "Invalid contact number format" });
     }
+
+    } else if (role === "admin") {
+    if (!name) {
+      return res.status(400).json({ message: "Name is required for admin" });
+    }
+
+       if (!req.body.accessCode) {
+      return res.status(400).json({ message: "Admin access code is required" });
+    }
+    if (req.body.accessCode !== "admin123" && req.body.accessCode !== "VOMS_ADMIN_2026") {
+      return res.status(400).json({ message: "Invalid admin access code" });
+    }
+    if (!req.body.department) {
+      return res.status(400).json({ message: "Department is required for admin" });
+    }
+
   }
 
   next();
