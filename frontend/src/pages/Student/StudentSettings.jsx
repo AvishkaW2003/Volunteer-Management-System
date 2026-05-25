@@ -11,13 +11,12 @@ const StudentSettings = () => {
   const { user } = useAuth();
 
   const [account, setAccount] = useState({
-    name:  user?.name  || '',
+    name: user?.name || '',
     email: user?.email || '',
-    phone: user?.phone || '',
   });
 
   const [academic, setAcademic] = useState({
-    faculty:   user?.studentProfile?.faculty   || '',
+    faculty: user?.studentProfile?.faculty || '',
     studentId: user?.studentProfile?.studentId || '',
   });
 
@@ -26,9 +25,9 @@ const StudentSettings = () => {
   );
 
   const [notifications, setNotifications] = useState({
-    eventUpdates:    true,
+    eventUpdates: true,
     newOpportunities: true,
-    certificates:    false,
+    certificates: false,
   });
 
   const [saved, setSaved] = useState(false);
@@ -45,7 +44,7 @@ const StudentSettings = () => {
       {/* Page header */}
       <div>
         <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-2">
-          <Settings className="w-8 h-8 text-purple-500" /> Settings
+          Settings
         </h1>
         <p className="text-gray-500 mt-1">Manage your account preferences</p>
       </div>
@@ -79,19 +78,6 @@ const StudentSettings = () => {
                 value={account.email}
                 onChange={e => setAccount(p => ({ ...p, email: e.target.value }))}
                 placeholder="Enter your email"
-                className={inputClass}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1.5">
-                <span className="flex items-center gap-1.5"><Phone className="w-3.5 h-3.5" /> Phone Number</span>
-              </label>
-              <input
-                type="tel"
-                value={account.phone}
-                onChange={e => setAccount(p => ({ ...p, phone: e.target.value }))}
-                placeholder="Enter your phone number"
                 className={inputClass}
               />
             </div>
@@ -167,9 +153,9 @@ const StudentSettings = () => {
 
           <div className="space-y-3">
             {[
-              { key: 'eventUpdates',     label: 'Event Updates',      desc: 'Get notified about changes to events you joined' },
-              { key: 'newOpportunities', label: 'New Opportunities',  desc: 'Receive alerts when new volunteer events are posted' },
-              { key: 'certificates',     label: 'Certificates Issued', desc: 'Be notified when a new certificate is issued to you' },
+              { key: 'eventUpdates', label: 'Event Updates', desc: 'Get notified about changes to events you joined' },
+              { key: 'newOpportunities', label: 'New Opportunities', desc: 'Receive alerts when new volunteer events are posted' },
+              { key: 'certificates', label: 'Certificates Issued', desc: 'Be notified when a new certificate is issued to you' },
             ].map(({ key, label, desc }) => (
               <label
                 key={key}
