@@ -15,7 +15,7 @@ import Events         from '../pages/Student/Events';
 import ApplyEvent     from '../pages/Student/ApplyEvent';
 import History        from '../pages/Student/History';
 import Leaderboard    from '../pages/Student/Leaderboard';
-import StudentProfile from '../pages/Student/Profile';
+import StudentSettings  from '../pages/Student/StudentSettings';
 
 // Organizer Layout + Pages
 import OrganizerLayout      from '../layouts/OrganizerLayout';
@@ -59,7 +59,7 @@ const AppRouter = () => {
         <Route path="applications" element={<ApplyEvent />} />
         <Route path="history"      element={<History />} />
         <Route path="leaderboard"  element={<Leaderboard />} />
-        <Route path="profile"      element={<StudentProfile />} />
+        <Route path="settings"     element={<StudentSettings />} />
       </Route>
 
       {/* ── Organizer Panel (nested layout) ──────────── */}
