@@ -8,7 +8,7 @@ import OrganizerProfile from "../models/organizerProfileModel.js";
 export const register = async (req, res) => {
   const transaction = await sequelize.transaction();
   try {
-    const { role, name, email, password, phone, clubName, contactNumber, studentId, faculty, skills } = req.body;
+    const { role, name, email, password, phone, clubName, contactNumber, studentId, faculty, skills, department } = req.body;
 
     // Check existing user
     const existingUser = await User.findOne({
@@ -43,6 +43,7 @@ export const register = async (req, res) => {
       password: hashedPassword,
       phone: finalPhone,
       role,
+      department,
     }, { transaction });
 
     let profile = null;
@@ -101,6 +102,12 @@ export const login = async (req, res) => {
     if (!user) {
       return res.status(400).json({
         message: "Invalid email or password",
+      });
+    }
+    
+    if (user.status === "suspended") {
+      return res.status(403).json({
+        message: "Your account has been suspended. Please contact administration.",
       });
     }
 

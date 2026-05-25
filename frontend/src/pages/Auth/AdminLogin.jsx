@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { loginUser } from '../../services/authService';
+import { useAuth } from '../../context/AuthContext';
 
 const AdminLogin = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const [formData, setFormData] = useState({
     email: '',
@@ -21,11 +24,22 @@ const AdminLogin = () => {
     setLoading(true);
     setError('');
     try {
-      // TODO: connect to backend API
-      console.log('Admin login:', formData);
+        const data = await loginUser({
+        email: formData.email,
+        password: formData.password,
+      });
+      if (data.user.role !== 'admin') {
+        setError('Access denied. Please use the correct login page.');
+        return;
+      }
+      login(data.user, data.token);  
       navigate('/admin/dashboard');
     } catch (err) {
-      setError('Invalid email or password. Please try again.');
+       if (!err.response) {
+        setError('Could not connect to backend server. Please ensure the backend is running on port 5000.');
+      } else {
+        setError(err.response?.data?.message || 'Invalid email or password. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -220,6 +234,24 @@ const AdminLogin = () => {
           </button>
 
         </form>
+
+          {/* Divider */}
+        <div className="flex items-center gap-3 my-5">
+          <div className="flex-1 h-px bg-gray-200"></div>
+          <span className="text-xs text-gray-400">
+            Need an admin account?
+          </span>
+          <div className="flex-1 h-px bg-gray-200"></div>
+        </div>
+        {/* Register Link */}
+        <button
+          onClick={() => navigate('/register/admin')}
+          className="w-full py-3 rounded-xl text-indigo-500
+                     font-semibold text-base border border-indigo-200
+                     hover:bg-indigo-50 transition-all duration-200">
+          Create Admin Account
+        </button>
+        
       </div>
 
       {/* Back to Role Select */}
