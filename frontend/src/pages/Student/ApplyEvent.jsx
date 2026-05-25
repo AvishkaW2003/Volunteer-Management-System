@@ -10,12 +10,12 @@ const MOCK_APPLICATIONS = [
     appliedOn: 'May 1, 2026',
     status: 'approved',
     form: {
-      name:        'Alex Johnson',
-      email:       'alex.j@university.edu',
-      phone:       '+1 (555) 123-4567',
-      skills:      'Teamwork, Physical Fitness, Environmental Awareness',
-      motivation:  'I am passionate about protecting our coastlines and marine ecosystems. This event aligns perfectly with my values and I want to contribute meaningfully to the community.',
-      experience:  'Participated in two previous city cleanup drives in 2025. Also volunteered at a local river restoration project for 3 months.',
+      name: 'Alex Johnson',
+      email: 'alex.j@university.edu',
+      phone: '+1 (555) 123-4567',
+      skills: 'Teamwork, Physical Fitness, Environmental Awareness',
+      motivation: 'I am passionate about protecting our coastlines and marine ecosystems. This event aligns perfectly with my values and I want to contribute meaningfully to the community.',
+      experience: 'Participated in two previous city cleanup drives in 2025. Also volunteered at a local river restoration project for 3 months.',
     },
   },
   {
@@ -26,12 +26,12 @@ const MOCK_APPLICATIONS = [
     appliedOn: 'May 3, 2026',
     status: 'pending',
     form: {
-      name:        'Alex Johnson',
-      email:       'alex.j@university.edu',
-      phone:       '+1 (555) 123-4567',
-      skills:      'Organisation, Communication, Driving License',
-      motivation:  'Food insecurity is a serious issue in our community and I want to be part of the solution. I have strong organisational skills and can help coordinate distribution efficiently.',
-      experience:  '',
+      name: 'Alex Johnson',
+      email: 'alex.j@university.edu',
+      phone: '+1 (555) 123-4567',
+      skills: 'Organisation, Communication, Driving License',
+      motivation: 'Food insecurity is a serious issue in our community and I want to be part of the solution. I have strong organisational skills and can help coordinate distribution efficiently.',
+      experience: '',
     },
   },
   {
@@ -42,12 +42,12 @@ const MOCK_APPLICATIONS = [
     appliedOn: 'May 5, 2026',
     status: 'approved',
     form: {
-      name:        'Alex Johnson',
-      email:       'alex.j@university.edu',
-      phone:       '+1 (555) 123-4567',
-      skills:      'Gardening, Physical Fitness, Teamwork',
-      motivation:  'I strongly believe in combating climate change at a grassroots level. Planting trees is one of the most direct ways to make an environmental impact.',
-      experience:  'Volunteered at the Central Park greening initiative last year where we planted over 200 saplings.',
+      name: 'Alex Johnson',
+      email: 'alex.j@university.edu',
+      phone: '+1 (555) 123-4567',
+      skills: 'Gardening, Physical Fitness, Teamwork',
+      motivation: 'I strongly believe in combating climate change at a grassroots level. Planting trees is one of the most direct ways to make an environmental impact.',
+      experience: 'Volunteered at the Central Park greening initiative last year where we planted over 200 saplings.',
     },
   },
   {
@@ -58,12 +58,12 @@ const MOCK_APPLICATIONS = [
     appliedOn: 'May 6, 2026',
     status: 'pending',
     form: {
-      name:        'Alex Johnson',
-      email:       'alex.j@university.edu',
-      phone:       '+1 (555) 123-4567',
-      skills:      'Teaching, Communication, Patience',
-      motivation:  'I am a Computer Science student and I want to inspire younger kids to explore technology. Teaching is something I genuinely enjoy.',
-      experience:  '',
+      name: 'Alex Johnson',
+      email: 'alex.j@university.edu',
+      phone: '+1 (555) 123-4567',
+      skills: 'Teaching, Communication, Patience',
+      motivation: 'I am a Computer Science student and I want to inspire younger kids to explore technology. Teaching is something I genuinely enjoy.',
+      experience: '',
     },
   },
   {
@@ -74,12 +74,12 @@ const MOCK_APPLICATIONS = [
     appliedOn: 'May 10, 2026',
     status: 'approved',
     form: {
-      name:        'Alex Johnson',
-      email:       'alex.j@university.edu',
-      phone:       '+1 (555) 123-4567',
-      skills:      'First Aid, Empathy, Communication',
-      motivation:  'Donating blood is a simple act that saves lives. I want to assist the medical team and also encourage more students to donate.',
-      experience:  'First Aid certified (2024). Helped organise a health awareness booth at the campus fair.',
+      name: 'Alex Johnson',
+      email: 'alex.j@university.edu',
+      phone: '+1 (555) 123-4567',
+      skills: 'First Aid, Empathy, Communication',
+      motivation: 'Donating blood is a simple act that saves lives. I want to assist the medical team and also encourage more students to donate.',
+      experience: 'First Aid certified (2024). Helped organise a health awareness booth at the campus fair.',
     },
   },
   {
@@ -90,25 +90,25 @@ const MOCK_APPLICATIONS = [
     appliedOn: 'Apr 5, 2026',
     status: 'rejected',
     form: {
-      name:        'Alex Johnson',
-      email:       'alex.j@university.edu',
-      phone:       '+1 (555) 123-4567',
-      skills:      'Gardening, Teamwork',
-      motivation:  'I enjoy working with plants and want to help build a sustainable community garden that everyone can benefit from.',
-      experience:  '',
+      name: 'Alex Johnson',
+      email: 'alex.j@university.edu',
+      phone: '+1 (555) 123-4567',
+      skills: 'Gardening, Teamwork',
+      motivation: 'I enjoy working with plants and want to help build a sustainable community garden that everyone can benefit from.',
+      experience: '',
     },
   },
 ];
 
 const STATUS = {
   approved: { badge: 'bg-green-100 text-green-700', icon: CheckCircle, iconCls: 'text-green-500', iconBg: 'bg-green-100', label: 'Approved' },
-  pending:  { badge: 'bg-amber-100 text-amber-700', icon: Clock,        iconCls: 'text-amber-500', iconBg: 'bg-amber-100', label: 'Pending'  },
-  rejected: { badge: 'bg-red-100   text-red-500',   icon: XCircle,      iconCls: 'text-red-500',   iconBg: 'bg-red-100',   label: 'Rejected' },
+  pending: { badge: 'bg-amber-100 text-amber-700', icon: Clock, iconCls: 'text-amber-500', iconBg: 'bg-amber-100', label: 'Pending' },
+  rejected: { badge: 'bg-red-100   text-red-500', icon: XCircle, iconCls: 'text-red-500', iconBg: 'bg-red-100', label: 'Rejected' },
 };
 
 const STATS = [
   { key: 'approved', label: 'Approved' },
-  { key: 'pending',  label: 'Pending'  },
+  { key: 'pending', label: 'Pending' },
   { key: 'rejected', label: 'Rejected' },
 ];
 
@@ -189,15 +189,15 @@ const ViewDetailsModal = ({ app, onClose }) => {
           {/* Application form fields */}
           <div className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <DetailField icon={User}    label="Full Name"   value={app.form.name}  />
-              <DetailField icon={Mail}    label="Email"       value={app.form.email} />
+              <DetailField icon={User} label="Full Name" value={app.form.name} />
+              <DetailField icon={Mail} label="Email" value={app.form.email} />
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <DetailField icon={Phone}   label="Phone Number"      value={app.form.phone}  />
-              <DetailField icon={Tag}     label="Relevant Skills"   value={app.form.skills} />
+              <DetailField icon={Phone} label="Phone Number" value={app.form.phone} />
+              <DetailField icon={Tag} label="Relevant Skills" value={app.form.skills} />
             </div>
-            <DetailField icon={MessageSquare} label="Why I Want to Join"             value={app.form.motivation}  />
-            <DetailField icon={BookOpen}      label="Previous Volunteer Experience"  value={app.form.experience}  />
+            <DetailField icon={MessageSquare} label="Why I Want to Join" value={app.form.motivation} />
+            <DetailField icon={BookOpen} label="Previous Volunteer Experience" value={app.form.experience} />
           </div>
 
         </div>
@@ -224,7 +224,7 @@ const ApplyEvent = () => {
 
   const counts = {
     approved: MOCK_APPLICATIONS.filter(a => a.status === 'approved').length,
-    pending:  MOCK_APPLICATIONS.filter(a => a.status === 'pending').length,
+    pending: MOCK_APPLICATIONS.filter(a => a.status === 'pending').length,
     rejected: MOCK_APPLICATIONS.filter(a => a.status === 'rejected').length,
   };
 
@@ -234,7 +234,7 @@ const ApplyEvent = () => {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-2">
-          <ClipboardList className="w-8 h-8 text-purple-500" /> My Applications
+          My Applications
         </h1>
         <p className="text-gray-500 mt-1">Track the status of your event applications</p>
       </div>
