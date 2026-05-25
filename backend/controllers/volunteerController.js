@@ -1,7 +1,7 @@
 import Event from "../models/eventModel.js";
 
 import VolunteerRegistration
-from "../models/VolunteerRegistration.js";
+from "../models/volunteerRegistration.js";
 
 
 
