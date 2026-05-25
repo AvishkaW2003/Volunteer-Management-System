@@ -143,23 +143,6 @@ const AdminNotifications = () => {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-teal-600"></div>
-import { Bell, CheckCheck } from 'lucide-react';
-
-const NOTIFICATIONS = [
-  { id: 1, title: 'New event submitted', message: 'Beach Cleanup Drive is awaiting approval.', time: '2 min ago', read: false },
-  { id: 2, title: 'User registered', message: 'A new organizer has joined the platform.', time: '1 hr ago', read: false },
-  { id: 3, title: 'Event approved', message: 'Tree Planting Marathon has been approved.', time: '3 hrs ago', read: true },
-  { id: 4, title: 'Report generated', message: 'Monthly analytics report is ready.', time: 'Yesterday', read: true },
-];
-
-const AdminNotifications = () => (
-  <div className="space-y-6">
-    <div className="flex items-center justify-between flex-wrap gap-4">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-2">
-          Notifications
-        </h1>
-        <p className="text-gray-500 mt-1">Admin alerts and platform updates</p>
       </div>
     );
   }
