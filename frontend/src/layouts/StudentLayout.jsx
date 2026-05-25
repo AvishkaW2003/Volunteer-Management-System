@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Calendar, ClipboardList, Clock,
-  Trophy, User, LogOut, Menu,
+  Trophy, User, LogOut, Menu, GraduationCap, Settings,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -12,7 +12,7 @@ const navItems = [
   { to: '/student/applications', icon: ClipboardList,    label: 'Applications'  },
   { to: '/student/history',      icon: Clock,            label: 'History'       },
   { to: '/student/leaderboard',  icon: Trophy,           label: 'Leaderboard'   },
-  { to: '/student/profile',      icon: User,             label: 'Profile'       },
+  { to: '/student/settings',     icon: Settings,         label: 'Settings'      },
 ];
 
 const StudentLayout = () => {
@@ -116,9 +116,7 @@ const StudentLayout = () => {
             border border-purple-200 rounded-2xl px-3 py-1.5">
             <div className="w-7 h-7 bg-gradient-to-br from-blue-400 to-purple-500
               rounded-lg flex items-center justify-center flex-shrink-0">
-              <span className="text-white text-xs font-bold">
-                {user?.name ? user.name.charAt(0).toUpperCase() : 'S'}
-              </span>
+              <GraduationCap className="w-3.5 h-3.5 text-white" />
             </div>
             <div className="flex flex-col leading-tight">
               <span className="text-sm text-purple-500 font-medium">Logged in as</span>
