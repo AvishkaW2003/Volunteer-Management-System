@@ -1,5 +1,6 @@
-import { Search, Calendar, MapPin, Users, ChevronDown, ImageOff, User } from 'lucide-react';
+import { Search, Calendar, MapPin, Users, ChevronDown, ImageOff, User, Star } from 'lucide-react';
 import { useState } from 'react';
+import ApplyModal from './ApplyModal';
 
 const MOCK_EVENTS = [
   {
@@ -9,9 +10,13 @@ const MOCK_EVENTS = [
     date: '2026-06-10',
     time: '08:00 AM',
     location: 'Santa Monica Beach',
-    slots: 12,
+    totalSlots: 20,
+    acceptedCount: 8,   // ← will come from backend (accepted applications)
     category: 'Environment',
     skills: ['Teamwork', 'Physical'],
+    reputationPoints: 80,
+    volunteerHours: 5,
+    description: 'Join us for a refreshing morning of cleaning up our beautiful coastline. Help protect marine life and keep our beaches pristine for future generations.',
     image: 'https://picsum.photos/seed/beach101/600/260',
   },
   {
@@ -21,9 +26,13 @@ const MOCK_EVENTS = [
     date: '2026-06-15',
     time: '09:00 AM',
     location: 'Downtown Community Center',
-    slots: 8,
+    totalSlots: 10,
+    acceptedCount: 9,
     category: 'Community',
     skills: ['Organisation', 'Communication'],
+    reputationPoints: 60,
+    volunteerHours: 4,
+    description: 'Help sort and distribute food packages to families in need. A great opportunity to give back to the community.',
     // image: 'https://picsum.photos/seed/food202/600/260',
   },
   {
@@ -33,9 +42,13 @@ const MOCK_EVENTS = [
     date: '2026-06-20',
     time: '10:00 AM',
     location: 'City Library',
-    slots: 5,
+    totalSlots: 8,
+    acceptedCount: 8,
     category: 'Education',
     skills: ['Teaching', 'Patience'],
+    reputationPoints: 100,
+    volunteerHours: 6,
+    description: 'Tutor underprivileged school children in Maths and English. Make a real difference in a child\'s academic journey.',
     image: 'https://picsum.photos/seed/tutor303/600/260',
   },
   {
@@ -45,9 +58,13 @@ const MOCK_EVENTS = [
     date: '2026-06-22',
     time: '07:30 AM',
     location: 'Central Park',
-    slots: 20,
+    totalSlots: 30,
+    acceptedCount: 6,
     category: 'Environment',
     skills: ['Physical', 'Teamwork'],
+    reputationPoints: 90,
+    volunteerHours: 4,
+    description: 'Help us plant 500 trees in one day! A fun outdoor activity that directly contributes to a greener planet.',
     image: 'https://picsum.photos/seed/tree404/600/260',
   },
   {
@@ -57,9 +74,13 @@ const MOCK_EVENTS = [
     date: '2026-06-25',
     time: '09:00 AM',
     location: 'Main Hall, Block A',
-    slots: 30,
+    totalSlots: 50,
+    acceptedCount: 30,
     category: 'Health',
     skills: ['First Aid', 'Empathy'],
+    reputationPoints: 120,
+    volunteerHours: 3,
+    description: 'Assist medical staff in running a blood donation drive. Your effort can save multiple lives in a single day.',
     image: 'https://picsum.photos/seed/health505/600/260',
   },
   {
@@ -69,9 +90,13 @@ const MOCK_EVENTS = [
     date: '2026-06-28',
     time: '10:00 AM',
     location: 'Community Centre',
-    slots: 15,
+    totalSlots: 15,
+    acceptedCount: 13,
     category: 'Community',
     skills: ['Organisation', 'Driving License'],
+    reputationPoints: 70,
+    volunteerHours: 5,
+    description: 'Deliver food packages to elderly residents and low-income households across the city.',
     image: 'https://picsum.photos/seed/drive606/600/260',
   },
 ];
@@ -86,16 +111,29 @@ const formatDate = iso => {
   });
 };
 
+// Returns label, text color, bar color, and bg based on fill %
+const spotsTheme = (spotsLeft, total) => {
+  if (spotsLeft === 0)          return { label: 'Full',             text: 'text-red-600',    bar: 'bg-red-500',    bg: 'bg-red-50 border-red-200'    };
+  const pct = spotsLeft / total;
+  if (pct <= 0.15)              return { label: `${spotsLeft} left`, text: 'text-red-500',   bar: 'bg-red-400',    bg: 'bg-red-50 border-red-200'    };
+  if (pct <= 0.4)               return { label: `${spotsLeft} left`, text: 'text-orange-500',bar: 'bg-orange-400', bg: 'bg-orange-50 border-orange-200'};
+  return                               { label: `${spotsLeft} left`, text: 'text-green-600', bar: 'bg-green-500',  bg: 'bg-green-50 border-green-200' };
+};
+
 const selectClass =
   'appearance-none bg-white border border-gray-200 rounded-xl px-3 py-2.5 pr-8 text-sm ' +
   'text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-300 cursor-pointer';
 
 const Events = () => {
-  const [search,   setSearch]   = useState('');
-  const [category, setCategory] = useState('All Categories');
-  const [skill,    setSkill]    = useState('All Skills');
+  const [search,     setSearch]     = useState('');
+  const [category,   setCategory]   = useState('All Categories');
+  const [skill,      setSkill]      = useState('All Skills');
+  const [applyingTo, setApplyingTo] = useState(null);
 
-  const filtered = MOCK_EVENTS.filter(ev => {
+  const filtered = MOCK_EVENTS.map(ev => ({
+    ...ev,
+    spotsLeft: ev.totalSlots - ev.acceptedCount,
+  })).filter(ev => {
     const matchSearch   = ev.title.toLowerCase().includes(search.toLowerCase()) ||
                           ev.organizer.toLowerCase().includes(search.toLowerCase());
     const matchCategory = category === 'All Categories' || ev.category === category;
@@ -114,7 +152,6 @@ const Events = () => {
 
       {/* Search + Filters */}
       <div className="flex flex-col sm:flex-row gap-3">
-        {/* Search */}
         <div className="flex-1 flex items-center gap-2.5 bg-white border border-gray-200
           rounded-xl px-4 py-2.5 focus-within:ring-2 focus-within:ring-purple-300 transition">
           <Search className="w-4 h-4 text-gray-400 flex-shrink-0" />
@@ -127,112 +164,135 @@ const Events = () => {
           />
         </div>
 
-        {/* Category filter */}
         <div className="relative flex-shrink-0">
-          <select
-            value={category}
-            onChange={e => setCategory(e.target.value)}
-            className={selectClass}
-          >
+          <select value={category} onChange={e => setCategory(e.target.value)} className={selectClass}>
             {CATEGORIES.map(c => <option key={c}>{c}</option>)}
           </select>
           <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
         </div>
 
-        {/* Skill filter */}
         <div className="relative flex-shrink-0">
-          <select
-            value={skill}
-            onChange={e => setSkill(e.target.value)}
-            className={selectClass}
-          >
+          <select value={skill} onChange={e => setSkill(e.target.value)} className={selectClass}>
             {SKILLS.map(s => <option key={s}>{s}</option>)}
           </select>
           <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
         </div>
       </div>
 
-      {/* Event Cards — 3-column grid */}
+      {/* Event Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {filtered.map(ev => (
-          <div
-            key={ev.id}
-            className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden
-              hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex flex-col"
-          >
-            {/* Event image */}
-            {ev.image ? (
-              <img
-                src={ev.image}
-                alt={ev.title}
-                className="w-full h-44 object-cover"
-                onError={e => { e.currentTarget.style.display = 'none'; e.currentTarget.nextSibling.style.display = 'flex'; }}
-              />
-            ) : null}
-            {/* Fallback if no image / image fails to load */}
+        {filtered.map(ev => {
+          const theme   = spotsTheme(ev.spotsLeft, ev.totalSlots);
+          const fillPct = Math.min((ev.acceptedCount / ev.totalSlots) * 100, 100);
+          const isFull  = ev.spotsLeft === 0;
+
+          return (
             <div
-              className="w-full h-44 bg-gray-100 items-center justify-center flex-col gap-2"
-              style={{ display: ev.image ? 'none' : 'flex' }}
+              key={ev.id}
+              className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden
+                hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex flex-col"
             >
-              <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center">
-                <ImageOff className="w-7 h-7 text-gray-400" />
-              </div>
-              <p className="text-xs text-gray-400 font-medium">No image uploaded</p>
-            </div>
-
-            {/* Card body */}
-            <div className="p-4 flex flex-col flex-1 gap-3">
-
-              {/* Title + Organizer */}
-              <div>
-                <h3 className="text-base font-bold text-gray-800 leading-snug">{ev.title}</h3>
-                <div className="flex items-center gap-1.5 mt-1">
-                  <User className="w-3 h-3 text-purple-400 flex-shrink-0" />
-                  <span className="text-xs text-purple-600 font-medium">{ev.organizer}</span>
+              {/* Event image */}
+              {ev.image ? (
+                <img
+                  src={ev.image}
+                  alt={ev.title}
+                  className="w-full h-44 object-cover"
+                  onError={e => { e.currentTarget.style.display = 'none'; e.currentTarget.nextSibling.style.display = 'flex'; }}
+                />
+              ) : null}
+              {/* No-image fallback */}
+              <div
+                className="w-full h-44 bg-gray-100 items-center justify-center flex-col gap-2"
+                style={{ display: ev.image ? 'none' : 'flex' }}
+              >
+                <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center">
+                  <ImageOff className="w-7 h-7 text-gray-400" />
                 </div>
-              </div>
-
-              {/* Info rows */}
-              <div className="space-y-1.5">
-                <div className="flex items-center gap-2 text-sm text-gray-500">
-                  <Calendar className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
-                  <span>{formatDate(ev.date)},&nbsp;{ev.time}</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-gray-500">
-                  <MapPin className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
-                  <span>{ev.location}</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-gray-500">
-                  <Users className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
-                  <span>{ev.slots} spots left</span>
-                </div>
+                <p className="text-xs text-gray-400 font-medium">No image uploaded</p>
               </div>
 
-              {/* Skill tags */}
-              <div className="flex flex-wrap gap-1.5">
-                {ev.skills.map(s => (
-                  <span
-                    key={s}
-                    className="px-2.5 py-0.5 rounded-full text-xs font-medium
-                      bg-purple-50 text-purple-700 border border-purple-100"
+              {/* Card body */}
+              <div className="p-4 flex flex-col flex-1 gap-3">
+
+                {/* Reputation Points badge */}
+                <div className="flex items-center gap-1.5 px-3 py-1 rounded-full
+                  bg-gradient-to-r from-amber-400 to-yellow-500 shadow-sm w-fit">
+                  <Star className="w-3.5 h-3.5 text-white fill-white" />
+                  <span className="text-xs font-bold text-white">{ev.reputationPoints} pts</span>
+                </div>
+
+                {/* Title + Organizer */}
+                <div>
+                  <h3 className="text-base font-bold text-gray-800 leading-snug">{ev.title}</h3>
+                  <div className="flex items-center gap-1.5 mt-1">
+                    <User className="w-3 h-3 text-purple-400 flex-shrink-0" />
+                    <span className="text-xs text-purple-600 font-medium">{ev.organizer}</span>
+                  </div>
+                </div>
+
+                {/* Info rows */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <Calendar className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
+                    <span>{formatDate(ev.date)},&nbsp;{ev.time}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <MapPin className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
+                    <span>{ev.location}</span>
+                  </div>
+                </div>
+
+                {/* Availability section */}
+                <div className={`rounded-xl border px-3 py-2 ${theme.bg}`}>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <div className="flex items-center gap-1.5">
+                      <Users className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
+                      <span className="text-xs text-gray-500">
+                        {ev.acceptedCount} / {ev.totalSlots} filled
+                      </span>
+                    </div>
+                    <span className={`text-xs font-bold ${theme.text}`}>
+                      {isFull ? 'Event Full' : `${ev.spotsLeft} spot${ev.spotsLeft !== 1 ? 's' : ''} left`}
+                    </span>
+                  </div>
+                  {/* Progress bar */}
+                  <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full rounded-full transition-all ${theme.bar}`}
+                      style={{ width: `${fillPct}%` }}
+                    />
+                  </div>
+                </div>
+
+                {/* Skill tags */}
+                <div className="flex flex-wrap gap-1.5">
+                  {ev.skills.map(s => (
+                    <span key={s} className="px-2.5 py-0.5 rounded-full text-xs font-medium
+                      bg-purple-50 text-purple-700 border border-purple-100">
+                      {s}
+                    </span>
+                  ))}
+                </div>
+
+                {/* Apply button */}
+                <div className="mt-auto pt-1">
+                  <button
+                    disabled={isFull}
+                    onClick={() => !isFull && setApplyingTo(ev)}
+                    className={`w-full py-2.5 rounded-xl font-semibold text-sm transition-all shadow-sm
+                      ${isFull
+                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                        : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white hover:shadow-md'
+                      }`}
                   >
-                    {s}
-                  </span>
-                ))}
-              </div>
-
-              {/* Apply button */}
-              <div className="mt-auto pt-1">
-                <button className="w-full py-2.5 rounded-xl font-semibold text-sm text-white
-                  bg-gradient-to-r from-blue-500 to-purple-600
-                  hover:from-blue-600 hover:to-purple-700
-                  transition-all shadow-sm hover:shadow-md">
-                  Apply Now
-                </button>
+                    {isFull ? 'No Spots Available' : 'Apply Now'}
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
 
         {filtered.length === 0 && (
           <div className="col-span-3 flex flex-col items-center justify-center py-20 text-center">
@@ -242,6 +302,14 @@ const Events = () => {
           </div>
         )}
       </div>
+
+      {/* Apply Modal */}
+      {applyingTo && (
+        <ApplyModal
+          event={applyingTo}
+          onClose={() => setApplyingTo(null)}
+        />
+      )}
     </div>
   );
 };
