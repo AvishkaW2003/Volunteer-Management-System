@@ -26,7 +26,7 @@ const AdminLayout = () => {
   };
 
   return (
-    <div className="flex h-screen bg-slate-50 overflow-hidden">
+     <div className="flex h-screen bg-[#F0FDFB] overflow-hidden">
 
       {/* Mobile backdrop */}
       {sidebarOpen && (
@@ -39,12 +39,12 @@ const AdminLayout = () => {
       {/* Sidebar */}
       <aside
         className={`fixed lg:static inset-y-0 left-0 z-30 w-56 bg-white
-          border-r border-gray-200 flex flex-col transition-transform duration-300
+             border-r border-gray-100 flex flex-col transition-transform duration-300
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}
       >
         {/* Logo */}
         <div className="flex items-center gap-3 px-4 py-4 border-b border-gray-100">
-          <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center flex-shrink-0">
+              <div className="w-9 h-9 bg-gradient-to-br from-[#14B8A6] to-[#6EE7D8] rounded-xl flex items-center justify-center flex-shrink-0">
             <span className="text-white text-sm font-bold">VH</span>
           </div>
           <span className="font-bold text-gray-800 text-base">VolunteerHub</span>
@@ -61,8 +61,8 @@ const AdminLayout = () => {
                 `flex items-center gap-3 px-3 py-2.5 rounded-xl text-base font-medium
                 transition-all duration-150 ${
                   isActive
-                    ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-sm'
-                    : 'text-gray-600 hover:bg-indigo-50 hover:text-indigo-700'
+                    ? 'bg-gradient-to-r from-[#14B8A6] to-[#6EE7D8] text-white shadow-sm'
+                    : 'text-gray-600 hover:bg-teal-50 hover:text-teal-600'
                 }`
               }
             >
@@ -97,12 +97,12 @@ const AdminLayout = () => {
           <div className="flex items-center gap-3 lg:hidden">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="p-1 text-gray-600 hover:text-indigo-600"
+              className="p-1 text-gray-600 hover:text-teal-600"
             >
               <Menu className="w-5 h-5" />
             </button>
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
+              <div className="w-7 h-7 bg-gradient-to-br from-[#14B8A6] to-[#6EE7D8] rounded-lg flex items-center justify-center">  
                 <span className="text-white text-xs font-bold">VH</span>
               </div>
               <span className="font-bold text-gray-800 text-sm">VolunteerHub</span>
@@ -112,15 +112,15 @@ const AdminLayout = () => {
           <div className="hidden lg:block" />
 
           {/* Right: Role badge */}
-          <div className="flex items-center gap-2.5 bg-gradient-to-r from-blue-50 to-indigo-50
-            border border-indigo-200 rounded-2xl px-3 py-1.5">
-            <div className="w-7 h-7 bg-gradient-to-br from-blue-500 to-indigo-600
+                 <div className="flex items-center gap-2.5 bg-gradient-to-r from-teal-50 to-teal-100/50
+            border border-teal-200 rounded-2xl px-3 py-1.5">
+            <div className="w-7 h-7 bg-gradient-to-br from-[#14B8A6] to-[#6EE7D8]
               rounded-lg flex items-center justify-center flex-shrink-0">
               <ShieldCheck className="w-3.5 h-3.5 text-white" />
             </div>
             <div className="flex flex-col leading-tight">
-              <span className="text-sm text-indigo-500 font-medium">Logged in as</span>
-              <span className="text-base font-bold text-indigo-700">{user?.name || 'Admin'}</span>
+              <span className="text-xs text-teal-600 font-medium">Logged in as</span>
+              <span className="text-sm font-bold text-teal-800">{user?.name || 'Admin'}</span>
             </div>
           </div>
         </header>
