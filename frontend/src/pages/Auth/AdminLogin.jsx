@@ -234,24 +234,7 @@ const AdminLogin = () => {
           </button>
 
         </form>
-
-          {/* Divider */}
-        <div className="flex items-center gap-3 my-5">
-          <div className="flex-1 h-px bg-gray-200"></div>
-          <span className="text-xs text-gray-400">
-            Need an admin account?
-          </span>
-          <div className="flex-1 h-px bg-gray-200"></div>
-        </div>
-        {/* Register Link */}
-        <button
-          onClick={() => navigate('/register/admin')}
-          className="w-full py-3 rounded-xl text-indigo-500
-                     font-semibold text-base border border-indigo-200
-                     hover:bg-indigo-50 transition-all duration-200">
-          Create Admin Account
-        </button>
-        
+  
       </div>
 
       {/* Back to Role Select */}
