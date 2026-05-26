@@ -4,7 +4,6 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import RoleSelectPage    from '../pages/Auth/RoleSelectPage';
 import StudentRegister   from '../pages/Auth/StudentRegister';
 import OrganizerRegister from '../pages/Auth/OrganizerRegister';
-import AdminRegister     from '../pages/Auth/AdminRegister';
 import StudentLogin      from '../pages/Auth/StudentLogin';
 import OrganizerLogin    from '../pages/Auth/OrganizerLogin';
 import AdminLogin        from '../pages/Auth/AdminLogin';
@@ -48,7 +47,6 @@ const AppRouter = () => {
 
       <Route path="/register/student"   element={<StudentRegister />} />
       <Route path="/register/organizer" element={<OrganizerRegister />} />
-      <Route path="/register/admin"     element={<AdminRegister />} />
 
       <Route path="/login/student"   element={<StudentLogin />} />
       <Route path="/login/organizer" element={<OrganizerLogin />} />
