@@ -16,7 +16,8 @@ import Events         from '../pages/Student/Events';
 import ApplyEvent     from '../pages/Student/ApplyEvent';
 import History        from '../pages/Student/History';
 import Leaderboard    from '../pages/Student/Leaderboard';
-import StudentSettings  from '../pages/Student/StudentSettings';
+import StudentSettings      from '../pages/Student/StudentSettings';
+import StudentCertificates  from '../pages/Student/StudentCertificates';
 
 // Organizer Layout + Pages
 import OrganizerLayout      from '../layouts/OrganizerLayout';
@@ -61,6 +62,7 @@ const AppRouter = () => {
         <Route path="applications" element={<ApplyEvent />} />
         <Route path="history"      element={<History />} />
         <Route path="leaderboard"  element={<Leaderboard />} />
+        <Route path="certificates" element={<StudentCertificates />} />
         <Route path="settings"     element={<StudentSettings />} />
       </Route>
 
