@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Calendar, ClipboardList, Clock,
-  Trophy, User, LogOut, Menu, GraduationCap, Settings,
+  Trophy, User, LogOut, Menu, GraduationCap, Settings, Award,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -12,6 +12,7 @@ const navItems = [
   { to: '/student/applications', icon: ClipboardList,    label: 'Applications'  },
   { to: '/student/history',      icon: Clock,            label: 'History'       },
   { to: '/student/leaderboard',  icon: Trophy,           label: 'Leaderboard'   },
+  { to: '/student/certificates', icon: Award,            label: 'Certificates'  },
   { to: '/student/settings',     icon: Settings,         label: 'Settings'      },
 ];
 
