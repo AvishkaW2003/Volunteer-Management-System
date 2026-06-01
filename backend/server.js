@@ -1,15 +1,20 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-
+import User from "./models/userModel.js";
 import sequelize from "./config/db.js";
+import authRoutes from "./routes/authRoutes.js";
+import Event from "./models/eventModel.js";
+import eventRoutes from "./routes/eventRoutes.js";
 
 dotenv.config();
 
 const app = express();
-
 app.use(cors());
 app.use(express.json());
+
+app.use("/api/auth", authRoutes);
+app.use("/api/events", eventRoutes);
 
 app.get("/", (req, res) => {
   res.send("VolunteerHub Backend Running...");
@@ -22,6 +27,15 @@ sequelize
   })
   .catch((err) => {
     console.log("Database connection failed:", err);
+  });
+
+
+sequelize.sync({ force: true })
+  .then(() => {
+    console.log("Database synced");
+  })
+  .catch((err) => {
+    console.log(err);
   });
 
 const PORT = process.env.PORT || 5000;

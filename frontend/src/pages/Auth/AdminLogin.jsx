@@ -73,7 +73,7 @@ const AdminLogin = () => {
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-gradient-to-br
-                            from-orange-400 to-red-500
+                            from-blue-500 to-indigo-600
                             rounded-lg flex items-center
                             justify-center">
               <svg xmlns="http://www.w3.org/2000/svg"
@@ -101,11 +101,11 @@ const AdminLogin = () => {
         </div>
 
         {/* Admin Notice */}
-        <div className="bg-orange-50 border border-orange-200
+        <div className="bg-blue-50 border border-blue-200
                         rounded-lg px-4 py-3 mb-5 flex gap-2
                         items-start">
           <svg xmlns="http://www.w3.org/2000/svg"
-            className="w-4 h-4 text-orange-500 flex-shrink-0 mt-0.5"
+            className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5"
             fill="none" viewBox="0 0 24 24"
             stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round"
@@ -113,7 +113,7 @@ const AdminLogin = () => {
               d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18
                  0 9 9 0 0118 0z" />
           </svg>
-          <p className="text-xs text-orange-600 leading-relaxed">
+          <p className="text-xs text-blue-600 leading-relaxed">
             This portal is restricted to authorized administrators
             only. Unauthorized access is strictly prohibited.
           </p>
@@ -137,7 +137,7 @@ const AdminLogin = () => {
             </label>
             <div className="flex items-center border border-gray-300
                             rounded-lg px-3 py-2 gap-2
-                            focus-within:border-orange-400
+                            focus-within:border-indigo-400
                             transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg"
                 className="w-4 h-4 text-gray-400 flex-shrink-0"
@@ -171,7 +171,7 @@ const AdminLogin = () => {
             </label>
             <div className="flex items-center border border-gray-300
                             rounded-lg px-3 py-2 gap-2
-                            focus-within:border-orange-400
+                            focus-within:border-indigo-400
                             transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg"
                 className="w-4 h-4 text-gray-400 flex-shrink-0"
@@ -211,8 +211,8 @@ const AdminLogin = () => {
             disabled={loading}
             className="w-full py-3 rounded-xl text-white
                        font-semibold text-base
-                       bg-gradient-to-r from-orange-400 to-red-500
-                       hover:from-orange-500 hover:to-red-600
+                       bg-gradient-to-r from-blue-500 to-indigo-600
+                       hover:from-blue-600 hover:to-indigo-700
                        transition-all duration-200 mt-2
                        disabled:opacity-60
                        disabled:cursor-not-allowed">

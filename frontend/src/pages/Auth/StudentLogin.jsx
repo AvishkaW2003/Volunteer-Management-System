@@ -173,8 +173,8 @@ const StudentLogin = () => {
             disabled={loading}
             className="w-full py-3 rounded-xl text-white
                        font-semibold text-base
-                       bg-gradient-to-r from-blue-500 to-teal-400
-                       hover:from-blue-600 hover:to-teal-500
+                       bg-gradient-to-r from-blue-400 to-purple-500
+                       hover:from-blue-500 hover:to-purple-600
                        transition-all duration-200 mt-2
                        disabled:opacity-60
                        disabled:cursor-not-allowed">
@@ -195,9 +195,9 @@ const StudentLogin = () => {
         {/* Register Link */}
         <button
           onClick={() => navigate('/register/student')}
-          className="w-full py-3 rounded-xl text-blue-500
-                     font-semibold text-base border border-blue-300
-                     hover:bg-blue-50 transition-all duration-200">
+          className="w-full py-3 rounded-xl text-purple-500
+                     font-semibold text-base border border-purple-300
+                     hover:bg-purple-50 transition-all duration-200">
           Create Student Account
         </button>
 

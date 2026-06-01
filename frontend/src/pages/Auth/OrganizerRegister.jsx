@@ -241,8 +241,8 @@ const OrganizerRegister = () => {
             disabled={loading}
             className="w-full py-3 rounded-xl text-white
                        font-semibold text-base
-                       bg-gradient-to-r from-green-400 to-teal-500
-                       hover:from-green-500 hover:to-teal-600
+                       bg-gradient-to-r from-cyan-400 to-blue-500
+                       hover:from-cyan-500 hover:to-blue-600
                        transition-all duration-200 mt-2
                        disabled:opacity-60
                        disabled:cursor-not-allowed">
