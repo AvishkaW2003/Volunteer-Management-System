@@ -2,22 +2,20 @@ import { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
-  LayoutDashboard, PlusCircle, Calendar, Users,
-  ClipboardCheck, Award, Bell, Settings, LogOut, Menu, ClipboardList,
+  LayoutDashboard, Users, CalendarCheck, BarChart2,
+  Settings, Bell, LogOut, Menu, ShieldCheck,
 } from 'lucide-react';
 
 const navItems = [
-  { to: '/organizer/dashboard',    icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/organizer/create-event', icon: PlusCircle,      label: 'Create Event' },
-  { to: '/organizer/events',       icon: Calendar,        label: 'Manage Events' },
-  { to: '/organizer/applications', icon: Users,           label: 'Applications' },
-  { to: '/organizer/attendance',   icon: ClipboardCheck,  label: 'Attendance' },
-  { to: '/organizer/certificates', icon: Award,           label: 'Certificates' },
-  { to: '/organizer/notifications',icon: Bell,            label: 'Notifications' },
-  { to: '/organizer/settings',     icon: Settings,        label: 'Settings' },
+  { to: '/admin/dashboard',      icon: LayoutDashboard, label: 'Dashboard' },
+  { to: '/admin/users',          icon: Users,           label: 'User Management' },
+  { to: '/admin/event-approval', icon: CalendarCheck,   label: 'Event Approval' },
+  { to: '/admin/reports',        icon: BarChart2,       label: 'Reports & Analytics' },
+  { to: '/admin/settings',       icon: Settings,        label: 'System Settings' },
+  { to: '/admin/notifications',  icon: Bell,            label: 'Notifications' },
 ];
 
-const OrganizerLayout = () => {
+const AdminLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const { logout, user } = useAuth();
@@ -28,7 +26,7 @@ const OrganizerLayout = () => {
   };
 
   return (
-    <div className="flex h-screen bg-slate-50 overflow-hidden">
+     <div className="flex h-screen bg-[#F0FDFB] overflow-hidden">
 
       {/* Mobile backdrop */}
       {sidebarOpen && (
@@ -41,12 +39,12 @@ const OrganizerLayout = () => {
       {/* Sidebar */}
       <aside
         className={`fixed lg:static inset-y-0 left-0 z-30 w-56 bg-white
-          border-r border-gray-200 flex flex-col transition-transform duration-300
+             border-r border-gray-100 flex flex-col transition-transform duration-300
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}
       >
         {/* Logo */}
         <div className="flex items-center gap-3 px-4 py-4 border-b border-gray-100">
-          <div className="w-9 h-9 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-xl flex items-center justify-center flex-shrink-0">
+              <div className="w-9 h-9 bg-gradient-to-br from-[#14B8A6] to-[#6EE7D8] rounded-xl flex items-center justify-center flex-shrink-0">
             <span className="text-white text-sm font-bold">VH</span>
           </div>
           <span className="font-bold text-gray-800 text-base">VolunteerHub</span>
@@ -63,8 +61,8 @@ const OrganizerLayout = () => {
                 `flex items-center gap-3 px-3 py-2.5 rounded-xl text-base font-medium
                 transition-all duration-150 ${
                   isActive
-                    ? 'bg-gradient-to-r from-cyan-400 to-blue-500 text-white shadow-sm'
-                    : 'text-gray-600 hover:bg-cyan-50 hover:text-cyan-700'
+                    ? 'bg-gradient-to-r from-[#14B8A6] to-[#6EE7D8] text-white shadow-sm'
+                    : 'text-gray-600 hover:bg-teal-50 hover:text-teal-600'
                 }`
               }
             >
@@ -91,7 +89,7 @@ const OrganizerLayout = () => {
       {/* Main area */}
       <div className="flex-1 flex flex-col min-w-0">
 
-        {/* Top bar — visible on all screen sizes */}
+        {/* Top bar */}
         <header className="flex items-center justify-between gap-3 px-4 lg:px-7 py-3
           bg-white border-b border-gray-200 flex-shrink-0">
 
@@ -99,31 +97,30 @@ const OrganizerLayout = () => {
           <div className="flex items-center gap-3 lg:hidden">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="p-1 text-gray-600 hover:text-cyan-600"
+              className="p-1 text-gray-600 hover:text-teal-600"
             >
               <Menu className="w-5 h-5" />
             </button>
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-lg flex items-center justify-center">
+              <div className="w-7 h-7 bg-gradient-to-br from-[#14B8A6] to-[#6EE7D8] rounded-lg flex items-center justify-center">  
                 <span className="text-white text-xs font-bold">VH</span>
               </div>
               <span className="font-bold text-gray-800 text-sm">VolunteerHub</span>
             </div>
           </div>
 
-          {/* Spacer for desktop (sidebar already shows logo) */}
           <div className="hidden lg:block" />
 
           {/* Right: Role badge */}
-          <div className="flex items-center gap-2.5 bg-gradient-to-r from-cyan-50 to-blue-50
-            border border-cyan-200 rounded-2xl px-3 py-1.5">
-            <div className="w-7 h-7 bg-gradient-to-br from-cyan-400 to-blue-500
+                 <div className="flex items-center gap-2.5 bg-gradient-to-r from-teal-50 to-teal-100/50
+            border border-teal-200 rounded-2xl px-3 py-1.5">
+            <div className="w-7 h-7 bg-gradient-to-br from-[#14B8A6] to-[#6EE7D8]
               rounded-lg flex items-center justify-center flex-shrink-0">
-              <ClipboardList className="w-3.5 h-3.5 text-white" />
+              <ShieldCheck className="w-3.5 h-3.5 text-white" />
             </div>
             <div className="flex flex-col leading-tight">
-              <span className="text-sm text-cyan-500 font-medium">Logged in as</span>
-              <span className="text-base font-bold text-blue-700">{user?.name || 'Organizer'}</span>
+              <span className="text-xs text-teal-600 font-medium">Logged in as</span>
+              <span className="text-sm font-bold text-teal-800">{user?.name || 'Admin'}</span>
             </div>
           </div>
         </header>
@@ -137,4 +134,4 @@ const OrganizerLayout = () => {
   );
 };
 
-export default OrganizerLayout;
+export default AdminLayout;

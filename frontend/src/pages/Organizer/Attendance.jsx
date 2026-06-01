@@ -37,16 +37,16 @@ const Attendance = () => {
     <div>
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-gray-800">Attendance</h1>
-        <p className="text-gray-500 text-sm mt-0.5">Mark volunteer attendance for each event</p>
+        <p className="text-gray-500 text-md mt-0.5">Mark volunteer attendance for each event</p>
       </div>
 
       {/* Event selector */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 mb-5">
-        <label className="block text-sm font-semibold text-gray-700 mb-2">Select Event</label>
+        <label className="block text-md font-semibold text-gray-700 mb-2">Select Event</label>
         <select
           value={selectedEvent}
           onChange={(e) => setSelectedEvent(e.target.value)}
-          className="w-full sm:w-80 border border-gray-200 rounded-xl px-3 py-2.5 text-sm
+          className="w-full sm:w-80 border border-gray-200 rounded-xl px-3 py-2.5 text-md
             text-gray-700 outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-100
             transition-all bg-gray-50"
         >

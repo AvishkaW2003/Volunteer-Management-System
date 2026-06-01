@@ -1,12 +1,19 @@
 import express from "express";
-
 import {
-  createEvent,
-  getEvents,
-    getEventById,
-    updateEvent,
-    deleteEvent
-} from "../controllers/eventController.js";
+
+sendNotification,
+
+getNotifications,
+
+myNotifications,
+
+markRead,
+
+deleteNotification,
+
+}
+
+from "../controllers/notificationController.js";
 
 import authMiddleware
 from "../middleware/authMiddleware.js";
@@ -17,46 +24,60 @@ from "../middleware/roleMiddleware.js";
 const router =
 express.Router();
 
-// Create Event
+
+// Admin
+
 router.post(
 "/",
+
 authMiddleware,
+
 roleMiddleware(
-"organizer"
+"admin"
 ),
-createEvent
+
+sendNotification
 );
 
-// View Events
+
 router.get(
 "/",
-getEvents
-);
 
-// View Single Event
-router.get(
-"/:id",
-getEventById
-);
-
-// Update Event
-router.put(
-"/:id",
 authMiddleware,
+
 roleMiddleware(
-"organizer"
+"admin"
 ),
-updateEvent
+
+getNotifications
 );
 
-// Delete Event
+
+// User
+
+router.get(
+"/my",
+
+authMiddleware,
+
+myNotifications
+);
+
+
+router.patch(
+"/:id/read",
+
+authMiddleware,
+
+markRead
+);
+
 router.delete(
 "/:id",
+
 authMiddleware,
-roleMiddleware(
-"organizer"
-),
-deleteEvent
+
+deleteNotification
 );
 
 export default router;

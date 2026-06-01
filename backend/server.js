@@ -1,11 +1,28 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import bcrypt from "bcryptjs";
+import { seedDatabase } from "./config/seed.js";
 import User from "./models/userModel.js";
+import StudentProfile from "./models/studentProfileModel.js";
+import OrganizerProfile from "./models/organizerProfileModel.js";
 import sequelize from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import Event from "./models/eventModel.js";
 import eventRoutes from "./routes/eventRoutes.js";
+import VolunteerRegistration from "./models/volunteerRegistration.js";
+import volunteerRoutes from "./routes/volunteerRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";  
+import SystemSetting from "./models/systemSetting.js";
+import notificationRoutes from "./routes/notificationRoutes.js";
+import Notification from "./models/notificationModel.js";
+import AuditLog from "./models/auditLogModel.js";
+import auditRoutes from "./routes/auditRoutes.js";
+import { getSettings, updateSettings, reports } from "./controllers/adminController.js";
+import authMiddleware from "./middleware/authMiddleware.js";
+import roleMiddleware from "./middleware/roleMiddleware.js";
+
+
 
 dotenv.config();
 
@@ -15,6 +32,16 @@ app.use(express.json());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/events", eventRoutes);
+app.use("/api/volunteers", volunteerRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/notifications", notificationRoutes);
+app.use("/api/audit", auditRoutes);
+app.use("/api/admin/logs", auditRoutes);
+
+// Direct mapping of settings & reports
+app.get("/api/reports/dashboard", authMiddleware, roleMiddleware("admin"), reports);
+app.get("/api/settings", authMiddleware, roleMiddleware("admin"), getSettings);
+app.put("/api/settings", authMiddleware, roleMiddleware("admin"), updateSettings);
 
 app.get("/", (req, res) => {
   res.send("VolunteerHub Backend Running...");
@@ -29,10 +56,10 @@ sequelize
     console.log("Database connection failed:", err);
   });
 
-
-sequelize.sync({ force: true })
-  .then(() => {
-    console.log("Database synced");
+sequelize.sync({ alter: true })
+  .then(async () => {
+   console.log("Database synced");
+    await seedDatabase();
   })
   .catch((err) => {
     console.log(err);
