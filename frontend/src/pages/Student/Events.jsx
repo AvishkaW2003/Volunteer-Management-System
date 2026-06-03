@@ -1,6 +1,6 @@
 import { Search, Calendar, MapPin, Users, ChevronDown, ImageOff, User, Star } from 'lucide-react';
 import { useState } from 'react';
-import ApplyModal from './ApplyModal';
+import ApplyModal from './ApplyModel';
 
 const MOCK_EVENTS = [
   {

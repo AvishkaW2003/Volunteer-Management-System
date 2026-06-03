@@ -17,6 +17,7 @@ import History        from '../pages/Student/History';
 import Leaderboard    from '../pages/Student/Leaderboard';
 import StudentSettings      from '../pages/Student/StudentSettings';
 import StudentCertificates  from '../pages/Student/StudentCertificates';
+import ApplyModel     from '../pages/Student/ApplyModel';
 
 // Organizer Layout + Pages
 import OrganizerLayout      from '../layouts/OrganizerLayout';
