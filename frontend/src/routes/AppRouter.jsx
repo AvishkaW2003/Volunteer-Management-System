@@ -4,7 +4,6 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import RoleSelectPage    from '../pages/Auth/RoleSelectPage';
 import StudentRegister   from '../pages/Auth/StudentRegister';
 import OrganizerRegister from '../pages/Auth/OrganizerRegister';
-import AdminRegister     from '../pages/Auth/AdminRegister';
 import StudentLogin      from '../pages/Auth/StudentLogin';
 import OrganizerLogin    from '../pages/Auth/OrganizerLogin';
 import AdminLogin        from '../pages/Auth/AdminLogin';
@@ -16,7 +15,9 @@ import Events         from '../pages/Student/Events';
 import ApplyEvent     from '../pages/Student/ApplyEvent';
 import History        from '../pages/Student/History';
 import Leaderboard    from '../pages/Student/Leaderboard';
-import StudentSettings  from '../pages/Student/StudentSettings';
+import StudentSettings      from '../pages/Student/StudentSettings';
+import StudentCertificates  from '../pages/Student/StudentCertificates';
+import ApplyModel     from '../pages/Student/ApplyModel';
 
 // Organizer Layout + Pages
 import OrganizerLayout      from '../layouts/OrganizerLayout';
@@ -47,7 +48,6 @@ const AppRouter = () => {
 
       <Route path="/register/student"   element={<StudentRegister />} />
       <Route path="/register/organizer" element={<OrganizerRegister />} />
-      <Route path="/register/admin"     element={<AdminRegister />} />
 
       <Route path="/login/student"   element={<StudentLogin />} />
       <Route path="/login/organizer" element={<OrganizerLogin />} />
@@ -61,6 +61,7 @@ const AppRouter = () => {
         <Route path="applications" element={<ApplyEvent />} />
         <Route path="history"      element={<History />} />
         <Route path="leaderboard"  element={<Leaderboard />} />
+        <Route path="certificates" element={<StudentCertificates />} />
         <Route path="settings"     element={<StudentSettings />} />
       </Route>
 
