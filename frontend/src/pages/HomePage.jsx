@@ -50,21 +50,21 @@ const steps = [
     title: 'Create Your Account',
     desc: 'Sign up as a Student, Organizer, or Admin in under a minute.',
     color: 'from-blue-400 to-purple-500',
-    image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500&q=80',
+    image: '/images/step-signup.jpg',
   },
   {
     step: '02',
     title: 'Browse Events',
     desc: 'Explore events by category, skills, or date and apply instantly.',
     color: 'from-purple-400 to-pink-500',
-    image: 'https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=500&q=80',
+    image: '/images/step-events.jpg',
   },
   {
     step: '03',
     title: 'Volunteer & Earn',
     desc: 'Attend events, collect hours, earn points and get certified.',
     color: 'from-cyan-400 to-blue-500',
-    image: 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=500&q=80',
+    image: '/images/step-volunteer.jpg',
   },
 ];
 
@@ -168,7 +168,7 @@ const HomePage = () => {
       >
         {/* Background image */}
         <img
-          src="https://images.unsplash.com/photo-1593113598332-cd288d649433?w=1920&q=80"
+          src="/images/hero-volunteers.jpg"
           alt="Volunteers working together"
           className="absolute inset-0 w-full h-full object-cover object-center"
         />
@@ -244,7 +244,7 @@ const HomePage = () => {
       {/* ── About / Impact Strip ───────────────────────── */}
       <section className="relative overflow-hidden">
         <img
-          src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1920&q=80"
+          src="/images/community.jpg"
           alt="Community volunteering"
           className="w-full h-80 md:h-96 object-cover object-center"
         />
@@ -387,7 +387,7 @@ const HomePage = () => {
       <section className="relative overflow-hidden py-24 px-4">
         {/* Background image */}
         <img
-          src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=1920&q=80"
+          src="/images/cta-banner.jpg"
           alt="Volunteers hands together"
           className="absolute inset-0 w-full h-full object-cover object-center"
         />
