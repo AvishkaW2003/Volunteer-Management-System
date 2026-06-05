@@ -53,8 +53,9 @@ const roles = [
   },
 ];
 
-const RoleSelectPage = () => {
+const RoleSelectPage = ({ mode = 'register' }) => {
   const navigate = useNavigate();
+  const isLogin = mode === 'login';
 
   return (
     <div className="min-h-screen relative flex flex-col items-center justify-start pt-16 px-4 pb-8 overflow-hidden">
@@ -79,8 +80,8 @@ const RoleSelectPage = () => {
               fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                 d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10
-                   0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3
-                   0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0
+                   0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3
+                   3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0
                    0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
           </div>
@@ -88,45 +89,51 @@ const RoleSelectPage = () => {
             VolunteerHub
           </h1>
           <p className="text-white/70 text-lg font-medium tracking-wide">
-            Choose your role to get started
+            {isLogin ? 'Choose your role to sign in' : 'Choose your role to get started'}
           </p>
         </div>
 
         {/* Role Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-7 w-full">
-          {roles.map((role) => (
-            <div
-              key={role.key}
-              onClick={() => navigate(role.path)}
-              className={`bg-gradient-to-br ${role.cardGradient}
-                         backdrop-blur-md rounded-3xl p-8 flex flex-col items-center gap-5
-                         cursor-pointer border border-white/30 shadow-2xl
-                         hover:scale-105 hover:border-white/60 hover:shadow-blue-500/30
-                         transition-all duration-250`}
-              style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(147,197,253,0.12) 100%)' }}
-            >
-              {/* Icon */}
-              <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${role.gradient}
-                               flex items-center justify-center shadow-lg`}>
-                {role.icon}
-              </div>
+          {roles.map((role) => {
+            const targetPath = role.key === 'admin' 
+              ? '/login/admin' 
+              : (isLogin ? `/login/${role.key}` : `/register/${role.key}`);
+            
+            return (
+              <div
+                key={role.key}
+                onClick={() => navigate(targetPath)}
+                className={`bg-gradient-to-br ${role.cardGradient}
+                           backdrop-blur-md rounded-3xl p-8 flex flex-col items-center gap-5
+                           cursor-pointer border border-white/30 shadow-2xl
+                           hover:scale-105 hover:border-white/60 hover:shadow-blue-500/30
+                           transition-all duration-250`}
+                style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(147,197,253,0.12) 100%)' }}
+              >
+                {/* Icon */}
+                <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${role.gradient}
+                                 flex items-center justify-center shadow-lg`}>
+                  {role.icon}
+                </div>
 
-              {/* Text */}
-              <div className="text-center">
-                <h2 className="text-2xl font-bold text-white mb-2 drop-shadow">
-                  {role.label}
-                </h2>
-                <p className="text-white/80 text-base leading-relaxed font-medium">
-                  {role.description}
-                </p>
-              </div>
+                {/* Text */}
+                <div className="text-center">
+                  <h2 className="text-2xl font-bold text-white mb-2 drop-shadow">
+                    {role.label}
+                  </h2>
+                  <p className="text-white/80 text-base leading-relaxed font-medium">
+                    {role.description}
+                  </p>
+                </div>
 
-              {/* CTA hint */}
-              <span className="text-sm text-blue-200 font-semibold tracking-wide mt-1">
-                Get Started →
-              </span>
-            </div>
-          ))}
+                {/* CTA hint */}
+                <span className="text-sm text-blue-200 font-semibold tracking-wide mt-1">
+                  {isLogin ? 'Sign In →' : 'Get Started →'}
+                </span>
+              </div>
+            );
+          })}
         </div>
 
       </div>
