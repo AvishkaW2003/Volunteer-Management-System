@@ -1,16 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import {
-  Users, Calendar, Award, Shield, ChevronRight, Star,
+  Users, Calendar, Award, Shield, ChevronRight,
   Heart, BookOpen, CheckCircle, Menu, X, TrendingUp, Globe,
 } from 'lucide-react';
 
-const stats = [
-  { value: '2,400+', label: 'Active Volunteers', icon: Users,     color: 'text-blue-400'   },
-  { value: '180+',   label: 'Events Hosted',     icon: Calendar,  color: 'text-purple-400' },
-  { value: '95%',    label: 'Satisfaction Rate',  icon: Star,      color: 'text-yellow-400' },
-  { value: '1,200+', label: 'Certificates Issued',icon: Award,     color: 'text-cyan-400'   },
-];
 
 const features = [
   {
@@ -104,7 +98,7 @@ const HomePage = () => {
               flex items-center justify-center shadow-md">
               <span className="text-white text-sm font-bold">VH</span>
             </div>
-            <span className="text-lg font-extrabold text-gray-800">VolunteerHub</span>
+            <span className="text-xl font-extrabold text-gray-800">VolunteerHub</span>
           </div>
 
           {/* Desktop nav links */}
@@ -112,7 +106,7 @@ const HomePage = () => {
             {['Features', 'How It Works', 'Join Us'].map(item => (
               <a key={item}
                 href={`#${item.toLowerCase().replace(/\s+/g, '-')}`}
-                className="text-sm font-medium text-gray-600 hover:text-purple-600 transition-colors">
+                className="text-base font-semibold text-gray-600 hover:text-purple-600 transition-colors">
                 {item}
               </a>
             ))}
@@ -122,8 +116,8 @@ const HomePage = () => {
           <div className="hidden md:flex items-center">
             <button
               onClick={() => navigate('/get-started')}
-              className="px-5 py-2 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600
-                text-white text-sm font-semibold shadow-sm hover:shadow-md
+              className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600
+                text-white text-base font-semibold shadow-sm hover:shadow-md
                 hover:from-blue-600 hover:to-purple-700 transition-all">
               Get Started
             </button>
@@ -217,15 +211,19 @@ const HomePage = () => {
           </button>
         </div>
 
-        {/* Stats bar */}
-        <div className="relative z-10 grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-3xl">
-          {stats.map(({ value, label, icon: Icon, color }) => (
-            <div key={label}
-              className="flex flex-col items-center gap-1.5 bg-white/10 backdrop-blur-sm
-                rounded-2xl px-4 py-4 border border-white/10">
-              <Icon className={`w-5 h-5 ${color}`} />
-              <span className="text-2xl font-extrabold text-white">{value}</span>
-              <span className="text-xs text-blue-200 font-medium text-center">{label}</span>
+        {/* Feature highlight strip */}
+        <div className="relative z-10 flex flex-wrap justify-center gap-3 w-full max-w-3xl">
+          {[
+            { icon: Calendar, text: 'Browse & Apply to Events'   },
+            { icon: Award,    text: 'Earn Verified Certificates' },
+            { icon: TrendingUp, text: 'Track Your Volunteer Hours' },
+            { icon: Users,    text: 'Connect With Your Community' },
+          ].map(({ icon: Icon, text }) => (
+            <div key={text}
+              className="flex items-center gap-2.5 bg-white/10 backdrop-blur-sm
+                border border-white/15 rounded-full px-5 py-2.5">
+              <Icon className="w-4 h-4 text-blue-300 flex-shrink-0" />
+              <span className="text-sm font-medium text-blue-100">{text}</span>
             </div>
           ))}
         </div>
