@@ -47,7 +47,10 @@ const AppRouter = () => {
 
       {/* ── Home ─────────────────────────────────────── */}
       <Route path="/"             element={<HomePage />} />
-      <Route path="/get-started"  element={<RoleSelectPage />} />
+      <Route path="/get-started"  element={<RoleSelectPage mode="register" />} />
+      <Route path="/register"     element={<RoleSelectPage mode="register" />} />
+      <Route path="/signin"       element={<RoleSelectPage mode="login" />} />
+      <Route path="/login"        element={<RoleSelectPage mode="login" />} />
 
       {/* ── Auth ─────────────────────────────────────── */}
       <Route path="/register/student"   element={<StudentRegister />} />
