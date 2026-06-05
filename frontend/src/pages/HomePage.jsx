@@ -5,7 +5,6 @@ import {
   Heart, BookOpen, CheckCircle, Menu, X, TrendingUp, Globe,
 } from 'lucide-react';
 
-
 const features = [
   {
     icon: Calendar,
@@ -46,9 +45,27 @@ const features = [
 ];
 
 const steps = [
-  { step: '01', title: 'Create Your Account', desc: 'Sign up as a Student, Organizer, or Admin in under a minute.', color: 'from-blue-400 to-purple-500' },
-  { step: '02', title: 'Browse Events',        desc: 'Explore events by category, skills, or date and apply instantly.', color: 'from-purple-400 to-pink-500' },
-  { step: '03', title: 'Volunteer & Earn',     desc: 'Attend events, collect hours, earn points and get certified.', color: 'from-cyan-400 to-blue-500' },
+  {
+    step: '01',
+    title: 'Create Your Account',
+    desc: 'Sign up as a Student, Organizer, or Admin in under a minute.',
+    color: 'from-blue-400 to-purple-500',
+    image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500&q=80',
+  },
+  {
+    step: '02',
+    title: 'Browse Events',
+    desc: 'Explore events by category, skills, or date and apply instantly.',
+    color: 'from-purple-400 to-pink-500',
+    image: 'https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=500&q=80',
+  },
+  {
+    step: '03',
+    title: 'Volunteer & Earn',
+    desc: 'Attend events, collect hours, earn points and get certified.',
+    color: 'from-cyan-400 to-blue-500',
+    image: 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=500&q=80',
+  },
 ];
 
 const roles = [
@@ -92,7 +109,6 @@ const HomePage = () => {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 lg:px-8 flex items-center justify-between h-16">
 
-          {/* Logo */}
           <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => navigate('/')}>
             <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl
               flex items-center justify-center shadow-md">
@@ -101,7 +117,6 @@ const HomePage = () => {
             <span className="text-xl font-extrabold text-gray-800">VolunteerHub</span>
           </div>
 
-          {/* Desktop nav links */}
           <div className="hidden md:flex items-center gap-8">
             {['Features', 'How It Works', 'Join Us'].map(item => (
               <a key={item}
@@ -112,7 +127,6 @@ const HomePage = () => {
             ))}
           </div>
 
-          {/* Desktop CTA */}
           <div className="hidden md:flex items-center">
             <button
               onClick={() => navigate('/get-started')}
@@ -123,13 +137,11 @@ const HomePage = () => {
             </button>
           </div>
 
-          {/* Mobile hamburger */}
           <button className="md:hidden p-1.5 text-gray-600" onClick={() => setMenuOpen(!menuOpen)}>
             {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
 
-        {/* Mobile menu */}
         {menuOpen && (
           <div className="md:hidden bg-white border-t border-gray-100 px-4 py-4 space-y-3">
             {['Features', 'How It Works', 'Join Us'].map(item => (
@@ -153,15 +165,20 @@ const HomePage = () => {
       <section
         className="relative min-h-screen flex flex-col items-center justify-center
           text-center px-4 pt-20 pb-16 overflow-hidden"
-        style={{
-          background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 40%, #1e3a8a 70%, #0e7490 100%)',
-        }}
       >
-        {/* Background decorative blobs */}
+        {/* Background image */}
+        <img
+          src="https://images.unsplash.com/photo-1593113598332-cd288d649433?w=1920&q=80"
+          alt="Volunteers working together"
+          className="absolute inset-0 w-full h-full object-cover object-center"
+        />
+        {/* Dark gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-950/85 via-blue-950/80 to-cyan-950/75" />
+
+        {/* Decorative blobs */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-1/4 -left-20 w-96 h-96 rounded-full bg-purple-600/20 blur-3xl" />
           <div className="absolute bottom-1/4 -right-20 w-96 h-96 rounded-full bg-cyan-500/20 blur-3xl" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-blue-600/10 blur-3xl" />
         </div>
 
         {/* Badge */}
@@ -173,7 +190,6 @@ const HomePage = () => {
           </span>
         </div>
 
-        {/* Headline */}
         <h1 className="relative z-10 text-5xl md:text-7xl font-extrabold text-white
           leading-tight tracking-tight mb-6 max-w-4xl">
           Make a{' '}
@@ -189,22 +205,18 @@ const HomePage = () => {
           and communities grow through the power of volunteering.
         </p>
 
-        {/* CTA Buttons */}
         <div className="relative z-10 flex flex-col sm:flex-row gap-4 mb-16">
           <button
             onClick={() => navigate('/get-started')}
             className="flex items-center justify-center gap-2 px-8 py-4 rounded-2xl
               bg-gradient-to-r from-blue-500 to-purple-600
               text-white font-bold text-base shadow-lg shadow-purple-900/40
-              hover:from-blue-600 hover:to-purple-700 hover:shadow-xl
-              transition-all duration-200">
+              hover:from-blue-600 hover:to-purple-700 hover:shadow-xl transition-all duration-200">
             Get Started Free
             <ChevronRight className="w-5 h-5" />
           </button>
           <button
-            onClick={() => {
-              document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' });
-            }}
+            onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
             className="px-8 py-4 rounded-2xl border border-white/30 text-white font-bold text-base
               backdrop-blur-sm hover:bg-white/10 transition-all duration-200">
             Learn More
@@ -214,10 +226,10 @@ const HomePage = () => {
         {/* Feature highlight strip */}
         <div className="relative z-10 flex flex-wrap justify-center gap-3 w-full max-w-3xl">
           {[
-            { icon: Calendar, text: 'Browse & Apply to Events'   },
-            { icon: Award,    text: 'Earn Verified Certificates' },
-            { icon: TrendingUp, text: 'Track Your Volunteer Hours' },
-            { icon: Users,    text: 'Connect With Your Community' },
+            { icon: Calendar,   text: 'Browse & Apply to Events'    },
+            { icon: Award,      text: 'Earn Verified Certificates'  },
+            { icon: TrendingUp, text: 'Track Your Volunteer Hours'  },
+            { icon: Users,      text: 'Connect With Your Community' },
           ].map(({ icon: Icon, text }) => (
             <div key={text}
               className="flex items-center gap-2.5 bg-white/10 backdrop-blur-sm
@@ -226,6 +238,34 @@ const HomePage = () => {
               <span className="text-sm font-medium text-blue-100">{text}</span>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* ── About / Impact Strip ───────────────────────── */}
+      <section className="relative overflow-hidden">
+        <img
+          src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1920&q=80"
+          alt="Community volunteering"
+          className="w-full h-80 md:h-96 object-cover object-center"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-900/80 via-purple-900/60 to-transparent
+          flex items-center px-8 md:px-20">
+          <div className="max-w-lg">
+            <p className="text-blue-300 text-sm font-semibold uppercase tracking-widest mb-3">Our Mission</p>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4 leading-snug">
+              Empowering Students to Serve Their Communities
+            </h2>
+            <p className="text-blue-100 text-base leading-relaxed mb-6">
+              VolunteerHub makes it effortless to discover meaningful events, log your hours,
+              and earn recognition for every act of service.
+            </p>
+            <button
+              onClick={() => navigate('/get-started')}
+              className="flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-blue-700
+                font-bold text-sm hover:bg-blue-50 transition-all shadow-lg">
+              Join the Movement <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </section>
 
@@ -247,7 +287,7 @@ const HomePage = () => {
             {features.map(({ icon: Icon, title, description, gradient }) => (
               <div key={title}
                 className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm
-                  hover:shadow-md hover:-translate-y-1 transition-all duration-200 group">
+                  hover:shadow-md hover:-translate-y-1 transition-all duration-200">
                 <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${gradient}
                   flex items-center justify-center mb-4 shadow-sm`}>
                   <Icon className="w-6 h-6 text-white" />
@@ -263,7 +303,7 @@ const HomePage = () => {
       {/* ── How It Works ───────────────────────────────── */}
       <section id="how-it-works"
         className="py-20 px-4 bg-gradient-to-br from-slate-50 via-blue-50/40 to-purple-50/40">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <div className="text-center mb-14">
             <span className="inline-block px-4 py-1.5 rounded-full bg-blue-100 text-blue-600
               text-sm font-semibold mb-4">How It Works</span>
@@ -276,21 +316,26 @@ const HomePage = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {steps.map(({ step, title, desc, color }) => (
-              <div key={step} className="flex flex-col items-center text-center gap-4">
-                <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${color}
-                  flex items-center justify-center shadow-lg`}>
-                  <span className="text-white text-xl font-extrabold">{step}</span>
+            {steps.map(({ step, title, desc, color, image }) => (
+              <div key={step}
+                className="bg-white rounded-3xl border border-gray-100 shadow-sm
+                  overflow-hidden hover:shadow-md hover:-translate-y-1 transition-all duration-200">
+                {/* Step image */}
+                <div className="relative h-48 overflow-hidden">
+                  <img src={image} alt={title}
+                    className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                  {/* Step number badge */}
+                  <div className={`absolute top-4 left-4 w-12 h-12 rounded-2xl
+                    bg-gradient-to-br ${color} flex items-center justify-center shadow-lg`}>
+                    <span className="text-white text-lg font-extrabold">{step}</span>
+                  </div>
                 </div>
-                <div>
+                {/* Step text */}
+                <div className="p-6">
                   <h3 className="text-xl font-bold text-gray-800 mb-2">{title}</h3>
                   <p className="text-gray-500 text-sm leading-relaxed">{desc}</p>
                 </div>
-                {step !== '03' && (
-                  <div className="hidden md:block absolute translate-x-32 mt-6">
-                    <ChevronRight className="w-6 h-6 text-gray-300" />
-                  </div>
-                )}
               </div>
             ))}
           </div>
@@ -339,18 +384,25 @@ const HomePage = () => {
       </section>
 
       {/* ── CTA Banner ─────────────────────────────────── */}
-      <section className="py-20 px-4"
-        style={{ background: 'linear-gradient(135deg, #1e1b4b 0%, #1e3a8a 50%, #0e7490 100%)' }}>
-        <div className="max-w-3xl mx-auto text-center">
+      <section className="relative overflow-hidden py-24 px-4">
+        {/* Background image */}
+        <img
+          src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=1920&q=80"
+          alt="Volunteers hands together"
+          className="absolute inset-0 w-full h-full object-cover object-center"
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-950/85 via-indigo-900/80 to-cyan-950/80" />
+
+        <div className="relative z-10 max-w-3xl mx-auto text-center">
           <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center
-            mx-auto mb-6 backdrop-blur-sm">
+            mx-auto mb-6 backdrop-blur-sm border border-white/20">
             <Heart className="w-8 h-8 text-pink-300" />
           </div>
-          <h2 className="text-4xl font-extrabold text-white mb-4">
+          <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-4">
             Ready to Make an Impact?
           </h2>
-          <p className="text-blue-200 text-lg mb-8">
-            Join thousands of volunteers already making a difference in their communities.
+          <p className="text-blue-200 text-lg mb-8 leading-relaxed">
+            Create your account today and start connecting with meaningful volunteer opportunities in your community.
           </p>
           <button
             onClick={() => navigate('/get-started')}
