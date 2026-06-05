@@ -296,7 +296,7 @@ const Home = () => {
               <div className="vh-hero-image-card">
                 <div className="vh-hero-image-wrapper">
                   <img
-                    src="/images/hero_volunteers.png"
+                    src="/images/hero-volunteers.jpg"
                     alt="Students volunteering together at VolunteerHub"
                     className="vh-hero-image"
                   />
