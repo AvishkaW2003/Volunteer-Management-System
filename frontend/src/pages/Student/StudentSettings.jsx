@@ -79,8 +79,8 @@ const StudentSettings = () => {
     setTimeout(() => setSaved(false), 2500);
   };
 
-  const toggleSkill   = key => setSkills(p => ({ ...p, [key]: !p[key] }));
-  const toggleNotif   = key => setNotifications(p => ({ ...p, [key]: !p[key] }));
+  const toggleSkill = key => setSkills(p => ({ ...p, [key]: !p[key] }));
+  const toggleNotif = key => setNotifications(p => ({ ...p, [key]: !p[key] }));
 
   return (
     <div className="space-y-6">
@@ -149,12 +149,12 @@ const StudentSettings = () => {
         <p className="text-sm text-gray-500 mb-4">Select skills that match your capabilities</p>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {Object.entries({
-            teamwork: 'Teamwork',
+            teamwork:      'Teamwork',
             communication: 'Communication',
-            teaching: 'Teaching',
-            firstAid: 'First Aid',
-            physical: 'Physical Work',
-            organisation: 'Organisation',
+            teaching:      'Teaching',
+            firstAid:      'First Aid',
+            physical:      'Physical Work',
+            organisation:  'Organisation',
           }).map(([key, label]) => (
             <GradientCheckbox
               key={key}
@@ -170,11 +170,11 @@ const StudentSettings = () => {
       <SectionCard icon={Bell} title="Notification Preferences">
         <div className="space-y-3">
           {Object.entries({
-            newEvents:           'Notify me about new events',
-            applicationUpdates:  'Application status updates',
-            certificates:        'Certificate issued notifications',
-            leaderboard:         'Leaderboard rank changes',
-            newsletter:          'Monthly volunteer newsletter',
+            newEvents:          'Notify me about new events',
+            applicationUpdates: 'Application status updates',
+            certificates:       'Certificate issued notifications',
+            leaderboard:        'Leaderboard rank changes',
+            newsletter:         'Monthly volunteer newsletter',
           }).map(([key, label]) => (
             <GradientCheckbox
               key={key}

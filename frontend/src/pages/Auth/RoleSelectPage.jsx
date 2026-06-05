@@ -57,18 +57,16 @@ const RoleSelectPage = () => {
   const navigate = useNavigate();
 
   return (
-    <div
-      className="min-h-screen relative flex flex-col items-center justify-start pt-16 px-4 pb-8"
-      style={{
-        backgroundImage: `url('/images/bg-volunteer.jpg'), url('https://images.unsplash.com/photo-1593113598332-cd288d649433?w=1920&q=80')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        backgroundColor: '#1e3a8a',
-      }}
-    >
-      {/* Blue gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-blue-950/70 via-blue-900/60 to-indigo-950/75" />
+    <div className="min-h-screen relative flex flex-col items-center justify-start pt-16 px-4 pb-8 overflow-hidden">
+
+      {/* Background image */}
+      <img
+        src="/images/community.jpg"
+        alt="bg"
+        className="absolute inset-0 w-full h-full object-cover object-center"
+      />
+      {/* Strong overlay so cards and text are clearly readable */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-950/90 via-blue-950/85 to-indigo-950/90" />
 
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center w-full max-w-6xl">
@@ -89,7 +87,7 @@ const RoleSelectPage = () => {
           <h1 className="text-4xl font-extrabold text-white drop-shadow-lg tracking-tight">
             VolunteerHub
           </h1>
-          <p className="text-blue-200 text-lg font-medium tracking-wide">
+          <p className="text-white/70 text-lg font-medium tracking-wide">
             Choose your role to get started
           </p>
         </div>
@@ -105,7 +103,7 @@ const RoleSelectPage = () => {
                          cursor-pointer border border-white/30 shadow-2xl
                          hover:scale-105 hover:border-white/60 hover:shadow-blue-500/30
                          transition-all duration-250`}
-              style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.18) 0%, rgba(147,197,253,0.18) 100%)' }}
+              style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(147,197,253,0.12) 100%)' }}
             >
               {/* Icon */}
               <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${role.gradient}
@@ -118,7 +116,7 @@ const RoleSelectPage = () => {
                 <h2 className="text-2xl font-bold text-white mb-2 drop-shadow">
                   {role.label}
                 </h2>
-                <p className="text-blue-100 text-base leading-relaxed font-medium">
+                <p className="text-white/80 text-base leading-relaxed font-medium">
                   {role.description}
                 </p>
               </div>
