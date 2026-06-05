@@ -1,296 +1,321 @@
-import React from 'react';
-import { 
-  Search, Bell, Moon, LayoutDashboard, Compass, 
-  FileText, CalendarCheck, Award, Trophy, BellRing, 
-  Settings, LogOut, Plus, Calendar, MapPin, 
-  MoreVertical, CheckCircle2, Clock, Download 
-} from 'lucide-react';
+import { useState } from 'react';
+import { CheckCircle, Clock, XCircle, ClipboardList, X, User, Mail, Phone, Tag, MessageSquare, BookOpen, Calendar, Building2 } from 'lucide-react';
 
-const MyApplications = () => {
+const MOCK_APPLICATIONS = [
+  {
+    id: 1,
+    event: 'Beach Cleanup Drive',
+    club: 'IEEE',
+    eventDate: 'May 15, 2026',
+    appliedOn: 'May 1, 2026',
+    status: 'approved',
+    form: {
+      name: 'Alex Johnson',
+      email: 'alex.j@university.edu',
+      phone: '+1 (555) 123-4567',
+      skills: 'Teamwork, Physical Fitness, Environmental Awareness',
+      motivation: 'I am passionate about protecting our coastlines and marine ecosystems. This event aligns perfectly with my values and I want to contribute meaningfully to the community.',
+      experience: 'Participated in two previous city cleanup drives in 2025. Also volunteered at a local river restoration project for 3 months.',
+    },
+  },
+  {
+    id: 2,
+    event: 'Food Distribution Program',
+    club: 'Rotaract',
+    eventDate: 'May 20, 2026',
+    appliedOn: 'May 3, 2026',
+    status: 'pending',
+    form: {
+      name: 'Alex Johnson',
+      email: 'alex.j@university.edu',
+      phone: '+1 (555) 123-4567',
+      skills: 'Organisation, Communication, Driving License',
+      motivation: 'Food insecurity is a serious issue in our community and I want to be part of the solution. I have strong organisational skills and can help coordinate distribution efficiently.',
+      experience: '',
+    },
+  },
+  {
+    id: 3,
+    event: 'Tree Planting Campaign',
+    club: 'Leo Club',
+    eventDate: 'May 25, 2026',
+    appliedOn: 'May 5, 2026',
+    status: 'approved',
+    form: {
+      name: 'Alex Johnson',
+      email: 'alex.j@university.edu',
+      phone: '+1 (555) 123-4567',
+      skills: 'Gardening, Physical Fitness, Teamwork',
+      motivation: 'I strongly believe in combating climate change at a grassroots level. Planting trees is one of the most direct ways to make an environmental impact.',
+      experience: 'Volunteered at the Central Park greening initiative last year where we planted over 200 saplings.',
+    },
+  },
+  {
+    id: 4,
+    event: 'Tech Workshop for Kids',
+    club: 'AIESEC',
+    eventDate: 'May 28, 2026',
+    appliedOn: 'May 6, 2026',
+    status: 'pending',
+    form: {
+      name: 'Alex Johnson',
+      email: 'alex.j@university.edu',
+      phone: '+1 (555) 123-4567',
+      skills: 'Teaching, Communication, Patience',
+      motivation: 'I am a Computer Science student and I want to inspire younger kids to explore technology. Teaching is something I genuinely enjoy.',
+      experience: '',
+    },
+  },
+  {
+    id: 5,
+    event: 'Blood Donation Camp',
+    club: 'MedSoc',
+    eventDate: 'Jun 2, 2026',
+    appliedOn: 'May 10, 2026',
+    status: 'approved',
+    form: {
+      name: 'Alex Johnson',
+      email: 'alex.j@university.edu',
+      phone: '+1 (555) 123-4567',
+      skills: 'First Aid, Empathy, Communication',
+      motivation: 'Donating blood is a simple act that saves lives. I want to assist the medical team and also encourage more students to donate.',
+      experience: 'First Aid certified (2024). Helped organise a health awareness booth at the campus fair.',
+    },
+  },
+  {
+    id: 6,
+    event: 'Community Garden Project',
+    club: 'IEEE',
+    eventDate: 'Apr 20, 2026',
+    appliedOn: 'Apr 5, 2026',
+    status: 'rejected',
+    form: {
+      name: 'Alex Johnson',
+      email: 'alex.j@university.edu',
+      phone: '+1 (555) 123-4567',
+      skills: 'Gardening, Teamwork',
+      motivation: 'I enjoy working with plants and want to help build a sustainable community garden that everyone can benefit from.',
+      experience: '',
+    },
+  },
+];
+
+const STATUS = {
+  approved: { badge: 'bg-green-100 text-green-700', icon: CheckCircle, iconCls: 'text-green-500', iconBg: 'bg-green-100', label: 'Approved' },
+  pending: { badge: 'bg-amber-100 text-amber-700', icon: Clock, iconCls: 'text-amber-500', iconBg: 'bg-amber-100', label: 'Pending' },
+  rejected: { badge: 'bg-red-100   text-red-500', icon: XCircle, iconCls: 'text-red-500', iconBg: 'bg-red-100', label: 'Rejected' },
+};
+
+const STATS = [
+  { key: 'approved', label: 'Approved' },
+  { key: 'pending', label: 'Pending' },
+  { key: 'rejected', label: 'Rejected' },
+];
+
+/* ── View Details Modal ─────────────────────────────────── */
+const DetailField = ({ icon: Icon, label, value }) => (
+  <div className="flex items-start gap-3">
+    <div className="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+      <Icon className="w-4 h-4 text-purple-500" />
+    </div>
+    <div className="flex-1 min-w-0">
+      <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-0.5">{label}</p>
+      <p className="text-sm text-gray-700 font-medium whitespace-pre-wrap break-words">
+        {value || <span className="text-gray-300 italic">Not provided</span>}
+      </p>
+    </div>
+  </div>
+);
+
+const ViewDetailsModal = ({ app, onClose }) => {
+  const s = STATUS[app.status];
+  const Icon = s.icon;
+
   return (
-    <div className="flex h-screen font-sans text-gray-800 bg-gray-50">
-      
-      {/* SIDEBAR */}
-      <aside className="flex flex-col justify-between w-64 bg-white border-r border-gray-200 shrink-0">
-        <div>
-          <div className="flex flex-col justify-center h-20 px-6 border-b border-gray-100">
-            <h1 className="text-xl font-bold text-blue-600">VolunteerHub</h1>
-            <p className="text-xs text-gray-500">Student Portal</p>
-          </div>
-          <nav className="p-4 space-y-1">
-            <NavItem icon={<LayoutDashboard size={20} />} label="Dashboard" />
-            <NavItem icon={<Compass size={20} />} label="Browse Events" />
-            <NavItem icon={<FileText size={20} />} label="My Applications" active />
-            <NavItem icon={<CalendarCheck size={20} />} label="Attendance" />
-            <NavItem icon={<Award size={20} />} label="Certificates" />
-            <NavItem icon={<Trophy size={20} />} label="Leaderboard" />
-            <NavItem icon={<BellRing size={20} />} label="Notifications" />
-          </nav>
-        </div>
-        <div className="p-4 space-y-1 border-t border-gray-100">
-          <NavItem icon={<Settings size={20} />} label="Settings" />
-          <NavItem icon={<LogOut size={20} className="text-red-500" />} label="Logout" textClass="text-red-500" />
-        </div>
-      </aside>
+    <div
+      className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 overflow-y-auto
+        flex items-start justify-center p-4 py-8"
+      onClick={e => e.target === e.currentTarget && onClose()}
+    >
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden">
 
-      {/* MAIN CONTENT */}
-      <main className="flex flex-col flex-1 overflow-hidden">
-        
-        {/* HEADER */}
-        <header className="flex items-center justify-between h-20 px-8 bg-white border-b border-gray-200 shrink-0">
-          <div className="relative w-96">
-            <Search className="absolute left-3 top-2.5 text-gray-400" size={20} />
-            <input 
-              type="text" 
-              placeholder="Search my applications..." 
-              className="w-full py-2 pl-10 pr-4 text-sm bg-gray-100 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <div className="flex items-center gap-6">
-            <div className="relative">
-              <Bell className="text-gray-500 cursor-pointer hover:text-gray-800" size={20} />
-              <span className="absolute w-2 h-2 bg-red-500 rounded-full -top-1 -right-1"></span>
+        {/* Modal header */}
+        <div className="h-1.5 bg-gradient-to-r from-blue-400 to-purple-500" />
+        <div className="flex items-start justify-between gap-4 px-6 pt-5 pb-4 border-b border-gray-100">
+          <div className="flex-1 min-w-0">
+            <h2 className="text-xl font-bold text-gray-800 truncate">{app.event}</h2>
+            <div className="flex items-center gap-3 mt-1.5 flex-wrap">
+              <span className={`inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-semibold ${s.badge}`}>
+                <Icon className="w-3.5 h-3.5" /> {s.label}
+              </span>
+              <span className="text-xs text-gray-400">Applied on {app.appliedOn}</span>
             </div>
-            <Moon className="text-gray-500 cursor-pointer hover:text-gray-800" size={20} />
-            <div className="flex items-center gap-3 pl-6 border-l border-gray-200">
-              <div className="w-8 h-8 overflow-hidden bg-gray-300 rounded-full shadow-sm">
-                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Irosha" alt="Profile" />
+          </div>
+          <button
+            onClick={onClose}
+            className="p-1.5 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors flex-shrink-0"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        <div className="p-6 space-y-6">
+
+          {/* Event info row */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-blue-50 rounded-xl px-4 py-3 flex items-center gap-3">
+              <Building2 className="w-4 h-4 text-blue-500 flex-shrink-0" />
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-blue-400">Club / Organizer</p>
+                <p className="text-sm font-semibold text-blue-700">{app.club}</p>
+              </div>
+            </div>
+            <div className="bg-purple-50 rounded-xl px-4 py-3 flex items-center gap-3">
+              <Calendar className="w-4 h-4 text-purple-500 flex-shrink-0" />
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-purple-400">Event Date</p>
+                <p className="text-sm font-semibold text-purple-700">{app.eventDate}</p>
               </div>
             </div>
           </div>
-        </header>
 
-        {/* PAGE CONTENT */}
-        <div className="flex-1 p-8 overflow-y-auto">
-          
-          {/* Page Header */}
-          <div className="flex items-end justify-between mb-8">
-            <div>
-              <h2 className="mb-1 text-2xl font-bold text-gray-800">Application Tracking</h2>
-              <p className="text-sm text-gray-500">Monitor your status for upcoming community and academic events.</p>
+          {/* Divider + section label */}
+          <div className="flex items-center gap-3">
+            <div className="flex-1 h-px bg-gray-100" />
+            <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Your Application</span>
+            <div className="flex-1 h-px bg-gray-100" />
+          </div>
+
+          {/* Application form fields */}
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <DetailField icon={User} label="Full Name" value={app.form.name} />
+              <DetailField icon={Mail} label="Email" value={app.form.email} />
             </div>
-            <button className="bg-blue-600 text-white px-5 py-2.5 rounded-lg font-medium text-sm hover:bg-blue-700 transition flex items-center gap-2">
-              <Plus size={18} />
-              Apply for New Event
-            </button>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <DetailField icon={Phone} label="Phone Number" value={app.form.phone} />
+              <DetailField icon={Tag} label="Relevant Skills" value={app.form.skills} />
+            </div>
+            <DetailField icon={MessageSquare} label="Why I Want to Join" value={app.form.motivation} />
+            <DetailField icon={BookOpen} label="Previous Volunteer Experience" value={app.form.experience} />
           </div>
 
-          {/* Stats Row */}
-          <div className="grid grid-cols-4 gap-6 mb-8">
-            <StatCard title="TOTAL APPLIED" value="12" />
-            <StatCard title="PENDING APPROVAL" value="3" valueColor="text-blue-600" />
-            <StatCard title="APPROVED EVENTS" value="8" />
-            <StatCard title="COMPLETED HOURS" value="45.5" />
-          </div>
-
-          {/* Applications List */}
-          <div className="space-y-6">
-            
-            {/* Card 1: Pending (Urban Sustainability Workshop) */}
-            <ApplicationCard>
-              <div className="flex-1 pr-8">
-                <div className="flex items-start justify-between mb-2">
-                  <div className="flex items-center gap-4">
-                    <img src="https://images.unsplash.com/photo-1592424001806-53805eb3a1f9?w=100&q=80" alt="Thumbnail" className="object-cover w-12 h-12 rounded-lg" />
-                    <div>
-                      <div className="flex items-center gap-3 mb-1">
-                        <h3 className="text-lg font-semibold text-gray-800">Urban Sustainability Workshop</h3>
-                        <Badge text="Pending" colorClass="bg-blue-50 text-blue-600" />
-                      </div>
-                      <div className="flex items-center gap-4 text-xs text-gray-500">
-                        <span className="flex items-center gap-1"><Calendar size={14} /> Oct 24, 2023</span>
-                        <span className="flex items-center gap-1"><MapPin size={14} /> Main Campus Library</span>
-                      </div>
-                    </div>
-                  </div>
-                  <MoreVertical size={20} className="text-gray-400 cursor-pointer" />
-                </div>
-
-                {/* Progress Tracker */}
-                <div className="mt-8 mb-2">
-                  <div className="flex justify-between mb-2 text-xs font-medium text-gray-500">
-                    <span>Approval Progress</span>
-                    <span className="text-blue-600">65%</span>
-                  </div>
-                  <div className="relative">
-                    <div className="absolute top-1.5 left-0 w-full h-1 bg-gray-200 rounded-full"></div>
-                    <div className="absolute top-1.5 left-0 w-[65%] h-1 bg-blue-600 rounded-full"></div>
-                    <div className="relative flex justify-between">
-                      <ProgressStep label="Applied" active />
-                      <ProgressStep label="Review" active />
-                      <ProgressStep label="Interview" active current />
-                      <ProgressStep label="Decision" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="flex flex-col justify-between pl-8 border-l border-gray-100 w-72">
-                <div>
-                  <p className="mb-3 text-xs font-semibold tracking-wider text-gray-400">ORGANIZER</p>
-                  <div className="flex items-center gap-3">
-                    <img src="https://i.pravatar.cc/100?img=5" alt="Organizer" className="w-10 h-10 rounded-full" />
-                    <div>
-                      <p className="text-sm font-semibold text-gray-800">Dr. Elena Rodriguez</p>
-                      <p className="text-xs text-gray-500">Eco-Awareness Club</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex gap-3 mt-6">
-                  <button className="flex-1 py-2 text-sm font-medium text-blue-600 transition border border-blue-600 rounded-lg hover:bg-blue-50">Message</button>
-                  <button className="flex-1 py-2 text-sm font-medium text-blue-600 transition rounded-lg bg-blue-50 hover:bg-blue-100">Details</button>
-                </div>
-              </div>
-            </ApplicationCard>
-
-            {/* Card 2: Approved (After-School Math Tutoring) */}
-            <ApplicationCard>
-              <div className="flex-1 pr-8">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center gap-4">
-                    <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-amber-50">
-                      <img src="https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=100&q=80" alt="Thumbnail" className="object-cover w-full h-full rounded-lg" />
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-3 mb-1">
-                        <h3 className="text-lg font-semibold text-gray-800">After-School Math Tutoring</h3>
-                        <Badge text="Approved" colorClass="bg-gray-100 text-gray-600" />
-                      </div>
-                      <div className="flex items-center gap-4 text-xs text-gray-500">
-                        <span className="flex items-center gap-1"><Calendar size={14} /> Recurring: Tue/Thu</span>
-                        <span className="flex items-center gap-1"><MapPin size={14} /> Community Education Center</span>
-                      </div>
-                    </div>
-                  </div>
-                  <MoreVertical size={20} className="text-gray-400 cursor-pointer" />
-                </div>
-                
-                <div className="flex items-start gap-3 p-4 mt-4 border border-blue-100 rounded-lg bg-blue-50/50">
-                  <CheckCircle2 className="text-gray-600 shrink-0 mt-0.5" size={18} />
-                  <p className="text-sm text-gray-600">Congratulations! You've been approved. Please complete the orientation module before Nov 1st.</p>
-                </div>
-              </div>
-
-              <div className="flex flex-col justify-between pl-8 border-l border-gray-100 w-72">
-                <div>
-                  <p className="mb-3 text-xs font-semibold tracking-wider text-gray-400">ORGANIZER</p>
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center justify-center w-10 h-10 text-sm font-bold text-white bg-blue-600 rounded-full">SM</div>
-                    <div>
-                      <p className="text-sm font-semibold text-gray-800">Sarah Miller</p>
-                      <p className="text-xs text-gray-500">Dept. of Education</p>
-                    </div>
-                  </div>
-                </div>
-                <button className="w-full py-2 mt-6 text-sm font-medium text-white transition bg-blue-600 rounded-lg hover:bg-blue-700">Start Orientation</button>
-              </div>
-            </ApplicationCard>
-
-            {/* Card 3: Not Selected (Annual Tech Innovation Fair) */}
-            <ApplicationCard>
-              <div className="flex-1 pr-8">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center gap-4">
-                    <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=100&q=80" alt="Thumbnail" className="object-cover w-12 h-12 rounded-lg" />
-                    <div>
-                      <div className="flex items-center gap-3 mb-1">
-                        <h3 className="text-lg font-semibold text-gray-800">Annual Tech Innovation Fair</h3>
-                        <Badge text="Not Selected" colorClass="bg-red-50 text-red-500" />
-                      </div>
-                      <div className="flex items-center gap-4 text-xs text-gray-500">
-                        <span className="flex items-center gap-1"><Calendar size={14} /> Oct 12, 2023</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <p className="mt-4 text-sm leading-relaxed text-gray-500">
-                  Thank you for your interest. We received an overwhelming number of applications this year and are unable to offer you a position at this time.
-                </p>
-              </div>
-
-              <div className="flex flex-col justify-end pl-8 border-l border-gray-100 w-72">
-                <button className="w-full py-2 text-sm font-medium text-blue-600 transition rounded-lg bg-blue-50 hover:bg-blue-100">Feedback</button>
-              </div>
-            </ApplicationCard>
-
-            {/* Card 4: Completed (City Food Bank Drive) */}
-            <ApplicationCard>
-              <div className="flex-1 pr-8">
-                <div className="flex items-start justify-between mb-6">
-                  <div className="flex items-center gap-4">
-                    <img src="https://images.unsplash.com/photo-1593113565214-80afcb4a45d7?w=100&q=80" alt="Thumbnail" className="object-cover w-12 h-12 rounded-lg" />
-                    <div>
-                      <div className="flex items-center gap-3 mb-1">
-                        <h3 className="text-lg font-semibold text-gray-800">City Food Bank Drive</h3>
-                        <Badge text="Completed" colorClass="bg-indigo-50 text-indigo-600" />
-                      </div>
-                      <div className="flex items-center gap-4 text-xs text-gray-500">
-                        <span className="flex items-center gap-1"><Calendar size={14} /> Sep 30, 2023</span>
-                        <span className="flex items-center gap-1 font-medium text-blue-600"><Plus size={12}/> 50 Reputation Points</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="flex items-center gap-8 mt-2">
-                  <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                    <Clock size={16} className="text-gray-400" />
-                    8 Hours Logged
-                  </div>
-                  <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                    <CheckCircle2 size={16} className="text-gray-400" />
-                    Certificate Issued
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex flex-col justify-end pl-8 border-l border-gray-100 w-72">
-                <button className="flex items-center justify-center w-full gap-2 py-2 text-sm font-medium text-white transition bg-blue-600 rounded-lg hover:bg-blue-700">
-                  <Download size={16} /> Download Certificate
-                </button>
-              </div>
-            </ApplicationCard>
-
-          </div>
         </div>
-      </main>
+
+        {/* Footer */}
+        <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end">
+          <button
+            onClick={onClose}
+            className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-blue-400 to-purple-500
+              hover:from-blue-500 hover:to-purple-600 text-white text-sm font-semibold
+              transition-all shadow-sm hover:shadow-md"
+          >
+            Close
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
 
-// --- Subcomponents ---
+/* ── Main Page ──────────────────────────────────────────── */
+const ApplyEvent = () => {
+  const [viewingApp, setViewingApp] = useState(null);
 
-const NavItem = ({ icon, label, active, textClass = "text-gray-600" }) => (
-  <div className={`flex items-center gap-3 px-4 py-2.5 rounded-lg cursor-pointer transition-colors ${active ? 'bg-blue-50 text-blue-600 font-medium border-l-4 border-blue-600' : `hover:bg-gray-50 ${textClass}`}`}>
-    {icon}
-    <span className="text-sm">{label}</span>
-  </div>
-);
+  const counts = {
+    approved: MOCK_APPLICATIONS.filter(a => a.status === 'approved').length,
+    pending: MOCK_APPLICATIONS.filter(a => a.status === 'pending').length,
+    rejected: MOCK_APPLICATIONS.filter(a => a.status === 'rejected').length,
+  };
 
-const StatCard = ({ title, value, valueColor = "text-gray-800" }) => (
-  <div className="p-5 bg-white border border-gray-200 shadow-sm rounded-xl">
-    <p className="mb-2 text-xs font-bold tracking-wider text-gray-400">{title}</p>
-    <h3 className={`text-3xl font-bold ${valueColor}`}>{value}</h3>
-  </div>
-);
+  return (
+    <div className="space-y-6">
 
-const ApplicationCard = ({ children }) => (
-  <div className="flex flex-col p-6 bg-white border border-gray-200 shadow-sm rounded-xl md:flex-row">
-    {children}
-  </div>
-);
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-2">
+          My Applications
+        </h1>
+        <p className="text-gray-500 mt-1">Track the status of your event applications</p>
+      </div>
 
-const Badge = ({ text, colorClass }) => (
-  <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${colorClass}`}>
-    {text}
-  </span>
-);
+      {/* Summary stat cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {STATS.map(({ key, label }) => {
+          const s = STATUS[key];
+          const Icon = s.icon;
+          return (
+            <div key={key} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex items-center gap-4">
+              <div className={`w-12 h-12 rounded-2xl ${s.iconBg} flex items-center justify-center flex-shrink-0`}>
+                <Icon className={`w-6 h-6 ${s.iconCls}`} />
+              </div>
+              <div>
+                <p className="text-3xl font-extrabold text-gray-800">{counts[key]}</p>
+                <p className="text-sm text-gray-500 font-medium">{label}</p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
 
-const ProgressStep = ({ label, active, current }) => (
-  <div className="flex flex-col items-center">
-    <div className={`w-4 h-4 rounded-full border-4 bg-white z-10 ${active ? 'border-blue-600' : 'border-gray-200'} ${current ? 'shadow-[0_0_0_4px_rgba(37,99,235,0.1)]' : ''}`}></div>
-    <span className={`text-xs mt-2 font-medium ${active ? 'text-gray-800' : 'text-gray-400'}`}>{label}</span>
-  </div>
-);
+      {/* Applications table */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-gray-100">
+              {['Event Name', 'Club', 'Event Date', 'Applied On', 'Status', 'Action'].map(h => (
+                <th key={h} className="text-left px-5 py-3.5 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                  {h}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-50">
+            {MOCK_APPLICATIONS.map(app => {
+              const s = STATUS[app.status];
+              const Icon = s.icon;
+              return (
+                <tr key={app.id} className="hover:bg-purple-50/30 transition-colors">
+                  <td className="px-5 py-4 font-semibold text-gray-800">{app.event}</td>
+                  <td className="px-5 py-4 text-gray-500">{app.club}</td>
+                  <td className="px-5 py-4 text-gray-500">{app.eventDate}</td>
+                  <td className="px-5 py-4 text-gray-500">{app.appliedOn}</td>
+                  <td className="px-5 py-4">
+                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${s.badge}`}>
+                      <Icon className="w-3.5 h-3.5" /> {s.label}
+                    </span>
+                  </td>
+                  <td className="px-5 py-4">
+                    {app.status === 'approved' && (
+                      <button
+                        onClick={() => setViewingApp(app)}
+                        className="text-sm font-semibold text-purple-600 hover:text-purple-800 transition-colors"
+                      >
+                        View Details
+                      </button>
+                    )}
+                    {app.status === 'pending' && (
+                      <button className="text-sm font-semibold text-red-500 hover:text-red-700 transition-colors">
+                        Withdraw
+                      </button>
+                    )}
+                    {app.status === 'rejected' && (
+                      <span className="text-gray-300">—</span>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
 
-export default MyApplications;
+      {/* View Details Modal */}
+      {viewingApp && (
+        <ViewDetailsModal app={viewingApp} onClose={() => setViewingApp(null)} />
+      )}
+    </div>
+  );
+};
+
+export default ApplyEvent;
