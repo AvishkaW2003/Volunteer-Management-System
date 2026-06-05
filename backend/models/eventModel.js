@@ -54,8 +54,15 @@ const Event = sequelize.define("Event", {
     defaultValue: 10,
   },
 
+  category: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
 
-
+  skills: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
 });
 
 /*
