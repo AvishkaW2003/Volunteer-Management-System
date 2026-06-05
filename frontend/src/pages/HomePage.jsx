@@ -425,7 +425,7 @@ const HomePage = () => {
             <span className="text-white font-bold text-base">VolunteerHub</span>
           </div>
           <p className="text-sm text-center">
-            © 2025 VolunteerHub. Built with ❤️ for the community.
+            © 2026 VolunteerHub. Built with ❤️ for the community.
           </p>
           <div className="flex items-center gap-2">
             <CheckCircle className="w-4 h-4 text-green-500" />
