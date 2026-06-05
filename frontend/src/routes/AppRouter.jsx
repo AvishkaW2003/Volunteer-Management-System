@@ -1,5 +1,8 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 
+// Home
+import HomePage          from '../pages/HomePage';
+
 // Auth Pages
 import RoleSelectPage    from '../pages/Auth/RoleSelectPage';
 import StudentRegister   from '../pages/Auth/StudentRegister';
@@ -9,15 +12,14 @@ import OrganizerLogin    from '../pages/Auth/OrganizerLogin';
 import AdminLogin        from '../pages/Auth/AdminLogin';
 
 // Student Layout + Pages
-import StudentLayout  from '../layouts/StudentLayout';
-import Dashboard      from '../pages/Student/Dashboard';
-import Events         from '../pages/Student/Events';
-import ApplyEvent     from '../pages/Student/ApplyEvent';
-import History        from '../pages/Student/History';
-import Leaderboard    from '../pages/Student/Leaderboard';
-import StudentSettings      from '../pages/Student/StudentSettings';
-import StudentCertificates  from '../pages/Student/StudentCertificates';
-import ApplyModel     from '../pages/Student/ApplyModel';
+import StudentLayout         from '../layouts/StudentLayout';
+import Dashboard             from '../pages/Student/Dashboard';
+import Events                from '../pages/Student/Events';
+import ApplyEvent            from '../pages/Student/ApplyEvent';
+import History               from '../pages/Student/History';
+import Leaderboard           from '../pages/Student/Leaderboard';
+import StudentSettings       from '../pages/Student/StudentSettings';
+import StudentCertificates   from '../pages/Student/StudentCertificates';
 
 // Organizer Layout + Pages
 import OrganizerLayout      from '../layouts/OrganizerLayout';
@@ -43,9 +45,11 @@ const AppRouter = () => {
   return (
     <Routes>
 
-      {/* ── Auth ─────────────────────────────────────── */}
-      <Route path="/" element={<RoleSelectPage />} />
+      {/* ── Home ─────────────────────────────────────── */}
+      <Route path="/"             element={<HomePage />} />
+      <Route path="/get-started"  element={<RoleSelectPage />} />
 
+      {/* ── Auth ─────────────────────────────────────── */}
       <Route path="/register/student"   element={<StudentRegister />} />
       <Route path="/register/organizer" element={<OrganizerRegister />} />
 
@@ -68,17 +72,17 @@ const AppRouter = () => {
       {/* ── Organizer Panel (nested layout) ──────────── */}
       <Route path="/organizer" element={<OrganizerLayout />}>
         <Route index element={<Navigate to="dashboard" replace />} />
-        <Route path="dashboard"    element={<OrganizerDashboard />} />
-        <Route path="create-event" element={<CreateEvent />} />
-        <Route path="events"       element={<ManageEvents />} />
-        <Route path="applications" element={<Applications />} />
-        <Route path="attendance"   element={<Attendance />} />
-        <Route path="certificates" element={<Certificates />} />
-        <Route path="notifications"element={<Notifications />} />
-        <Route path="settings"     element={<OrganizerSettings />} />
+        <Route path="dashboard"     element={<OrganizerDashboard />} />
+        <Route path="create-event"  element={<CreateEvent />} />
+        <Route path="events"        element={<ManageEvents />} />
+        <Route path="applications"  element={<Applications />} />
+        <Route path="attendance"    element={<Attendance />} />
+        <Route path="certificates"  element={<Certificates />} />
+        <Route path="notifications" element={<Notifications />} />
+        <Route path="settings"      element={<OrganizerSettings />} />
       </Route>
 
-      {/* ── Admin Panel (nested layout) ──────────── */}
+      {/* ── Admin Panel (nested layout) ───────────────── */}
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard"      element={<AdminDashboard />} />
