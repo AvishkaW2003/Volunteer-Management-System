@@ -1,52 +1,45 @@
 import express from "express";
-
 import {
+  registerVolunteer,
+  getVolunteers,
+  getApplicationsForOrganizer,
+  updateApplicationStatus,
+} from "../controllers/volunteerController.js";
+import authMiddleware from "../middleware/authMiddleware.js";
+import roleMiddleware from "../middleware/roleMiddleware.js";
 
-registerVolunteer,
+const router = express.Router();
 
-getVolunteers,
-
-}
-
-from "../controllers/volunteerController.js";
-
-import authMiddleware
-from "../middleware/authMiddleware.js";
-
-import roleMiddleware
-from "../middleware/roleMiddleware.js";
-
-const router =
-express.Router();
-
-
-// Student joins
-
+// Student applies for an event
 router.post(
-"/register/:eventId",
-
-authMiddleware,
-
-roleMiddleware(
-"student"
-),
-
-registerVolunteer
+  "/register/:eventId",
+  authMiddleware,
+  roleMiddleware("student"),
+  registerVolunteer
 );
 
-
-// Organizer views
-
+// Organizer — all applications across their events (Applications page)
 router.get(
-"/event/:eventId",
+  "/applications",
+  authMiddleware,
+  roleMiddleware("organizer"),
+  getApplicationsForOrganizer
+);
 
-authMiddleware,
+// Organizer — approve or reject a single application
+router.patch(
+  "/applications/:id/status",
+  authMiddleware,
+  roleMiddleware("organizer"),
+  updateApplicationStatus
+);
 
-roleMiddleware(
-"organizer"
-),
-
-getVolunteers
+// Organizer — approved volunteers for one event (Attendance page dropdown)
+router.get(
+  "/event/:eventId",
+  authMiddleware,
+  roleMiddleware("organizer"),
+  getVolunteers
 );
 
 export default router;
