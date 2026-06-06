@@ -4,7 +4,7 @@ import { CheckCircle, Clock, XCircle, ClipboardList, X, User, Mail, Phone, Tag, 
 const MOCK_APPLICATIONS = [
   {
     id: 1,
-    event: 'Beach Cleanup Drive',
+    event: 'University cleaning project',
     club: 'IEEE',
     eventDate: 'May 15, 2026',
     appliedOn: 'May 1, 2026',
@@ -53,7 +53,7 @@ const MOCK_APPLICATIONS = [
   {
     id: 4,
     event: 'Tech Workshop for Kids',
-    club: 'AIESEC',
+    club: 'Sipmansala',
     eventDate: 'May 28, 2026',
     appliedOn: 'May 6, 2026',
     status: 'pending',
@@ -69,7 +69,7 @@ const MOCK_APPLICATIONS = [
   {
     id: 5,
     event: 'Blood Donation Camp',
-    club: 'MedSoc',
+    club: 'Abises',
     eventDate: 'Jun 2, 2026',
     appliedOn: 'May 10, 2026',
     status: 'approved',
@@ -120,8 +120,8 @@ const DetailField = ({ icon: Icon, label, value }) => (
     </div>
     <div className="flex-1 min-w-0">
       <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-0.5">{label}</p>
-      <p className="text-sm text-gray-700 font-medium whitespace-pre-wrap break-words">
-        {value || <span className="text-gray-300 italic">Not provided</span>}
+      <p className="text-sm font-medium text-gray-700 break-words whitespace-pre-wrap">
+        {value || <span className="italic text-gray-300">Not provided</span>}
       </p>
     </div>
   </div>
@@ -133,11 +133,10 @@ const ViewDetailsModal = ({ app, onClose }) => {
 
   return (
     <div
-      className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 overflow-y-auto
-        flex items-start justify-center p-4 py-8"
+      className="fixed inset-0 z-50 flex items-start justify-center p-4 py-8 overflow-y-auto bg-black/40 backdrop-blur-sm"
       onClick={e => e.target === e.currentTarget && onClose()}
     >
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden">
+      <div className="w-full max-w-2xl overflow-hidden bg-white shadow-2xl rounded-2xl">
 
         {/* Modal header */}
         <div className="h-1.5 bg-gradient-to-r from-blue-400 to-purple-500" />
@@ -163,15 +162,15 @@ const ViewDetailsModal = ({ app, onClose }) => {
 
           {/* Event info row */}
           <div className="grid grid-cols-2 gap-3">
-            <div className="bg-blue-50 rounded-xl px-4 py-3 flex items-center gap-3">
-              <Building2 className="w-4 h-4 text-blue-500 flex-shrink-0" />
+            <div className="flex items-center gap-3 px-4 py-3 bg-blue-50 rounded-xl">
+              <Building2 className="flex-shrink-0 w-4 h-4 text-blue-500" />
               <div>
                 <p className="text-[10px] font-semibold uppercase tracking-wider text-blue-400">Club / Organizer</p>
                 <p className="text-sm font-semibold text-blue-700">{app.club}</p>
               </div>
             </div>
-            <div className="bg-purple-50 rounded-xl px-4 py-3 flex items-center gap-3">
-              <Calendar className="w-4 h-4 text-purple-500 flex-shrink-0" />
+            <div className="flex items-center gap-3 px-4 py-3 bg-purple-50 rounded-xl">
+              <Calendar className="flex-shrink-0 w-4 h-4 text-purple-500" />
               <div>
                 <p className="text-[10px] font-semibold uppercase tracking-wider text-purple-400">Event Date</p>
                 <p className="text-sm font-semibold text-purple-700">{app.eventDate}</p>
@@ -182,17 +181,17 @@ const ViewDetailsModal = ({ app, onClose }) => {
           {/* Divider + section label */}
           <div className="flex items-center gap-3">
             <div className="flex-1 h-px bg-gray-100" />
-            <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Your Application</span>
+            <span className="text-xs font-semibold tracking-wider text-gray-400 uppercase">Your Application</span>
             <div className="flex-1 h-px bg-gray-100" />
           </div>
 
           {/* Application form fields */}
           <div className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <DetailField icon={User} label="Full Name" value={app.form.name} />
               <DetailField icon={Mail} label="Email" value={app.form.email} />
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <DetailField icon={Phone} label="Phone Number" value={app.form.phone} />
               <DetailField icon={Tag} label="Relevant Skills" value={app.form.skills} />
             </div>
@@ -203,7 +202,7 @@ const ViewDetailsModal = ({ app, onClose }) => {
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end">
+        <div className="flex justify-end px-6 py-4 border-t border-gray-100 bg-gray-50">
           <button
             onClick={onClose}
             className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-blue-400 to-purple-500
@@ -233,25 +232,25 @@ const ApplyEvent = () => {
 
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-2">
+        <h1 className="flex items-center gap-2 text-3xl font-bold text-gray-800">
           My Applications
         </h1>
-        <p className="text-gray-500 mt-1">Track the status of your event applications</p>
+        <p className="mt-1 text-gray-500">Track the status of your event applications</p>
       </div>
 
       {/* Summary stat cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         {STATS.map(({ key, label }) => {
           const s = STATUS[key];
           const Icon = s.icon;
           return (
-            <div key={key} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex items-center gap-4">
+            <div key={key} className="flex items-center gap-4 p-5 bg-white border border-gray-100 shadow-sm rounded-2xl">
               <div className={`w-12 h-12 rounded-2xl ${s.iconBg} flex items-center justify-center flex-shrink-0`}>
                 <Icon className={`w-6 h-6 ${s.iconCls}`} />
               </div>
               <div>
                 <p className="text-3xl font-extrabold text-gray-800">{counts[key]}</p>
-                <p className="text-sm text-gray-500 font-medium">{label}</p>
+                <p className="text-sm font-medium text-gray-500">{label}</p>
               </div>
             </div>
           );
@@ -259,7 +258,7 @@ const ApplyEvent = () => {
       </div>
 
       {/* Applications table */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="overflow-hidden bg-white border border-gray-100 shadow-sm rounded-2xl">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-gray-100">
@@ -275,7 +274,7 @@ const ApplyEvent = () => {
               const s = STATUS[app.status];
               const Icon = s.icon;
               return (
-                <tr key={app.id} className="hover:bg-purple-50/30 transition-colors">
+                <tr key={app.id} className="transition-colors hover:bg-purple-50/30">
                   <td className="px-5 py-4 font-semibold text-gray-800">{app.event}</td>
                   <td className="px-5 py-4 text-gray-500">{app.club}</td>
                   <td className="px-5 py-4 text-gray-500">{app.eventDate}</td>
@@ -289,13 +288,13 @@ const ApplyEvent = () => {
                     {app.status === 'approved' && (
                       <button
                         onClick={() => setViewingApp(app)}
-                        className="text-sm font-semibold text-purple-600 hover:text-purple-800 transition-colors"
+                        className="text-sm font-semibold text-purple-600 transition-colors hover:text-purple-800"
                       >
                         View Details
                       </button>
                     )}
                     {app.status === 'pending' && (
-                      <button className="text-sm font-semibold text-red-500 hover:text-red-700 transition-colors">
+                      <button className="text-sm font-semibold text-red-500 transition-colors hover:text-red-700">
                         Withdraw
                       </button>
                     )}
