@@ -136,3 +136,34 @@ export const getVolunteers = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+// Student views their own event applications
+export const getMyApplications = async (req, res) => {
+  try {
+    const applications = await VolunteerRegistration.findAll({
+      where: { UserId: req.user.id },
+      include: [
+        {
+          model: Event,
+          as: "event",
+          attributes: ["id", "title", "eventDate", "location", "status", "reputationPoints"]
+        }
+      ],
+      order: [["createdAt", "DESC"]]
+    });
+
+    const result = applications.map(app => ({
+      id: app.id,
+      eventId: app.event?.id,
+      eventTitle: app.event?.title,
+      eventDate: app.event?.eventDate,
+      location: app.event?.location,
+      appliedDate: app.createdAt.toISOString().split("T")[0],
+      status: app.status,
+      reputationPoints: app.event?.reputationPoints
+    }));
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
