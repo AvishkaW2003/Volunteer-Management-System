@@ -1,4 +1,6 @@
 import Event from "../models/eventModel.js";
+import User from "../models/userModel.js";
+import VolunteerRegistration from "../models/volunteerRegistration.js";
 
 export const createEvent = async (
   req,
@@ -168,6 +170,48 @@ error.message,
 
 
 
+
+// Organizer's own events only — used by Manage Events page
+export const getMyEvents = async (req, res) => {
+  try {
+    const events = await Event.findAll({
+      where: { UserId: req.user.id },
+      order: [["eventDate", "DESC"]],
+    });
+    res.status(200).json(events);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Dashboard stats — counts for the logged-in organizer
+export const getOrganizerStats = async (req, res) => {
+  try {
+    const myEvents = await Event.findAll({ where: { UserId: req.user.id } });
+    const eventIds = myEvents.map((e) => e.id);
+
+    const totalApplications = await VolunteerRegistration.count({
+      where: { EventId: eventIds },
+    });
+    const approved = await VolunteerRegistration.count({
+      where: { EventId: eventIds, status: "Approved" },
+    });
+    const activeEvents = myEvents.filter((e) => e.status === "approved").length;
+
+    res.status(200).json({
+      activeEvents,
+      totalApplications,
+      approvedVolunteers: approved,
+      successRate:
+        totalApplications > 0
+          ? Math.round((approved / totalApplications) * 100) + "%"
+          : "0%",
+      recentEvents: myEvents.slice(0, 5),
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 // Delete event
 export const deleteEvent =

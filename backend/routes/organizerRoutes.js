@@ -1,27 +1,27 @@
 import express from "express";
 import {
-  getAttendanceByEvent,
-  saveAttendance,
-} from "../controllers/attendanceController.js";
+  getOrganizerSettings,
+  updateOrganizerSettings,
+} from "../controllers/organizerController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 import roleMiddleware from "../middleware/roleMiddleware.js";
 
 const router = express.Router();
 
-// GET /api/attendance/:eventId  — load volunteer list + current status
+// GET  /api/organizer/settings  — load profile for Settings page
 router.get(
-  "/:eventId",
+  "/settings",
   authMiddleware,
   roleMiddleware("organizer"),
-  getAttendanceByEvent
+  getOrganizerSettings
 );
 
-// POST /api/attendance  — bulk save attendance for all volunteers
-router.post(
-  "/",
+// PUT  /api/organizer/settings  — save Settings page changes
+router.put(
+  "/settings",
   authMiddleware,
   roleMiddleware("organizer"),
-  saveAttendance
+  updateOrganizerSettings
 );
 
 export default router;

@@ -8,25 +8,43 @@ import {
 import { useAuth } from "../context/AuthContext";
 import "./HomePage.css";
 
-// Count-up utility for statistics banner
+/**
+ * AnimatedCounter Component
+ * 
+ * A utility component that creates a smooth count-up animation from 0 to a specified target number.
+ * Useful for statistics banners and data visualization.
+ * 
+ * @param {Object} props - Component props
+ * @param {number} props.end - The final number the counter should reach
+ * @param {string} [props.suffix=""] - Optional string to append to the end of the number (e.g., "+", "%")
+ * @returns {JSX.Element} The animated number display
+ */
 const AnimatedCounter = ({ end, suffix = "" }) => {
+  // State to track the current animated value
   const [count, setCount] = useState(0);
 
   useEffect(() => {
     let start = 0;
-    const duration = 2000;
-    const increment = end / (duration / 16);
+    const duration = 2000; // Total animation duration in milliseconds
     
+    // Calculate how much to increment per frame (assuming ~60fps / 16ms per frame)
+    const increment = end / (duration / 16); 
+    
+    // Set up the animation interval
     const timer = setInterval(() => {
       start += increment;
+      
+      // Stop the animation once we reach or exceed the target number
       if (start >= end) {
         clearInterval(timer);
         setCount(end);
       } else {
+        // Round down to ensure clean whole numbers during the animation
         setCount(Math.floor(start));
       }
     }, 16);
 
+    // Cleanup function to clear the interval if the component unmounts
     return () => clearInterval(timer);
   }, [end]);
 
@@ -37,12 +55,31 @@ const AnimatedCounter = ({ end, suffix = "" }) => {
   );
 };
 
+/**
+ * Home Component
+ * 
+ * The main landing page for the VolunteerHub application.
+ * Contains navigation, hero section, platform features, statistics, action galleries, and footer.
+ * Handles role-based routing depending on user authentication status.
+ * 
+ * @returns {JSX.Element} The rendered Home page layout
+ */
 const Home = () => {
+  // Authentication context for handling user sessions and navigation
   const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
+  
+  // State to manage the mobile responsive hamburger menu
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Features list (3x2 Grid)
+  /* -------------------------------------------------------------------------- */
+  /*                                MOCK DATA ARRAYS                            */
+  /* -------------------------------------------------------------------------- */
+
+  /**
+   * Features list configuration (Displayed in a 3x2 Grid)
+   * Outlines the core capabilities of the VolunteerHub platform.
+   */
   const features = [
     {
       icon: <Calendar className="w-6 h-6" />,
@@ -76,7 +113,10 @@ const Home = () => {
     },
   ];
 
-  // Volunteers in action (3-Column Grid)
+  /**
+   * Volunteers in action gallery (Displayed in a 3-Column Grid)
+   * Showcases visual examples of community work.
+   */
   const actions = [
     {
       title: "Community Cleanup",
@@ -95,7 +135,10 @@ const Home = () => {
     },
   ];
 
-  // Top partner clubs (4-Column Grid)
+  /**
+   * Top partner clubs configuration (Displayed in a 4-Column Grid)
+   * Highlights associated university or global organizations.
+   */
   const clubs = [
     {
       name: "IEEE",
@@ -123,7 +166,10 @@ const Home = () => {
     },
   ];
 
-  // Testimonials (3-Column Grid)
+  /**
+   * User testimonials (Displayed in a 3-Column Grid)
+   * Provides social proof from active volunteers and organizers.
+   */
   const testimonials = [
     {
       name: "Sarah Chen",
@@ -145,6 +191,14 @@ const Home = () => {
     },
   ];
 
+  /* -------------------------------------------------------------------------- */
+  /*                             EVENT HANDLERS                                 */
+  /* -------------------------------------------------------------------------- */
+
+  /**
+   * Handles navigation when the user clicks "Explore Events"
+   * Redirects based on user role (student, organizer, admin) or to sign-in.
+   */
   const handleExplore = () => {
     if (isAuthenticated) {
       if (user?.role === "student") navigate("/student/events");
@@ -155,6 +209,10 @@ const Home = () => {
     }
   };
 
+  /**
+   * Handles navigation when the user clicks "Join Now" or "Dashboard"
+   * Directs authenticated users to their respective dashboards, or unauthenticated users to register.
+   */
   const handleJoinNow = () => {
     if (isAuthenticated) {
       if (user?.role === "student") navigate("/student/dashboard");
@@ -165,13 +223,18 @@ const Home = () => {
     }
   };
 
+  /* -------------------------------------------------------------------------- */
+  /*                                RENDER METHOD                               */
+  /* -------------------------------------------------------------------------- */
+
   return (
     <div className="vh-wrapper">
       
       {/* ── HEADER & NAVIGATION ─────────────────────────── */}
       <header className="vh-navbar">
         <div className="vh-nav-container">
-          {/* Logo */}
+          
+          {/* Main Logo & Branding */}
           <Link to="/" className="vh-logo">
             <div className="vh-logo-icon">
               <HandHelping className="w-5 h-5" />
@@ -179,7 +242,7 @@ const Home = () => {
             <span>VolunteerHub</span>
           </Link>
 
-          {/* Center Navigation Links (Desktop) */}
+          {/* Center Navigation Links (Visible on Desktop) */}
           <nav className="vh-nav-links">
             <a href="#home" className="vh-nav-link">Home</a>
             <a href="#events" className="vh-nav-link">Events</a>
@@ -187,7 +250,7 @@ const Home = () => {
             <a href="#contact" className="vh-nav-link">Contact</a>
           </nav>
 
-          {/* Right Action Buttons (Desktop) */}
+          {/* Right Action Buttons (Authentication/Dashboard access for Desktop) */}
           <div className="vh-nav-auth">
             {isAuthenticated ? (
               <div className="vh-nav-user-info">
@@ -211,7 +274,7 @@ const Home = () => {
             )}
           </div>
 
-          {/* Hamburger Menu Toggle (Mobile) */}
+          {/* Hamburger Menu Toggle (Visible only on Mobile) */}
           <button
             className="vh-mobile-toggle"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -221,7 +284,7 @@ const Home = () => {
           </button>
         </div>
 
-        {/* Mobile Navigation Drawer */}
+        {/* Mobile Navigation Drawer (Toggled via mobileMenuOpen state) */}
         <nav className={`vh-mobile-nav ${mobileMenuOpen ? "vh-show" : ""}`}>
           <a href="#home" onClick={() => setMobileMenuOpen(false)} className="vh-nav-link">Home</a>
           <a href="#events" onClick={() => setMobileMenuOpen(false)} className="vh-nav-link">Events</a>
@@ -271,9 +334,10 @@ const Home = () => {
       <main>
         
         {/* ── SECTION 1: HERO ─────────────────────────────────── */}
+        {/* The main landing area introducing the platform value proposition */}
         <section id="home" className="vh-hero">
           <div className="vh-hero-container">
-            {/* Left Column Text */}
+            {/* Left Column: Headline and Call-to-Action buttons */}
             <div className="vh-hero-content">
               <h1 className="vh-hero-heading">
                 Empowering Students Through <span className="blue-highlight">Volunteer Opportunities</span>
@@ -291,7 +355,7 @@ const Home = () => {
               </div>
             </div>
 
-            {/* Right Column Image Card */}
+            {/* Right Column: Hero graphic/image showcase */}
             <div className="vh-hero-media">
               <div className="vh-hero-image-card">
                 <div className="vh-hero-image-wrapper">
@@ -307,6 +371,7 @@ const Home = () => {
         </section>
 
         {/* ── SECTION 2: PLATFORM FEATURES ─────────────────────── */}
+        {/* Dynamically maps through the 'features' array to generate cards */}
         <section id="about" className="vh-features">
           <div className="vh-features-container">
             <div className="vh-section-header">
@@ -329,6 +394,7 @@ const Home = () => {
         </section>
 
         {/* ── SECTION 3: STATS BANNER ─────────────────────────── */}
+        {/* Utilizes the custom AnimatedCounter component for dynamic number displays */}
         <section className="vh-stats">
           <div className="vh-stats-container">
             <div className="vh-stat-item">
@@ -351,6 +417,7 @@ const Home = () => {
         </section>
 
         {/* ── SECTION 4: VOLUNTEERS IN ACTION ──────────────────── */}
+        {/* Visual gallery mapping through the 'actions' mock data array */}
         <section id="events" className="vh-action">
           <div className="vh-action-container">
             <div className="vh-section-header">
@@ -377,6 +444,7 @@ const Home = () => {
         </section>
 
         {/* ── SECTION 5: TOP PARTNER CLUBS ─────────────────────── */}
+        {/* Highlights institutional partners mapping through the 'clubs' array */}
         <section className="vh-clubs">
           <div className="vh-clubs-container">
             <div className="vh-section-header">
@@ -408,6 +476,7 @@ const Home = () => {
         </section>
 
         {/* ── SECTION 6: TESTIMONIALS ─────────────────────────── */}
+        {/* Social proof section displaying user feedback */}
         <section className="vh-testimonials">
           <div className="vh-testimonials-container">
             <div className="vh-section-header">
@@ -448,7 +517,7 @@ const Home = () => {
       <footer id="contact" className="vh-footer">
         <div className="vh-footer-container">
           <div className="vh-footer-grid">
-            {/* Column 1: Logo + Tagline */}
+            {/* Column 1: Brand Information */}
             <div className="vh-footer-col">
               <Link to="/" className="vh-footer-logo">
                 <div className="vh-footer-logo-icon">
@@ -461,7 +530,7 @@ const Home = () => {
               </p>
             </div>
 
-            {/* Column 2: Quick Links */}
+            {/* Column 2: Site Navigation Links */}
             <div className="vh-footer-col">
               <h4>Quick Links</h4>
               <ul className="vh-footer-links">
@@ -472,7 +541,7 @@ const Home = () => {
               </ul>
             </div>
 
-            {/* Column 3: Contact */}
+            {/* Column 3: Contact Details & Icons */}
             <div className="vh-footer-col">
               <h4>Contact</h4>
               <ul className="vh-footer-contact">
@@ -491,7 +560,7 @@ const Home = () => {
               </ul>
             </div>
 
-            {/* Column 4: Follow Us */}
+            {/* Column 4: Social Media Integrations */}
             <div className="vh-footer-col">
               <h4>Follow Us</h4>
               <div className="vh-social-links">
@@ -508,9 +577,9 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Bottom copyright bar */}
+          {/* Copyright Information */}
           <div className="vh-footer-bottom">
-            &copy; 2026 VolunteerHub. All rights reserved.
+            &copy; {new Date().getFullYear()} VolunteerHub. All rights reserved.
           </div>
         </div>
       </footer>
