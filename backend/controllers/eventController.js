@@ -1,18 +1,31 @@
 import Event from "../models/eventModel.js";
 import User from "../models/userModel.js";
 import VolunteerRegistration from "../models/volunteerRegistration.js";
+import { getSettings } from "../services/settingsService.js";
 
 export const createEvent = async (
   req,
   res
 ) => {
   try {
+    const settings = await getSettings();
+
+    // Max Events limit check
+    const eventCount = await Event.count({ where: { UserId: req.user.id } });
+    if (eventCount >= settings.maxEventsPerClub) {
+      return res.status(400).json({
+        message: `Maximum event creation limit of ${settings.maxEventsPerClub} events reached.`,
+      });
+    }
+
+    // Set initial status based on approval toggle
+    const initialStatus = settings.eventApprovalRequired ? "pending" : "approved";
 
     const event =
       await Event.create({
         ...req.body,
-
         UserId: req.user.id,
+        status: initialStatus,
       });
 
     res.status(201).json({

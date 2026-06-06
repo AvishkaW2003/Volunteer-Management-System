@@ -1,8 +1,6 @@
 import Notification
 from "../models/notificationModel.js";
-
-
-
+import { getSettings } from "../services/settingsService.js";
 
 // Admin send
 
@@ -13,6 +11,10 @@ res
 )=>{
 
 try{
+const settings = await getSettings();
+if (!settings.notificationsEnabled) {
+  return res.status(400).json({ message: "Notifications are currently disabled in system settings." });
+}
 
 const notification =
 await Notification

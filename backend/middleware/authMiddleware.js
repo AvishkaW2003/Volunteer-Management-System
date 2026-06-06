@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
+import { getSettings } from "../services/settingsService.js";
 
-const authMiddleware = (req, res, next) => {
+const authMiddleware = async (req, res, next) => {
   try {
    
     const authHeader = req.headers.authorization;
@@ -23,6 +24,14 @@ const authMiddleware = (req, res, next) => {
 
     // Store user data
     req.user = decoded;
+
+    // Check Maintenance Mode
+    const settings = await getSettings();
+    if (settings && settings.maintenanceMode && decoded.role !== "admin") {
+      return res.status(503).json({
+        message: "VolunteerHub is currently undergoing maintenance. Please try again later.",
+      });
+    }
 
     next();
   } catch (error) {

@@ -16,11 +16,10 @@ deleteUser,
 getPendingEvents,
 approveEvent,
 rejectEvent,
-reports,
-getSettings,
-updateSettings
+reports
 }
 from "../controllers/adminController.js";
+import settingsRoutes from "./settingsRoutes.js";
 
 const router =
 express.Router();
@@ -85,14 +84,6 @@ router.get(
 reports
 );
 
-router.get(
-"/settings",
-getSettings
-);
-
-router.put(
-"/settings",
-updateSettings
-);
+router.use("/settings", settingsRoutes);
 
 export default router;
