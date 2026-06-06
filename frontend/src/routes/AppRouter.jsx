@@ -5,6 +5,7 @@ import HomePage          from '../pages/HomePage';
 
 // Auth Pages
 import RoleSelectPage    from '../pages/Auth/RoleSelectPage';
+import SignIn            from '../pages/Auth/SignIn';
 import StudentRegister   from '../pages/Auth/StudentRegister';
 import OrganizerRegister from '../pages/Auth/OrganizerRegister';
 import StudentLogin      from '../pages/Auth/StudentLogin';
@@ -50,7 +51,7 @@ const AppRouter = () => {
       <Route path="/get-started"  element={<RoleSelectPage mode="register" />} />
       <Route path="/register"     element={<RoleSelectPage mode="register" />} />
       <Route path="/signin"       element={<RoleSelectPage mode="login" />} />
-      <Route path="/login"        element={<RoleSelectPage mode="login" />} />
+      <Route path="/login"        element={<SignIn />} />
 
       {/* ── Auth ─────────────────────────────────────── */}
       <Route path="/register/student"   element={<StudentRegister />} />
