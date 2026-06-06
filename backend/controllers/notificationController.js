@@ -223,6 +223,19 @@ error.message
 
 };
 
+// Mark every unread notification for this role as read in one query
+export const markAllRead = async (req, res) => {
+  try {
+    await Notification.update(
+      { isRead: true },
+      { where: { role: req.user.role, isRead: false } }
+    );
+    res.status(200).json({ message: "All notifications marked as read" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export const deleteNotification = async (req, res) => {
   try {
     const notification = await Notification.findByPk(req.params.id);

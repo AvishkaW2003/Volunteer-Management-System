@@ -18,6 +18,11 @@ import notificationRoutes from "./routes/notificationRoutes.js";
 import Notification from "./models/notificationModel.js";
 import AuditLog from "./models/auditLogModel.js";
 import auditRoutes from "./routes/auditRoutes.js";
+import Attendance from "./models/attendanceModel.js";
+import attendanceRoutes from "./routes/attendanceRoutes.js";
+import Certificate from "./models/certificateModel.js";
+import certificateRoutes from "./routes/certificateRoutes.js";
+import organizerRoutes from "./routes/organizerRoutes.js";
 import { getSettings, updateSettings, reports } from "./controllers/adminController.js";
 import authMiddleware from "./middleware/authMiddleware.js";
 import roleMiddleware from "./middleware/roleMiddleware.js";
@@ -37,6 +42,9 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/audit", auditRoutes);
 app.use("/api/admin/logs", auditRoutes);
+app.use("/api/attendance", attendanceRoutes);
+app.use("/api/certificates", certificateRoutes);
+app.use("/api/organizer", organizerRoutes);
 
 // Direct mapping of settings & reports
 app.get("/api/reports/dashboard", authMiddleware, roleMiddleware("admin"), reports);
