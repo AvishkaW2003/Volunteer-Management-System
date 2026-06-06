@@ -98,7 +98,7 @@ const OrganizerRegister = () => {
             Organizer Registration
           </h2>
           <button
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/register')}
             className="text-sm text-blue-500 hover:text-blue-600
                        font-medium transition-colors">
             Change Role

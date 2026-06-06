@@ -77,7 +77,7 @@ const AdminLogin = () => {
             <h2 className="text-lg font-bold text-gray-800">Admin Login</h2>
           </div>
           <button
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/signin')}
             className="text-sm text-teal-500 hover:text-teal-600 font-medium transition-colors">
             Change Role
           </button>
@@ -172,7 +172,7 @@ const AdminLogin = () => {
       <p className="mt-6 text-sm text-gray-500">
         Not an admin?{' '}
         <span
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/signin')}
           className="text-teal-500 font-medium cursor-pointer hover:underline">
           Choose a different role
         </span>

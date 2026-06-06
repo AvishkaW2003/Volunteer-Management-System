@@ -109,7 +109,7 @@ const OrganizerLogin = () => {
             </h2>
           </div>
           <button
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/signin')}
             className="text-sm text-blue-500 hover:text-blue-600
                        font-medium transition-colors">
             Change Role
@@ -242,7 +242,7 @@ const OrganizerLogin = () => {
       <p className="mt-6 text-sm text-gray-500">
         Not an organizer?{' '}
         <span
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/signin')}
           className="text-blue-500 font-medium cursor-pointer
                      hover:underline">
           Choose a different role
