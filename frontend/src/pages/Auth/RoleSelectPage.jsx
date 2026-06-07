@@ -56,8 +56,8 @@ const RoleSelectPage = ({ mode = 'register' }) => {
       <div className="relative z-10 flex flex-col items-center w-full max-w-6xl">
 
         {/* Logo and Title */}
-        <div className="flex flex-col items-center mb-10 gap-3">
-          <img src="/images/logo.png" alt="VolunteerHub" className="w-18 h-18 rounded-2xl shadow-xl object-cover" />
+        <div className="flex flex-col items-center mb-10 gap-2">
+          <img src="/images/logo.png" alt="VolunteerHub" className="w-[200px] h-[180px] rounded-md shadow-xl object-cover" />
           <h1 className="text-4xl font-extrabold text-white drop-shadow-lg tracking-tight">
             VolunteerHub
           </h1>
