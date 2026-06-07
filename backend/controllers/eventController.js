@@ -7,13 +7,33 @@ export const createEvent = async (
   res
 ) => {
   try {
+    const {
+      title,
+      description,
+      location,
+      date,
+      eventDate,
+      time,
+      maxVolunteers,
+      volunteerRequired,
+      reputationPoints,
+      category,
+      skills,
+    } = req.body;
 
-    const event =
-      await Event.create({
-        ...req.body,
-
-        UserId: req.user.id,
-      });
+    const event = await Event.create({
+      title,
+      description,
+      location,
+      eventDate: eventDate || date,
+      time,
+      volunteerRequired: volunteerRequired || maxVolunteers,
+      reputationPoints: reputationPoints ? Number(reputationPoints) : undefined,
+      category,
+      skills,
+      ...(req.file ? { image: `/uploads/events/${req.file.filename}` } : {}),
+      UserId: req.user.id,
+    });
 
     res.status(201).json({
       message:
@@ -38,7 +58,10 @@ async (
   try {
 
     const events =
-      await Event.findAll();
+      await Event.findAll({
+        include: [{ model: User, attributes: ["id", "name"] }],
+        order: [["eventDate", "ASC"]],
+      });
 
     res.json(events);
 

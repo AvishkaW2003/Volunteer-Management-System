@@ -1,6 +1,32 @@
 import { Search, Calendar, MapPin, Users, ChevronDown, ImageOff, User, Star } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ApplyModal from './ApplyModel';
+import { getEvents } from '../../services/eventService';
+
+const BACKEND_URL = 'http://localhost:5000';
+
+const resolveImage = (image) => {
+  if (!image) return null;
+  if (image.startsWith('http')) return image;
+  return `${BACKEND_URL}${image}`;
+};
+
+const mapEvent = (ev) => ({
+  id: ev.id,
+  title: ev.title,
+  organizer: ev.User?.name || 'Organizer',
+  date: ev.eventDate,
+  time: ev.time || '10:00 AM',
+  location: ev.location,
+  totalSlots: ev.volunteerRequired,
+  acceptedCount: ev.acceptedCount ?? 0,
+  category: ev.category || 'Community',
+  skills: ev.skills ? ev.skills.split(',').map((s) => s.trim()).filter(Boolean) : [],
+  reputationPoints: ev.reputationPoints ?? 10,
+  volunteerHours: ev.volunteerHours ?? 4,
+  description: ev.description,
+  image: resolveImage(ev.image),
+});
 
 const MOCK_EVENTS = [
   {
