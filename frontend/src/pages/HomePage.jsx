@@ -32,3 +32,43 @@ const Home = () => {
 };
 
 export default Home;
+/* -------------------------------------------------------------------------- */
+  /*                                MOCK DATA ARRAYS                            */
+  /* -------------------------------------------------------------------------- */
+
+  /**
+   * Features list configuration (Displayed in a 3x2 Grid)
+   * Outlines the core capabilities of the VolunteerHub platform.
+   */
+  const features = [
+    {
+      icon: <Calendar className="w-6 h-6" />,
+      title: "Event Discovery",
+      description: "Browse and apply to hundreds of volunteer opportunities.",
+    },
+    {
+      icon: <Award className="w-6 h-6" />,
+      title: "Certificate Generation",
+      description: "Earn verified certificates for your contributions.",
+    },
+    {
+      icon: <Star className="w-6 h-6" />,
+      title: "Reputation Points",
+      description: "Build your volunteer reputation and unlock perks.",
+    },
+    {
+      icon: <CheckCircle className="w-6 h-6" />,
+      title: "Attendance Tracking",
+      description: "Automated check-in and participation monitoring.",
+    },
+    {
+      icon: <Trophy className="w-6 h-6" />,
+      title: "Volunteer Leaderboard",
+      description: "Compete and get recognized for your impact.",
+    },
+    {
+      icon: <Bell className="w-6 h-6" />,
+      title: "Smart Notifications",
+      description: "Never miss an opportunity with real-time alerts.",
+    },
+  ];
