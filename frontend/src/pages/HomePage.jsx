@@ -120,3 +120,34 @@ export default Home;
       description: "Global Volunteering",
     },
   ];
+  /* -------------------------------------------------------------------------- */
+  /*                             EVENT HANDLERS                                 */
+  /* -------------------------------------------------------------------------- */
+
+  /**
+   * Handles navigation when the user clicks "Explore Events"
+   * Redirects based on user role (student, organizer, admin) or to sign-in.
+   */
+  const handleExplore = () => {
+    if (isAuthenticated) {
+      if (user?.role === "student") navigate("/student/events");
+      else if (user?.role === "organizer") navigate("/organizer/events");
+      else navigate("/admin/dashboard");
+    } else {
+      navigate("/login");
+    }
+  };
+
+  /**
+   * Handles navigation when the user clicks "Join Now" or "Dashboard"
+   * Directs authenticated users to their respective dashboards, or unauthenticated users to get-started.
+   */
+  const handleJoinNow = () => {
+    if (isAuthenticated) {
+      if (user?.role === "student") navigate("/student/dashboard");
+      else if (user?.role === "organizer") navigate("/organizer/dashboard");
+      else navigate("/admin/dashboard");
+    } else {
+      navigate("/get-started");
+    }
+  };
