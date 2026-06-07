@@ -169,3 +169,27 @@ export default Home;
             <a href="#about" className="vh-nav-link">About</a>
             <a href="#contact" className="vh-nav-link">Contact</a>
           </nav>
+          {/* Right Action Buttons (Authentication/Dashboard access for Desktop) */}
+          <div className="vh-nav-auth">
+            {isAuthenticated ? (
+              <div className="vh-nav-user-info">
+                <span className="vh-user-greeting">Hello, {user?.name || "Volunteer"}</span>
+                <button onClick={logout} className="vh-btn-logout">
+                  Logout
+                </button>
+                <button onClick={handleJoinNow} className="vh-btn-create">
+                  Dashboard
+                </button>
+              </div>
+            ) : (
+              <>
+                <Link to="/login" className="vh-btn-signin">
+                  Sign In
+                </Link>
+                <Link to="/get-started" className="vh-btn-create">
+                  Create Account
+                </Link>
+              </>
+            )}
+          </div>
+          
