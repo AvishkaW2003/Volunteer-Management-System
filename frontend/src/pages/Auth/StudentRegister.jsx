@@ -57,12 +57,15 @@ const StudentRegister = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col 
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-100 flex flex-col
                     items-center justify-center px-4 py-10">
 
       {/* Logo */}
       <div className="flex items-center gap-2 mb-6">
-        <img src="/images/logo.png" alt="VolunteerHub" className="w-9 h-9 rounded-xl object-cover" />
+        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-400 to-purple-500
+                        flex items-center justify-center shadow-md p-1">
+          <img src="/images/logo.png" alt="VolunteerHub" className="w-full h-full rounded-lg object-cover" />
+        </div>
         <span className="text-lg font-bold text-gray-800">
           VolunteerHub
         </span>
