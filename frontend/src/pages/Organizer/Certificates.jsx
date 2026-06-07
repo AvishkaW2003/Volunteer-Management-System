@@ -1,22 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Award, Download, X } from 'lucide-react';
-
-const MOCK_CERTIFICATES = [
-  { id: 1, volunteer: 'Nimasha Silva',   event: 'Tech Workshop for Youth', date: '2025-05-22', hours: 6 },
-  { id: 2, volunteer: 'Sanduni Herath',  event: 'Tech Workshop for Youth', date: '2025-05-22', hours: 6 },
-  { id: 3, volunteer: 'Kavya Raj',       event: 'Beach Cleanup Drive',     date: '2025-06-11', hours: 4 },
-  { id: 4, volunteer: 'Kasun Mendis',    event: 'Art for Kids Workshop',   date: '2025-05-16', hours: 5 },
-];
-
-const VOLUNTEERS = [
-  'Ashan Perera', 'Nimasha Silva', 'Dilshan Wickramasinghe', 'Kavya Raj',
-  'Tharushi Jayawardena', 'Lahiru Fernando', 'Sanduni Herath', 'Kasun Mendis',
-];
-
-const EVENTS = [
-  'Beach Cleanup Drive', 'Tech Workshop for Youth', 'Tree Planting Campaign',
-  'Food Distribution', 'First Aid Training', 'Art for Kids Workshop',
-];
+import { getCertificates, issueCertificate } from '../../services/certificateService';
+import { getMyEvents } from '../../services/eventService';
+import { getEventVolunteers } from '../../services/applicationService';
 
 const today = new Date().toISOString().split('T')[0];
 
@@ -25,29 +11,100 @@ const fieldClass =
   'outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100 transition-all';
 
 const Certificates = () => {
-  const [certs, setCerts] = useState(MOCK_CERTIFICATES);
+  const [certs, setCerts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  const [events, setEvents] = useState([]);
+  const [volunteers, setVolunteers] = useState([]);
+  const [loadingVolunteers, setLoadingVolunteers] = useState(false);
+
   const [showModal, setShowModal] = useState(false);
-  const [form, setForm] = useState({ volunteer: '', event: '', date: today, hours: '' });
+  const [form, setForm] = useState({ eventId: '', userId: '', date: today, hours: '' });
   const [issued, setIssued] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const loadCertificates = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const data = await getCertificates();
+      setCerts(data);
+    } catch (err) {
+      setError('Could not load certificates from the server.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const handleIssue = (e) => {
+  useEffect(() => { loadCertificates(); }, []);
+
+  const openModal = async () => {
+    setShowModal(true);
+    setSubmitError('');
+    try {
+      const data = await getMyEvents();
+      setEvents(data);
+    } catch (err) {
+      setSubmitError('Could not load your events.');
+    }
+  };
+
+  const handleChange = async (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+
+    if (name === 'eventId') {
+      setForm((prev) => ({ ...prev, userId: '' }));
+      setVolunteers([]);
+      if (!value) return;
+      setLoadingVolunteers(true);
+      try {
+        const data = await getEventVolunteers(value);
+        setVolunteers(data);
+      } catch (err) {
+        setSubmitError('Could not load approved volunteers for this event.');
+      } finally {
+        setLoadingVolunteers(false);
+      }
+    }
+  };
+
+  const handleIssue = async (e) => {
     e.preventDefault();
-    setCerts((prev) => [
-      ...prev,
-      { id: prev.length + 1, volunteer: form.volunteer, event: form.event, date: form.date, hours: Number(form.hours) },
-    ]);
-    setShowModal(false);
-    setIssued(true);
-    setTimeout(() => setIssued(false), 2500);
-    setForm({ volunteer: '', event: '', date: today, hours: '' });
+    setSubmitting(true);
+    setSubmitError('');
+    try {
+      const { certificate } = await issueCertificate({
+        userId: form.userId,
+        eventId: form.eventId,
+        issueDate: form.date,
+        hours: Number(form.hours),
+      });
+      await loadCertificates();
+      setShowModal(false);
+      setIssued(true);
+      setTimeout(() => setIssued(false), 2500);
+      setForm({ eventId: '', userId: '', date: today, hours: '' });
+      setVolunteers([]);
+    } catch (err) {
+      setSubmitError(err.response?.data?.message || 'Failed to issue certificate.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const closeModal = () => {
     setShowModal(false);
-    setForm({ volunteer: '', event: '', date: today, hours: '' });
+    setSubmitError('');
+    setForm({ eventId: '', userId: '', date: today, hours: '' });
+    setVolunteers([]);
   };
+
+  const thisMonthCount = certs.filter((c) => c.date?.slice(0, 7) === today.slice(0, 7)).length;
+  const distinctEvents = new Set(certs.map((c) => c.eventId)).size;
+  const distinctVolunteers = new Set(certs.map((c) => c.volunteerId)).size;
 
   return (
     <div>
@@ -62,12 +119,18 @@ const Certificates = () => {
         </div>
       )}
 
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-3 mb-5 text-sm font-medium">
+          {error}
+        </div>
+      )}
+
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
         {[
-          { label: 'Issued',     value: certs.length, color: 'from-cyan-400 to-blue-500' },
-          { label: 'Pending',    value: 3,             color: 'from-yellow-400 to-orange-400' },
-          { label: 'Events',     value: 4,             color: 'from-blue-400 to-cyan-500' },
-          { label: 'Volunteers', value: certs.length,  color: 'from-green-400 to-teal-500' },
+          { label: 'Issued',         value: certs.length,      color: 'from-cyan-400 to-blue-500' },
+          { label: 'This Month',     value: thisMonthCount,    color: 'from-yellow-400 to-orange-400' },
+          { label: 'Events',         value: distinctEvents,    color: 'from-blue-400 to-cyan-500' },
+          { label: 'Volunteers',     value: distinctVolunteers,color: 'from-green-400 to-teal-500' },
         ].map(({ label, value, color }) => (
           <div key={label} className={`bg-gradient-to-br ${color} rounded-2xl p-5 text-white`}>
             <div className="text-3xl font-bold mb-1">{value}</div>
@@ -80,7 +143,7 @@ const Certificates = () => {
         <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
           <h2 className="font-bold text-gray-800">Issued Certificates</h2>
           <button
-            onClick={() => setShowModal(true)}
+            onClick={openModal}
             className="flex items-center gap-2 px-4 py-2 rounded-xl text-md font-semibold
               text-white bg-gradient-to-r from-cyan-400 to-blue-500
               hover:from-cyan-500 hover:to-blue-600 transition-all"
@@ -98,12 +161,16 @@ const Certificates = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {certs.map((c) => (
+              {loading ? (
+                <tr><td colSpan={5} className="text-center py-12 text-gray-400 text-sm">Loading certificates…</td></tr>
+              ) : certs.length === 0 ? (
+                <tr><td colSpan={5} className="text-center py-12 text-gray-400 text-sm">No certificates issued yet</td></tr>
+              ) : certs.map((c) => (
                 <tr key={c.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-5 py-3.5">
                     <div className="flex items-center gap-2.5">
                       <div className="w-8 h-8 rounded-full bg-cyan-100 flex items-center justify-center">
-                        <span className="text-cyan-600 text-xs font-bold">{c.volunteer.charAt(0)}</span>
+                        <span className="text-cyan-600 text-xs font-bold">{c.volunteer?.charAt(0)}</span>
                       </div>
                       <span className="text-sm font-semibold text-gray-800">{c.volunteer}</span>
                     </div>
@@ -141,24 +208,36 @@ const Certificates = () => {
               </button>
             </div>
 
+            {submitError && (
+              <div className="bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-3 mb-4 text-sm font-medium">
+                {submitError}
+              </div>
+            )}
+
             <form onSubmit={handleIssue} className="space-y-4">
               <div>
                 <label className="block text-base font-medium text-gray-700 mb-1.5">
-                  Volunteer <span className="text-red-400">*</span>
+                  Event <span className="text-red-400">*</span>
                 </label>
-                <select name="volunteer" value={form.volunteer} onChange={handleChange} required className={fieldClass}>
-                  <option value="">Select a volunteer</option>
-                  {VOLUNTEERS.map((v) => <option key={v} value={v}>{v}</option>)}
+                <select name="eventId" value={form.eventId} onChange={handleChange} required className={fieldClass}>
+                  <option value="">Select an event</option>
+                  {events.map((ev) => <option key={ev.id} value={ev.id}>{ev.title}</option>)}
                 </select>
               </div>
 
               <div>
                 <label className="block text-base font-medium text-gray-700 mb-1.5">
-                  Event <span className="text-red-400">*</span>
+                  Volunteer <span className="text-red-400">*</span>
                 </label>
-                <select name="event" value={form.event} onChange={handleChange} required className={fieldClass}>
-                  <option value="">Select an event</option>
-                  {EVENTS.map((ev) => <option key={ev} value={ev}>{ev}</option>)}
+                <select
+                  name="userId" value={form.userId} onChange={handleChange} required
+                  disabled={!form.eventId || loadingVolunteers}
+                  className={fieldClass}
+                >
+                  <option value="">
+                    {!form.eventId ? 'Select an event first' : loadingVolunteers ? 'Loading volunteers…' : volunteers.length === 0 ? 'No approved volunteers for this event' : 'Select a volunteer'}
+                  </option>
+                  {volunteers.map((v) => <option key={v.userId} value={v.userId}>{v.name}</option>)}
                 </select>
               </div>
 
@@ -187,11 +266,12 @@ const Certificates = () => {
               <div className="flex gap-3 pt-2">
                 <button
                   type="submit"
+                  disabled={submitting}
                   className="flex-1 py-2.5 rounded-xl text-white font-semibold text-sm
                     bg-gradient-to-r from-cyan-400 to-blue-500
-                    hover:from-cyan-500 hover:to-blue-600 transition-all"
+                    hover:from-cyan-500 hover:to-blue-600 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  Issue Certificate
+                  {submitting ? 'Issuing…' : 'Issue Certificate'}
                 </button>
                 <button
                   type="button"
