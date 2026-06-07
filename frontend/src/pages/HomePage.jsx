@@ -72,3 +72,51 @@ export default Home;
       description: "Never miss an opportunity with real-time alerts.",
     },
   ];
+  /**
+   * Volunteers in action gallery (Displayed in a 3-Column Grid)
+   * Showcases visual examples of community work.
+   */
+  const actions = [
+    {
+      title: "Community Cleanup",
+      description: "Making our city cleaner, one event at a time.",
+      image: "/images/cleanup_volunteer.png",
+    },
+    {
+      title: "Food Distribution",
+      description: "Supporting families in need throughout the community.",
+      image: "/images/food_volunteer.png",
+    },
+    {
+      title: "Environmental Care",
+      description: "Protecting our planet for future generations.",
+      image: "/images/green_volunteer.png",
+    },
+  ];
+
+  /**
+   * Top partner clubs configuration (Displayed in a 4-Column Grid)
+   * Highlights associated university or global organizations.
+   */
+  const clubs = [
+    {
+      name: "IEEE Student Branch",
+      logo: "/images/ieee.png",
+      description: "Technology & Innovation",
+    },
+    {
+      name: "Rotaract Club",
+      logo: "/images/rotaract.png",
+      description: "Community Service",
+    },
+    {
+      name: "Leo Club",
+      logo: "/images/leo-club.png",
+      description: "Youth Leadership",
+    },
+    {
+      name: "AIESEC",
+      logo: "/images/aiesec.png",
+      description: "Global Volunteering",
+    },
+  ];
