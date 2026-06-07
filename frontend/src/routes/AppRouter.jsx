@@ -1,11 +1,11 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 
 // Home
-// import HomePage          from '../pages/HomePage';
+import HomePage          from '../pages/HomePage';
 
 // Auth Pages
 import RoleSelectPage    from '../pages/Auth/RoleSelectPage';
-// import SignIn            from '../pages/Auth/SignIn';
+import SignIn            from '../pages/Auth/SignIn';
 import StudentRegister   from '../pages/Auth/StudentRegister';
 import OrganizerRegister from '../pages/Auth/OrganizerRegister';
 import StudentLogin      from '../pages/Auth/StudentLogin';
@@ -47,19 +47,19 @@ const AppRouter = () => {
     <Routes>
 
       {/* ── Home ─────────────────────────────────────── */}
-      {/* <Route path="/"             element={<HomePage />} /> */}
+      <Route path="/"             element={<HomePage />} />
       <Route path="/get-started"  element={<RoleSelectPage mode="register" />} />
       <Route path="/register"     element={<RoleSelectPage mode="register" />} />
       <Route path="/signin"       element={<RoleSelectPage mode="login" />} />
-      {/* <Route path="/login"        element={<SignIn />} /> */}
+      <Route path="/login"        element={<SignIn />} />
 
       {/* ── Auth ─────────────────────────────────────── */}
       <Route path="/register/student"   element={<StudentRegister />} />
       <Route path="/register/organizer" element={<OrganizerRegister />} />
 
-      {/* <Route path="/login/student"   element={<StudentLogin />} />
+      <Route path="/login/student"   element={<StudentLogin />} />
       <Route path="/login/organizer" element={<OrganizerLogin />} />
-      <Route path="/login/admin"     element={<AdminLogin />} /> */}
+      <Route path="/login/admin"     element={<AdminLogin />} />
 
       {/* ── Student Panel (nested layout) ────────────── */}
       <Route path="/student" element={<StudentLayout />}>
