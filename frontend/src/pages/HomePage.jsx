@@ -151,3 +151,14 @@ export default Home;
       navigate("/get-started");
     }
   };
+  {/* ── HEADER & NAVIGATION ─────────────────────────── */}
+      <header className="vh-navbar">
+        <div className="vh-nav-container">
+          
+          {/* Main Logo & Branding */}
+          <Link to="/" className="vh-logo">
+            <div className="vh-logo-icon">
+              <HandHelping className="w-5 h-5" />
+            </div>
+            <span>VolunteerHub</span>
+          </Link>
