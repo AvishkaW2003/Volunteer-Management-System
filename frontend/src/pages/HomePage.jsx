@@ -192,4 +192,12 @@ export default Home;
               </>
             )}
           </div>
-          
+          {/* Hamburger Menu Toggle (Visible only on Mobile) */}
+          <button
+            className="vh-mobile-toggle"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle Navigation Menu"
+          >
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
