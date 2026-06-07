@@ -4,6 +4,15 @@ import { Calendar, MapPin, Users, Tag, AlignLeft, Clock, ChevronLeft } from 'luc
 
 const CATEGORIES = ['Community Service', 'Environment', 'Education', 'Health', 'Technology', 'Sports', 'Arts & Culture'];
 
+const Field = ({ label, required, children }) => (
+  <div>
+    <label className="block text-base font-medium text-gray-700 mb-1.5">
+      {label} {required && <span className="text-red-400">*</span>}
+    </label>
+    {children}
+  </div>
+);
+
 const CreateEvent = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -28,15 +37,6 @@ const CreateEvent = () => {
       navigate('/organizer/events');
     }, 1500);
   };
-
-  const Field = ({ label, required, children }) => (
-    <div>
-      <label className="block text-base font-medium text-gray-700 mb-1.5">
-        {label} {required && <span className="text-red-400">*</span>}
-      </label>
-      {children}
-    </div>
-  );
 
   const inputClass =
     'w-full border border-gray-200 rounded-xl px-3 py-2.5 text-base text-gray-700 placeholder-gray-400 outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100 transition-all bg-gray-50';
