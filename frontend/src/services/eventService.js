@@ -13,6 +13,14 @@ export const getEvents = async () => {
   return response.data;
 };
 
+// Get events created by the logged-in organizer
+export const getMyEvents = async () => {
+  const response = await axios.get(`${API_URL}/organizer/mine`, {
+    headers: getAuthHeader(),
+  });
+  return response.data;
+};
+
 // Get single event by ID (public)
 export const getEventById = async (id) => {
   const response = await axios.get(`${API_URL}/${id}`);
