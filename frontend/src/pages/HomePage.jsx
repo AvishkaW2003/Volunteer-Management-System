@@ -162,3 +162,10 @@ export default Home;
             </div>
             <span>VolunteerHub</span>
           </Link>
+          {/* Center Navigation Links (Visible on Desktop) */}
+          <nav className="vh-nav-links">
+            <a href="#home" className="vh-nav-link">Home</a>
+            <a href="#events" className="vh-nav-link">Events</a>
+            <a href="#about" className="vh-nav-link">About</a>
+            <a href="#contact" className="vh-nav-link">Contact</a>
+          </nav>
