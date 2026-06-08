@@ -77,3 +77,55 @@
 .vh-wrapper p {
   margin: 0;
 }
+.vh-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2.25rem;
+}
+
+.vh-nav-link {
+  text-decoration: none;
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: color 0.2s ease;
+  position: relative;
+  padding: 0.25rem 0;
+}
+
+.vh-nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--brand-gradient);
+  transition: width 0.2s ease;
+}
+
+.vh-nav-link:hover {
+  color: var(--primary-color);
+}
+
+.vh-nav-link:hover::after {
+  width: 100%;
+}
+
+.vh-nav-auth {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.vh-btn-signin {
+  text-decoration: none;
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: color 0.2s ease;
+}
+
+.vh-btn-signin:hover {
+  color: var(--primary-color);
+}
