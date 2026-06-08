@@ -285,3 +285,25 @@ export default Home;
             </div>
           </div>
         </section>
+        {/* ── SECTION 2: PLATFORM FEATURES ─────────────────────── */}
+        {/* Dynamically maps through the 'features' array to generate cards */}
+        <section id="about" className="vh-features">
+          <div className="vh-features-container">
+            <div className="vh-section-header">
+              <h2 className="vh-section-title">Platform Features</h2>
+              <p className="vh-section-subtitle">Everything you need to manage your volunteer journey</p>
+            </div>
+
+            <div className="vh-features-grid">
+              {features.map((feature, idx) => (
+                <div key={idx} className="vh-feature-card">
+                  <div className="vh-feature-icon-wrapper">
+                    {feature.icon}
+                  </div>
+                  <h3 className="vh-feature-title">{feature.title}</h3>
+                  <p className="vh-feature-desc">{feature.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
