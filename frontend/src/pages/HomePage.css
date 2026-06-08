@@ -440,3 +440,42 @@
   color: var(--text-muted);
   line-height: 1.5;
 }
+/* ──────────────────────────────────────────────────────────────────────────
+   SECTION 3 - STATS BANNER
+   ────────────────────────────────────────────────────────────────────────── */
+.vh-stats {
+  background: var(--brand-gradient);
+  padding: 4.5rem 1.5rem;
+  color: var(--text-white);
+  display: flex;
+  justify-content: center;
+}
+
+.vh-stats-container {
+  width: 100%;
+  max-width: var(--max-width);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2.5rem;
+  text-align: center;
+}
+
+.vh-stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.vh-stat-number {
+  font-size: 3.25rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.vh-stat-label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.85);
+}
