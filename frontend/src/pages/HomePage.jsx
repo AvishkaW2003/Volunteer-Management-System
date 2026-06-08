@@ -307,3 +307,24 @@ export default Home;
             </div>
           </div>
         </section>
+        {/* ── SECTION 3: PLATFORM HIGHLIGHTS ──────────────────── */}
+        <section className="vh-stats">
+          <div className="vh-stats-container">
+            <div className="vh-stat-item">
+              <span className="vh-stat-number">3</span>
+              <p className="vh-stat-label">User Roles — Student, Organizer & Admin</p>
+            </div>
+            <div className="vh-stat-item">
+              <span className="vh-stat-number">100%</span>
+              <p className="vh-stat-label">Digital Certificates for Every Event</p>
+            </div>
+            <div className="vh-stat-item">
+              <span className="vh-stat-number">Real‑time</span>
+              <p className="vh-stat-label">Notifications & Application Updates</p>
+            </div>
+            <div className="vh-stat-item">
+              <span className="vh-stat-number">Live</span>
+              <p className="vh-stat-label">Leaderboard & Reputation Points</p>
+            </div>
+          </div>
+        </section>
