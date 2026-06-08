@@ -328,3 +328,29 @@ export default Home;
             </div>
           </div>
         </section>
+        {/* ── SECTION 4: VOLUNTEERS IN ACTION ──────────────────── */}
+        {/* Visual gallery mapping through the 'actions' mock data array */}
+        <section id="events" className="vh-action">
+          <div className="vh-action-container">
+            <div className="vh-section-header">
+              <h2 className="vh-section-title">Volunteers in Action</h2>
+              <p className="vh-section-subtitle">See our community making a real difference</p>
+            </div>
+
+            <div className="vh-action-grid">
+              {actions.map((action, idx) => (
+                <article key={idx} className="vh-action-card">
+                  <img
+                    src={action.image}
+                    alt={action.title}
+                    className="vh-action-img"
+                  />
+                  <div className="vh-action-overlay">
+                    <h3 className="vh-action-title">{action.title}</h3>
+                    <p className="vh-action-desc">{action.description}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
