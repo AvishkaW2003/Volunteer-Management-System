@@ -354,3 +354,34 @@ export default Home;
             </div>
           </div>
         </section>
+        {/* ── SECTION 5: TOP PARTNER CLUBS ─────────────────────── */}
+        {/* Highlights institutional partners mapping through the 'clubs' array */}
+        <section className="vh-clubs">
+          <div className="vh-clubs-container">
+            <div className="vh-section-header">
+              <h2 className="vh-section-title">Top Partner Clubs</h2>
+              <p className="vh-section-subtitle">Join events from our most active organizations</p>
+            </div>
+
+            <div className="vh-clubs-grid">
+              {clubs.map((club, idx) => (
+                <div key={idx} className="vh-club-card">
+                  <div className="vh-club-logo-area">
+                    <img
+                      src={club.logo}
+                      alt={`${club.name} logo`}
+                      className="vh-club-logo-img"
+                      onError={(e) => { e.target.style.display = 'none'; }}
+                    />
+                  </div>
+                  <div className="vh-club-info">
+                    <h3 className="vh-club-name">{club.name}</h3>
+                    <span className="vh-club-tag">{club.description}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+      </main>
