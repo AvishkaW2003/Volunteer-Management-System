@@ -14,3 +14,21 @@ export const getApplicationsForOrganizer = async () => {
   });
   return response.data;
 };
+
+// Organizer — approve or reject a single application
+export const updateApplicationStatus = async (id, status) => {
+  const response = await axios.patch(
+    `${API_URL}/applications/${id}/status`,
+    { status },
+    { headers: getAuthHeader() }
+  );
+  return response.data;
+};
+
+// Organizer — approved volunteers for one event
+export const getEventVolunteers = async (eventId) => {
+  const response = await axios.get(`${API_URL}/event/${eventId}`, {
+    headers: getAuthHeader(),
+  });
+  return response.data;
+};
