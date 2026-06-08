@@ -152,236 +152,308 @@ export default Home;
     }
   };
   {/* ── HEADER & NAVIGATION ─────────────────────────── */}
-      <header className="vh-navbar">
-        <div className="vh-nav-container">
-          
-          {/* Main Logo & Branding */}
-          <Link to="/" className="vh-logo">
-            <div className="vh-logo-icon">
-              <HandHelping className="w-5 h-5" />
-            </div>
-            <span>VolunteerHub</span>
-          </Link>
-          {/* Center Navigation Links (Visible on Desktop) */}
-          <nav className="vh-nav-links">
-            <a href="#home" className="vh-nav-link">Home</a>
-            <a href="#events" className="vh-nav-link">Events</a>
-            <a href="#about" className="vh-nav-link">About</a>
-            <a href="#contact" className="vh-nav-link">Contact</a>
-          </nav>
-          {/* Right Action Buttons (Authentication/Dashboard access for Desktop) */}
-          <div className="vh-nav-auth">
-            {isAuthenticated ? (
-              <div className="vh-nav-user-info">
-                <span className="vh-user-greeting">Hello, {user?.name || "Volunteer"}</span>
-                <button onClick={logout} className="vh-btn-logout">
-                  Logout
-                </button>
-                <button onClick={handleJoinNow} className="vh-btn-create">
-                  Dashboard
-                </button>
-              </div>
-            ) : (
-              <>
-                <Link to="/login" className="vh-btn-signin">
-                  Sign In
-                </Link>
-                <Link to="/get-started" className="vh-btn-create">
-                  Create Account
-                </Link>
-              </>
-            )}
-          </div>
-          {/* Hamburger Menu Toggle (Visible only on Mobile) */}
-          <button
-            className="vh-mobile-toggle"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle Navigation Menu"
-          >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+      <><header className="vh-navbar">
+  <div className="vh-nav-container">
+
+    {/* Main Logo & Branding */}
+    <Link to="/" className="vh-logo">
+      <div className="vh-logo-icon">
+        <HandHelping className="w-5 h-5" />
+      </div>
+      <span>VolunteerHub</span>
+    </Link>
+    {/* Center Navigation Links (Visible on Desktop) */}
+    <nav className="vh-nav-links">
+      <a href="#home" className="vh-nav-link">Home</a>
+      <a href="#events" className="vh-nav-link">Events</a>
+      <a href="#about" className="vh-nav-link">About</a>
+      <a href="#contact" className="vh-nav-link">Contact</a>
+    </nav>
+    {/* Right Action Buttons (Authentication/Dashboard access for Desktop) */}
+    <div className="vh-nav-auth">
+      {isAuthenticated ? (
+        <div className="vh-nav-user-info">
+          <span className="vh-user-greeting">Hello, {user?.name || "Volunteer"}</span>
+          <button onClick={logout} className="vh-btn-logout">
+            Logout
+          </button>
+          <button onClick={handleJoinNow} className="vh-btn-create">
+            Dashboard
           </button>
         </div>
-        {/* Mobile Navigation Drawer (Toggled via mobileMenuOpen state) */}
-        <nav className={`vh-mobile-nav ${mobileMenuOpen ? "vh-show" : ""}`}>
-          <a href="#home" onClick={() => setMobileMenuOpen(false)} className="vh-nav-link">Home</a>
-          <a href="#events" onClick={() => setMobileMenuOpen(false)} className="vh-nav-link">Events</a>
-          <a href="#about" onClick={() => setMobileMenuOpen(false)} className="vh-nav-link">About</a>
-          <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="vh-nav-link">Contact</a>
-          
-          <div className="vh-mobile-auth-stack">
-            {isAuthenticated ? (
-              <>
-                <span className="vh-user-greeting" style={{ textAlign: "center", marginBottom: "0.5rem" }}>
-                  Hello, {user?.name || "Volunteer"}
-                </span>
-                <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    logout();
-                  }}
-                  className="vh-btn-logout"
-                  style={{ width: "100%" }}
-                >
-                  Logout
-                </button>
-                <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    handleJoinNow();
-                  }}
-                  className="vh-btn-create"
-                >
-                  Dashboard
-                </button>
-              </>
-            ) : (
-              <>
-                <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="vh-btn-signin">
-                  Sign In
-                </Link>
-                <Link to="/get-started" onClick={() => setMobileMenuOpen(false)} className="vh-btn-create">
-                  Create Account
-                </Link>
-              </>
-            )}
+      ) : (
+        <>
+          <Link to="/login" className="vh-btn-signin">
+            Sign In
+          </Link>
+          <Link to="/get-started" className="vh-btn-create">
+            Create Account
+          </Link>
+        </>
+      )}
+    </div>
+    {/* Hamburger Menu Toggle (Visible only on Mobile) */}
+    <button
+      className="vh-mobile-toggle"
+      onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+      aria-label="Toggle Navigation Menu"
+    >
+      {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+    </button>
+  </div>
+  {/* Mobile Navigation Drawer (Toggled via mobileMenuOpen state) */}
+  <nav className={`vh-mobile-nav ${mobileMenuOpen ? "vh-show" : ""}`}>
+    <a href="#home" onClick={() => setMobileMenuOpen(false)} className="vh-nav-link">Home</a>
+    <a href="#events" onClick={() => setMobileMenuOpen(false)} className="vh-nav-link">Events</a>
+    <a href="#about" onClick={() => setMobileMenuOpen(false)} className="vh-nav-link">About</a>
+    <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="vh-nav-link">Contact</a>
+
+    <div className="vh-mobile-auth-stack">
+      {isAuthenticated ? (
+        <>
+          <span className="vh-user-greeting" style={{ textAlign: "center", marginBottom: "0.5rem" }}>
+            Hello, {user?.name || "Volunteer"}
+          </span>
+          <button
+            onClick={() => {
+              setMobileMenuOpen(false);
+              logout();
+            } }
+            className="vh-btn-logout"
+            style={{ width: "100%" }}
+          >
+            Logout
+          </button>
+          <button
+            onClick={() => {
+              setMobileMenuOpen(false);
+              handleJoinNow();
+            } }
+            className="vh-btn-create"
+          >
+            Dashboard
+          </button>
+        </>
+      ) : (
+        <>
+          <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="vh-btn-signin">
+            Sign In
+          </Link>
+          <Link to="/get-started" onClick={() => setMobileMenuOpen(false)} className="vh-btn-create">
+            Create Account
+          </Link>
+        </>
+      )}
+    </div>
+  </nav>
+</header><main>
+
+    {/* ── SECTION 1: HERO ─────────────────────────────────── */}
+    {/* The main landing area introducing the platform value proposition */}
+    <section id="home" className="vh-hero">
+      <div className="vh-hero-container">
+        {/* Left Column: Headline and Call-to-Action buttons */}
+        <div className="vh-hero-content">
+          <h1 className="vh-hero-heading">
+            Empowering Students Through <span className="blue-highlight">Volunteer Opportunities</span>
+          </h1>
+          <p className="vh-hero-subtext">
+            Join hundreds of students making a difference. Discover events, earn certificates, and build your reputation.
+          </p>
+          <div className="vh-hero-buttons">
+            <button onClick={handleExplore} className="vh-btn-primary">
+              Explore Events <ArrowRight className="w-4 h-4" />
+            </button>
+            <button onClick={handleJoinNow} className="vh-btn-secondary">
+              Join Now
+            </button>
           </div>
-        </nav>
-      </header>
-      <main>
-        
-        {/* ── SECTION 1: HERO ─────────────────────────────────── */}
-        {/* The main landing area introducing the platform value proposition */}
-        <section id="home" className="vh-hero">
-          <div className="vh-hero-container">
-            {/* Left Column: Headline and Call-to-Action buttons */}
-            <div className="vh-hero-content">
-              <h1 className="vh-hero-heading">
-                Empowering Students Through <span className="blue-highlight">Volunteer Opportunities</span>
-              </h1>
-              <p className="vh-hero-subtext">
-                Join hundreds of students making a difference. Discover events, earn certificates, and build your reputation.
+        </div>
+
+        {/* Right Column: Hero graphic/image showcase */}
+        <div className="vh-hero-media">
+          <div className="vh-hero-image-card">
+            <div className="vh-hero-image-wrapper">
+              <img
+                src="/images/hero-volunteers.jpg"
+                alt="Students volunteering together at VolunteerHub"
+                className="vh-hero-image" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    {/* ── SECTION 2: PLATFORM FEATURES ─────────────────────── */}
+    {/* Dynamically maps through the 'features' array to generate cards */}
+    <section id="about" className="vh-features">
+      <div className="vh-features-container">
+        <div className="vh-section-header">
+          <h2 className="vh-section-title">Platform Features</h2>
+          <p className="vh-section-subtitle">Everything you need to manage your volunteer journey</p>
+        </div>
+
+        <div className="vh-features-grid">
+          {features.map((feature, idx) => (
+            <div key={idx} className="vh-feature-card">
+              <div className="vh-feature-icon-wrapper">
+                {feature.icon}
+              </div>
+              <h3 className="vh-feature-title">{feature.title}</h3>
+              <p className="vh-feature-desc">{feature.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+    {/* ── SECTION 3: PLATFORM HIGHLIGHTS ──────────────────── */}
+    <section className="vh-stats">
+      <div className="vh-stats-container">
+        <div className="vh-stat-item">
+          <span className="vh-stat-number">3</span>
+          <p className="vh-stat-label">User Roles — Student, Organizer & Admin</p>
+        </div>
+        <div className="vh-stat-item">
+          <span className="vh-stat-number">100%</span>
+          <p className="vh-stat-label">Digital Certificates for Every Event</p>
+        </div>
+        <div className="vh-stat-item">
+          <span className="vh-stat-number">Real‑time</span>
+          <p className="vh-stat-label">Notifications & Application Updates</p>
+        </div>
+        <div className="vh-stat-item">
+          <span className="vh-stat-number">Live</span>
+          <p className="vh-stat-label">Leaderboard & Reputation Points</p>
+        </div>
+      </div>
+    </section>
+    {/* ── SECTION 4: VOLUNTEERS IN ACTION ──────────────────── */}
+    {/* Visual gallery mapping through the 'actions' mock data array */}
+    <section id="events" className="vh-action">
+      <div className="vh-action-container">
+        <div className="vh-section-header">
+          <h2 className="vh-section-title">Volunteers in Action</h2>
+          <p className="vh-section-subtitle">See our community making a real difference</p>
+        </div>
+
+        <div className="vh-action-grid">
+          {actions.map((action, idx) => (
+            <article key={idx} className="vh-action-card">
+              <img
+                src={action.image}
+                alt={action.title}
+                className="vh-action-img" />
+              <div className="vh-action-overlay">
+                <h3 className="vh-action-title">{action.title}</h3>
+                <p className="vh-action-desc">{action.description}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+    {/* ── SECTION 5: TOP PARTNER CLUBS ─────────────────────── */}
+    {/* Highlights institutional partners mapping through the 'clubs' array */}
+    <section className="vh-clubs">
+      <div className="vh-clubs-container">
+        <div className="vh-section-header">
+          <h2 className="vh-section-title">Top Partner Clubs</h2>
+          <p className="vh-section-subtitle">Join events from our most active organizations</p>
+        </div>
+
+        <div className="vh-clubs-grid">
+          {clubs.map((club, idx) => (
+            <div key={idx} className="vh-club-card">
+              <div className="vh-club-logo-area">
+                <img
+                  src={club.logo}
+                  alt={`${club.name} logo`}
+                  className="vh-club-logo-img"
+                  onError={(e) => { e.target.style.display = 'none'; } } />
+              </div>
+              <div className="vh-club-info">
+                <h3 className="vh-club-name">{club.name}</h3>
+                <span className="vh-club-tag">{club.description}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+  </main></>
+      {/* ── FOOTER ───────────────────────────────────────── */}
+      <footer id="contact" className="vh-footer">
+        <div className="vh-footer-container">
+          <div className="vh-footer-grid">
+            {/* Column 1: Brand Information */}
+            <div className="vh-footer-col">
+              <Link to="/" className="vh-footer-logo">
+                <div className="vh-footer-logo-icon">
+                  <HandHelping className="w-4 h-4" />
+                </div>
+                <span>VolunteerHub</span>
+              </Link>
+              <p className="vh-footer-tagline">
+                Empowering students through meaningful volunteer opportunities.
               </p>
-              <div className="vh-hero-buttons">
-                <button onClick={handleExplore} className="vh-btn-primary">
-                  Explore Events <ArrowRight className="w-4 h-4" />
-                </button>
-                <button onClick={handleJoinNow} className="vh-btn-secondary">
-                  Join Now
-                </button>
+            </div>
+
+            {/* Column 2: Site Navigation Links */}
+            <div className="vh-footer-col">
+              <h4>Quick Links</h4>
+              <ul className="vh-footer-links">
+                <li><a href="#home" className="vh-footer-link">About Us</a></li>
+                <li><a href="#events" className="vh-footer-link">Events</a></li>
+                <li><a href="#about" className="vh-footer-link">Partner Clubs</a></li>
+                <li><a href="#contact" className="vh-footer-link">Contact</a></li>
+              </ul>
+            </div>
+
+            {/* Column 3: Contact Details & Icons */}
+            <div className="vh-footer-col">
+              <h4>Contact</h4>
+              <ul className="vh-footer-contact">
+                <li>
+                  <Mail className="w-4 h-4 text-blue-500" />
+                  <span>info@volunteerhub.edu</span>
+                </li>
+                <li>
+                  <Phone className="w-4 h-4 text-blue-500" />
+                  <span>(555) 123-4567</span>
+                </li>
+                <li>
+                  <MapPin className="w-4 h-4 text-blue-500" />
+                  <span>University Campus</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Column 4: Social Media Integrations */}
+            <div className="vh-footer-col">
+              <h4>Follow Us</h4>
+              <div className="vh-social-links">
+                <a href="#" className="vh-social-btn" aria-label="Facebook">
+                  <Facebook className="w-4 h-4" />
+                </a>
+                <a href="#" className="vh-social-btn" aria-label="Twitter">
+                  <Twitter className="w-4 h-4" />
+                </a>
+                <a href="#" className="vh-social-btn" aria-label="LinkedIn">
+                  <Linkedin className="w-4 h-4" />
+                </a>
               </div>
             </div>
-
-            {/* Right Column: Hero graphic/image showcase */}
-            <div className="vh-hero-media">
-              <div className="vh-hero-image-card">
-                <div className="vh-hero-image-wrapper">
-                  <img
-                    src="/images/hero-volunteers.jpg"
-                    alt="Students volunteering together at VolunteerHub"
-                    className="vh-hero-image"
-                  />
-                </div>
-              </div>
-            </div>
           </div>
-        </section>
-        {/* ── SECTION 2: PLATFORM FEATURES ─────────────────────── */}
-        {/* Dynamically maps through the 'features' array to generate cards */}
-        <section id="about" className="vh-features">
-          <div className="vh-features-container">
-            <div className="vh-section-header">
-              <h2 className="vh-section-title">Platform Features</h2>
-              <p className="vh-section-subtitle">Everything you need to manage your volunteer journey</p>
-            </div>
 
-            <div className="vh-features-grid">
-              {features.map((feature, idx) => (
-                <div key={idx} className="vh-feature-card">
-                  <div className="vh-feature-icon-wrapper">
-                    {feature.icon}
-                  </div>
-                  <h3 className="vh-feature-title">{feature.title}</h3>
-                  <p className="vh-feature-desc">{feature.description}</p>
-                </div>
-              ))}
-            </div>
+          {/* Copyright Information */}
+          <div className="vh-footer-bottom">
+            &copy; {new Date().getFullYear()} VolunteerHub. All rights reserved.
           </div>
-        </section>
-        {/* ── SECTION 3: PLATFORM HIGHLIGHTS ──────────────────── */}
-        <section className="vh-stats">
-          <div className="vh-stats-container">
-            <div className="vh-stat-item">
-              <span className="vh-stat-number">3</span>
-              <p className="vh-stat-label">User Roles — Student, Organizer & Admin</p>
-            </div>
-            <div className="vh-stat-item">
-              <span className="vh-stat-number">100%</span>
-              <p className="vh-stat-label">Digital Certificates for Every Event</p>
-            </div>
-            <div className="vh-stat-item">
-              <span className="vh-stat-number">Real‑time</span>
-              <p className="vh-stat-label">Notifications & Application Updates</p>
-            </div>
-            <div className="vh-stat-item">
-              <span className="vh-stat-number">Live</span>
-              <p className="vh-stat-label">Leaderboard & Reputation Points</p>
-            </div>
-          </div>
-        </section>
-        {/* ── SECTION 4: VOLUNTEERS IN ACTION ──────────────────── */}
-        {/* Visual gallery mapping through the 'actions' mock data array */}
-        <section id="events" className="vh-action">
-          <div className="vh-action-container">
-            <div className="vh-section-header">
-              <h2 className="vh-section-title">Volunteers in Action</h2>
-              <p className="vh-section-subtitle">See our community making a real difference</p>
-            </div>
+        </div>
+      </footer>
 
-            <div className="vh-action-grid">
-              {actions.map((action, idx) => (
-                <article key={idx} className="vh-action-card">
-                  <img
-                    src={action.image}
-                    alt={action.title}
-                    className="vh-action-img"
-                  />
-                  <div className="vh-action-overlay">
-                    <h3 className="vh-action-title">{action.title}</h3>
-                    <p className="vh-action-desc">{action.description}</p>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-        {/* ── SECTION 5: TOP PARTNER CLUBS ─────────────────────── */}
-        {/* Highlights institutional partners mapping through the 'clubs' array */}
-        <section className="vh-clubs">
-          <div className="vh-clubs-container">
-            <div className="vh-section-header">
-              <h2 className="vh-section-title">Top Partner Clubs</h2>
-              <p className="vh-section-subtitle">Join events from our most active organizations</p>
-            </div>
+    </div>
+  );
+};
 
-            <div className="vh-clubs-grid">
-              {clubs.map((club, idx) => (
-                <div key={idx} className="vh-club-card">
-                  <div className="vh-club-logo-area">
-                    <img
-                      src={club.logo}
-                      alt={`${club.name} logo`}
-                      className="vh-club-logo-img"
-                      onError={(e) => { e.target.style.display = 'none'; }}
-                    />
-                  </div>
-                  <div className="vh-club-info">
-                    <h3 className="vh-club-name">{club.name}</h3>
-                    <span className="vh-club-tag">{club.description}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-      </main>
+export default Home;
