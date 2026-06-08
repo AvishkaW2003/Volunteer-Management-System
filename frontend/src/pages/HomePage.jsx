@@ -201,3 +201,49 @@ export default Home;
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
+        {/* Mobile Navigation Drawer (Toggled via mobileMenuOpen state) */}
+        <nav className={`vh-mobile-nav ${mobileMenuOpen ? "vh-show" : ""}`}>
+          <a href="#home" onClick={() => setMobileMenuOpen(false)} className="vh-nav-link">Home</a>
+          <a href="#events" onClick={() => setMobileMenuOpen(false)} className="vh-nav-link">Events</a>
+          <a href="#about" onClick={() => setMobileMenuOpen(false)} className="vh-nav-link">About</a>
+          <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="vh-nav-link">Contact</a>
+          
+          <div className="vh-mobile-auth-stack">
+            {isAuthenticated ? (
+              <>
+                <span className="vh-user-greeting" style={{ textAlign: "center", marginBottom: "0.5rem" }}>
+                  Hello, {user?.name || "Volunteer"}
+                </span>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    logout();
+                  }}
+                  className="vh-btn-logout"
+                  style={{ width: "100%" }}
+                >
+                  Logout
+                </button>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    handleJoinNow();
+                  }}
+                  className="vh-btn-create"
+                >
+                  Dashboard
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="vh-btn-signin">
+                  Sign In
+                </Link>
+                <Link to="/get-started" onClick={() => setMobileMenuOpen(false)} className="vh-btn-create">
+                  Create Account
+                </Link>
+              </>
+            )}
+          </div>
+        </nav>
+      </header>
