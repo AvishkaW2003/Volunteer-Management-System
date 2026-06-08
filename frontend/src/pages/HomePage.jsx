@@ -247,3 +247,41 @@ export default Home;
           </div>
         </nav>
       </header>
+      <main>
+        
+        {/* ── SECTION 1: HERO ─────────────────────────────────── */}
+        {/* The main landing area introducing the platform value proposition */}
+        <section id="home" className="vh-hero">
+          <div className="vh-hero-container">
+            {/* Left Column: Headline and Call-to-Action buttons */}
+            <div className="vh-hero-content">
+              <h1 className="vh-hero-heading">
+                Empowering Students Through <span className="blue-highlight">Volunteer Opportunities</span>
+              </h1>
+              <p className="vh-hero-subtext">
+                Join hundreds of students making a difference. Discover events, earn certificates, and build your reputation.
+              </p>
+              <div className="vh-hero-buttons">
+                <button onClick={handleExplore} className="vh-btn-primary">
+                  Explore Events <ArrowRight className="w-4 h-4" />
+                </button>
+                <button onClick={handleJoinNow} className="vh-btn-secondary">
+                  Join Now
+                </button>
+              </div>
+            </div>
+
+            {/* Right Column: Hero graphic/image showcase */}
+            <div className="vh-hero-media">
+              <div className="vh-hero-image-card">
+                <div className="vh-hero-image-wrapper">
+                  <img
+                    src="/images/hero-volunteers.jpg"
+                    alt="Students volunteering together at VolunteerHub"
+                    className="vh-hero-image"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
