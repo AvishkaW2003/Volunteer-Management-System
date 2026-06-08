@@ -48,3 +48,32 @@
   --navbar-height: 76px;
   --max-width: 1200px;
 }
+/* Global Reset for Landing Page Context */
+.vh-wrapper {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: var(--text-dark);
+  background-color: var(--bg-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+.vh-wrapper * {
+  box-sizing: border-box;
+}
+
+.vh-wrapper h1, 
+.vh-wrapper h2, 
+.vh-wrapper h3, 
+.vh-wrapper h4 {
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.vh-wrapper p {
+  margin: 0;
+}
