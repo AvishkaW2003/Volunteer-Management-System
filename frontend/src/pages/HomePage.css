@@ -1,0 +1,50 @@
+/* ==========================================================================
+   VolunteerHub Custom Stylesheet (Vanilla CSS)
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  /* ── Classic blue palette ── */
+  --primary-color: #1D4ED8;   /* royal blue */
+  --primary-hover: #1E40AF;   /* navy       */
+  --primary-light: #EFF6FF;   /* blue-50    */
+
+  /* ── Single clean 2-stop gradient (navy → royal blue) ── */
+  --brand-gradient: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%);
+
+  /* ── Layout backgrounds ── */
+  --bg-hero:  #EFF6FF;   /* light blue tint */
+  --bg-body:  #F8FAFC;
+  --bg-white: #FFFFFF;
+
+  /* ── Typography ── */
+  --text-dark:  #0F172A;
+  --text-muted: #475569;
+  --text-light: #64748B;
+  --text-white: #FFFFFF;
+
+  /* ── Footer ── */
+  --footer-bg:     #1E293B;
+  --footer-border: #334155;
+
+  /* ── Borders / Shadows ── */
+  --border-color: #E2E8F0;
+  
+  /* Shadow Levels */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-premium: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  
+  /* Border Radius */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-full: 9999px;
+  
+  /* Layout */
+  --navbar-height: 76px;
+  --max-width: 1200px;
+}
