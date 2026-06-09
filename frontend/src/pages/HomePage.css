@@ -559,3 +559,94 @@
   transform: translateY(0);
   transition: transform 0.3s ease;
 }
+/* ──────────────────────────────────────────────────────────────────────────
+   SECTION 5 - TOP PARTNER CLUBS
+   ────────────────────────────────────────────────────────────────────────── */
+.vh-clubs {
+  background-color: var(--bg-white);
+  padding: 6.5rem 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.vh-clubs-container {
+  width: 100%;
+  max-width: var(--max-width);
+}
+
+.vh-clubs-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.75rem;
+}
+
+.vh-club-card {
+  background-color: var(--bg-white);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.vh-club-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+  border-color: rgba(29, 78, 216, 0.2);
+}
+
+/* Logo display area */
+.vh-club-logo-area {
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background-color: #F8FAFF;
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.3s ease;
+}
+
+.vh-club-card:hover .vh-club-logo-area {
+  background-color: #EFF6FF;
+}
+
+/* Logo fills the box fully while keeping aspect ratio */
+.vh-club-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.vh-club-card:hover .vh-club-logo-img {
+  transform: scale(1.05);
+}
+
+.vh-club-info {
+  padding: 1.25rem 1.5rem 1.5rem 1.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.vh-club-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+/* Category tag replaces the fake event count */
+.vh-club-tag {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  background-color: var(--primary-light);
+  padding: 0.2rem 0.75rem;
+  border-radius: var(--radius-full);
+  align-self: center;
+}
