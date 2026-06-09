@@ -50,3 +50,29 @@ export const updateEvent = async (id, eventData) => {
   });
   return response.data;
 };
+// Delete event (organizer only)
+export const deleteEvent = async (id) => {
+  const response = await axios.delete(`${API_URL}/${id}`, {
+    headers: getAuthHeader(),
+  });
+  return response.data;
+};
+
+// Register as volunteer for an event (student only)
+export const registerForEvent = async (eventId) => {
+  const response = await axios.post(
+    `http://localhost:5000/api/volunteers/register/${eventId}`,
+    {},
+    { headers: getAuthHeader() }
+  );
+  return response.data;
+};
+
+// Get volunteers for an event (organizer only)
+export const getEventVolunteers = async (eventId) => {
+  const response = await axios.get(
+    `http://localhost:5000/api/volunteers/event/${eventId}`,
+    { headers: getAuthHeader() }
+  );
+  return response.data;
+};
