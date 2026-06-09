@@ -20,3 +20,28 @@ export const myNotifications = async () => {
   });
   return response.data;
 };
+
+export const markNotificationRead = async (id) => {
+  const response = await axios.patch(
+    `${API_URL}/${id}/read`,
+    {},
+    { headers: getAuthHeader() }
+  );
+  return response.data;
+};
+
+export const markAllNotificationsRead = async () => {
+  const response = await axios.patch(
+    `${API_URL}/read-all`,
+    {},
+    { headers: getAuthHeader() }
+  );
+  return response.data;
+};
+
+export const deleteNotification = async (id) => {
+  const response = await axios.delete(`${API_URL}/${id}`, {
+    headers: getAuthHeader(),
+  });
+  return response.data;
+};
