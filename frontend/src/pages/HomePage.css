@@ -882,3 +882,147 @@
   font-size: 0.85rem;
   color: #64748B;
 }
+/* ──────────────────────────────────────────────────────────────────────────
+   MEDIA QUERIES (RESPONSIVENESS)
+   ────────────────────────────────────────────────────────────────────────── */
+
+/* Tablet Viewports (< 1024px) */
+@media (max-width: 1024px) {
+  :root {
+    --navbar-height: 70px;
+  }
+  
+  .vh-hero {
+    padding-top: calc(var(--navbar-height) + 2rem);
+    padding-bottom: 4rem;
+  }
+  
+  .vh-hero-container {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+  
+  .vh-hero-content {
+    align-items: center;
+    text-align: center;
+  }
+  
+  .vh-hero-subtext {
+    margin: 0 auto;
+  }
+  
+  .vh-hero-buttons {
+    justify-content: center;
+  }
+  
+  .vh-hero-media {
+    width: 100%;
+  }
+  
+  .vh-features-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  
+  .vh-action-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  
+  /* Make the 3rd card in action grid span across if odd number */
+  .vh-action-grid .vh-action-card:last-child {
+    grid-column: span 2;
+  }
+  
+  .vh-clubs-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  
+  .vh-testimonials-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  
+  .vh-testimonials-grid .vh-testimonial-wrapper:last-child {
+    grid-column: span 2;
+  }
+  
+  .vh-footer-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3rem;
+  }
+}
+
+/* Mobile Viewports (< 768px) */
+@media (max-width: 768px) {
+  /* Navigation */
+  .vh-nav-links, 
+  .vh-nav-auth {
+    display: none;
+  }
+  
+  .vh-mobile-toggle {
+    display: flex;
+  }
+  
+  /* Showing Mobile Navigation menu */
+  .vh-mobile-nav.vh-show {
+    display: flex;
+  }
+  
+  .vh-hero-heading {
+    font-size: 2.25rem;
+  }
+  
+  .vh-hero-subtext {
+    font-size: 1rem;
+  }
+  
+  .vh-hero-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .vh-hero-buttons .vh-btn-primary, 
+  .vh-hero-buttons .vh-btn-secondary {
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .vh-features-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .vh-stats-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+  
+  .vh-action-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .vh-action-grid .vh-action-card:last-child {
+    grid-column: span 1;
+  }
+  
+  .vh-clubs-grid {
+    grid-template-columns: 1fr;
+    max-width: 320px;
+    margin: 0 auto;
+  }
+  
+  .vh-testimonials-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .vh-testimonials-grid .vh-testimonial-wrapper:last-child {
+    grid-column: span 1;
+  }
+  
+  .vh-footer-grid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+}
