@@ -752,3 +752,133 @@
   font-weight: 600;
   color: var(--text-light);
 }
+/* ──────────────────────────────────────────────────────────────────────────
+   FOOTER
+   ────────────────────────────────────────────────────────────────────────── */
+.vh-footer {
+  background-color: var(--footer-bg);
+  color: #94A3B8;
+  padding: 5rem 1.5rem 2rem 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.vh-footer-container {
+  width: 100%;
+  max-width: var(--max-width);
+  display: flex;
+  flex-direction: column;
+}
+
+.vh-footer-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr 1fr 1fr;
+  gap: 4rem;
+  margin-bottom: 4rem;
+}
+
+.vh-footer-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.vh-footer-col h4 {
+  color: var(--text-white);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.vh-footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 1.35rem;
+  color: var(--text-white);
+}
+
+.vh-footer-logo-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  background: var(--brand-gradient);
+  color: var(--text-white);
+  border-radius: var(--radius-md);
+}
+
+.vh-footer-tagline {
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.vh-footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.vh-footer-link {
+  text-decoration: none;
+  color: #94A3B8;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.vh-footer-link:hover {
+  color: var(--text-white);
+}
+
+.vh-footer-contact {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  font-size: 0.9rem;
+}
+
+.vh-footer-contact li {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.vh-social-links {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.vh-social-btn {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--radius-full);
+  background-color: var(--footer-border);
+  color: var(--text-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.vh-social-btn:hover {
+  background: var(--brand-gradient);
+  transform: translateY(-2px);
+}
+
+.vh-footer-bottom {
+  border-top: 1px solid var(--footer-border);
+  padding-top: 2rem;
+  text-align: center;
+  font-size: 0.85rem;
+  color: #64748B;
+}
