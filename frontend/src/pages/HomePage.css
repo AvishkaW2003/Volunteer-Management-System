@@ -650,3 +650,105 @@
   border-radius: var(--radius-full);
   align-self: center;
 }
+/* ──────────────────────────────────────────────────────────────────────────
+   SECTION 6 - TESTIMONIALS
+   ────────────────────────────────────────────────────────────────────────── */
+.vh-testimonials {
+  background-color: var(--bg-body);
+  padding: 6.5rem 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.vh-testimonials-container {
+  width: 100%;
+  max-width: var(--max-width);
+}
+
+.vh-testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.vh-testimonial-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.vh-testimonial-bubble {
+  background-color: var(--bg-white);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  flex: 1;
+  transition: all 0.3s ease;
+}
+
+.vh-testimonial-bubble:hover {
+  box-shadow: var(--shadow-md);
+  border-color: rgba(37, 99, 235, 0.1);
+}
+
+.vh-testimonial-quote {
+  font-size: 0.975rem;
+  font-style: italic;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* Bubble speech arrow point */
+.vh-testimonial-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 2rem;
+  width: 1rem;
+  height: 1rem;
+  background-color: var(--bg-white);
+  border-right: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  transform: rotate(45deg);
+}
+
+.vh-testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-left: 0.5rem;
+}
+
+.vh-testimonial-avatar-wrapper {
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  border: 2px solid var(--bg-white);
+  box-shadow: var(--shadow-sm);
+}
+
+.vh-testimonial-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.vh-testimonial-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.vh-testimonial-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.vh-testimonial-role {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-light);
+}
