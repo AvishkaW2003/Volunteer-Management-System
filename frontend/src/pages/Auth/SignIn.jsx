@@ -64,3 +64,4 @@ const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const role = ROLES.find((r) => r.key === selectedRole);
