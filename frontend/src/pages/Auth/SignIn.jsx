@@ -51,3 +51,30 @@ const ROLES = [
     registerPath: null,
   },
 ];
+const SignIn = () => {
+  return (
+    <div></div>
+  );
+};
+
+export default SignIn;
+const navigate = useNavigate();
+  const { login } = useAuth();
+  const [selectedRole, setSelectedRole] = useState('student');
+  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const role = ROLES.find((r) => r.key === selectedRole);
+  const handleChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  const handleRoleSwitch = (key) => {
+    setSelectedRole(key);
+    setError('');
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    // TODO: Auth Logic
+  };
