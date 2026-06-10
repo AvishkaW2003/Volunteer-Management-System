@@ -58,3 +58,5 @@ const SignIn = () => {
 };
 
 export default SignIn;
+const navigate = useNavigate();
+  const { login } = useAuth();
