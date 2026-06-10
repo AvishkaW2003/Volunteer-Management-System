@@ -60,3 +60,7 @@ const SignIn = () => {
 export default SignIn;
 const navigate = useNavigate();
   const { login } = useAuth();
+  const [selectedRole, setSelectedRole] = useState('student');
+  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
