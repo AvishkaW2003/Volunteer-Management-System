@@ -51,3 +51,10 @@ const ROLES = [
     registerPath: null,
   },
 ];
+const SignIn = () => {
+  return (
+    <div></div>
+  );
+};
+
+export default SignIn;
