@@ -65,3 +65,10 @@ const navigate = useNavigate();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const role = ROLES.find((r) => r.key === selectedRole);
+  const handleChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  const handleRoleSwitch = (key) => {
+    setSelectedRole(key);
+    setError('');
+  };
