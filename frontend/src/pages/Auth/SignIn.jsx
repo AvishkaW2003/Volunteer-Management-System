@@ -72,3 +72,9 @@ const navigate = useNavigate();
     setSelectedRole(key);
     setError('');
   };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    // TODO: Auth Logic
+  };
