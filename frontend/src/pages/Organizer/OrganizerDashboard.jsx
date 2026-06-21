@@ -246,3 +246,23 @@ const OrganizerDashboard = () => {
                     </span>
                   </div>
                 </div>
+
+                                {/* Content Details */}
+                <div className="p-4 flex-1 flex flex-col space-y-3">
+                  <div>
+                    <span className="text-xs font-bold text-cyan-600 uppercase tracking-wide bg-cyan-50 px-2 py-0.5 rounded">
+                      {event.category}
+                    </span>
+                    <h3 className="text-lg font-bold text-gray-800 mt-1.5 line-clamp-1">{event.title}</h3>
+                  </div>
+
+                  <div className="space-y-1.5 text-sm text-gray-500">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-gray-400" />
+                      <span>{event.eventDate}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <MapPin className="w-4 h-4 text-gray-400" />
+                      <span className="truncate">{event.location}</span>
+                    </div>
+                  </div>
