@@ -542,3 +542,56 @@ const OrganizerDashboard = () => {
           </table>
         </div>
       </div>
+
+            {/* STUDENT PROFILE DETAILED MODAL */}
+      {selectedStudent && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-[2px] flex items-center justify-center z-50 p-4 animate-fadeIn">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative border border-gray-100 transform scale-100 transition-all duration-300">
+            <button
+              onClick={() => setSelectedStudent(null)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-full hover:bg-gray-50"
+              aria-label="Close modal"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <div className="flex flex-col items-center text-center">
+              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 text-white flex items-center justify-center text-3xl font-bold mb-4 shadow-md">
+                {selectedStudent.name.charAt(0)}
+              </div>
+              <h3 className="text-xl font-bold text-gray-800">{selectedStudent.name}</h3>
+              <p className="text-sm text-cyan-600 font-semibold mb-3">Student Volunteer</p>
+              
+              <div className="w-full bg-gray-50 rounded-2xl p-4 text-left space-y-3 text-sm text-gray-600 border border-gray-100/50">
+                <div>
+                  <span className="text-xs text-gray-400 block font-medium uppercase tracking-wider">Email</span>
+                  <span className="text-gray-800 font-semibold">{selectedStudent.email}</span>
+                </div>
+                <div>
+                  <span className="text-xs text-gray-400 block font-medium uppercase tracking-wider">Student ID</span>
+                  <span className="text-gray-800 font-semibold">{selectedStudent.studentProfile?.studentId || "STU980312"}</span>
+                </div>
+                <div>
+                  <span className="text-xs text-gray-400 block font-medium uppercase tracking-wider">Faculty</span>
+                  <span className="text-gray-800 font-semibold">{selectedStudent.studentProfile?.faculty || "Faculty of Computing"}</span>
+                </div>
+                <div>
+                  <span className="text-xs text-gray-400 block font-medium uppercase tracking-wider mb-1">Skills & Certifications</span>
+                  <div className="flex flex-wrap gap-1.5 mt-1">
+                    {(selectedStudent.studentProfile?.skills || ["Teamwork", "Communication", "Event Planning"]).map((skill) => (
+                      <span key={skill} className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-cyan-50 text-cyan-700 border border-cyan-100">
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+};
+
+export default OrganizerDashboard;
