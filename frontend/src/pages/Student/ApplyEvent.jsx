@@ -39,3 +39,28 @@ const ViewDetailsModal = ({ app, onClose }) => {
       month: 'short', day: 'numeric', year: 'numeric',
     });
   };
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-start justify-center p-4 py-8 overflow-y-auto bg-black/40 backdrop-blur-sm"
+      onClick={e => e.target === e.currentTarget && onClose()}
+    >
+      <div className="w-full max-w-2xl overflow-hidden bg-white shadow-2xl rounded-2xl">
+        {/* Modal header */}
+        <div className="h-1.5 bg-gradient-to-r from-blue-400 to-purple-500" />
+        <div className="flex items-start justify-between gap-4 px-6 pt-5 pb-4 border-b border-gray-100">
+          <div className="flex-1 min-w-0">
+            <h2 className="text-xl font-bold text-gray-800 truncate">{app.event}</h2>
+            <div className="flex items-center gap-3 mt-1.5 flex-wrap">
+              <span className={`inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-semibold ${s.badge}`}>
+                <Icon className="w-3.5 h-3.5" /> {s.label}
+              </span>
+              <span className="text-xs text-gray-400">Applied on {app.appliedOn}</span>
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-1.5 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors flex-shrink-0"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
