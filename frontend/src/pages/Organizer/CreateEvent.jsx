@@ -152,3 +152,86 @@ const CreateEvent = () => {
   };
 
 
+  return (
+    <div>
+      {/* Header */}
+      <div className="flex items-center gap-3 mb-6">
+        <button
+          onClick={() => navigate('/organizer/dashboard')}
+          className="p-2 rounded-xl hover:bg-purple-50 text-gray-500 hover:text-cyan-600 transition-colors"
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </button>
+        <div>
+          <h1 className="text-3xl font-bold text-gray-800">Create New Event</h1>
+          <p className="text-gray-500 text-base mt-0.5">Fill in the details to publish a volunteer event</p>
+        </div>
+      </div>
+
+      {success && (
+        <div className="bg-green-50 border border-green-200 text-green-700 rounded-xl px-4 py-3 mb-5 text-sm font-medium">
+          Event created successfully! Redirecting…
+        </div>
+      )}
+
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 max-w-3xl">
+        <form onSubmit={handleSubmit} className="space-y-5">
+
+          {/* Title + Category */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <Field label="Event Title" required>
+              {iconInput(
+                <Tag className="w-4 h-4" />,
+                <input
+                  name="title" value={form.title} onChange={handleChange} required
+                  placeholder="Beach Cleanup Drive"
+                  className="flex-1 outline-none text-base text-gray-700 placeholder-gray-400 bg-transparent w-full"
+                />
+              )}
+            </Field>
+
+            <Field label="Category" required>
+              <select
+                name="category" value={form.category} onChange={handleChange} required
+                className={inputClass}
+              >
+                <option value="">Select a category</option>
+                {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </Field>
+          </div>
+
+          {/* Description */}
+          <Field label="Description" required>
+            <div className="flex items-start border border-gray-200 rounded-xl px-3 py-2.5 gap-2 bg-gray-50 focus-within:border-cyan-400 focus-within:ring-2 focus-within:ring-cyan-100 transition-all">
+              <AlignLeft className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
+              <textarea
+                name="description" value={form.description} onChange={handleChange} required
+                rows={3} placeholder="Describe what volunteers will be doing…"
+                className="flex-1 outline-none text-base text-gray-700 placeholder-gray-400 bg-transparent w-full resize-none"
+              />
+            </div>
+          </Field>
+
+          {/* Date + Time */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <Field label="Date" required>
+              {iconInput(
+                <Calendar className="w-4 h-4" />,
+                <input
+                  type="date" name="date" value={form.date} onChange={handleChange} required
+                  className="flex-1 outline-none text-base text-gray-700 bg-transparent w-full"
+                />
+              )}
+            </Field>
+
+            <Field label="Time" required>
+              {iconInput(
+                <Clock className="w-4 h-4" />,
+                <input
+                  type="time" name="time" value={form.time} onChange={handleChange} required
+                  className="flex-1 outline-none text-base text-gray-700 bg-transparent w-full"
+                />
+              )}
+            </Field>
+          </div>
