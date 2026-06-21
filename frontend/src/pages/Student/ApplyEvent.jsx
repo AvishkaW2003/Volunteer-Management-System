@@ -179,3 +179,15 @@ const ApplyEvent = () => {
           );
         })}
       </div>
+      {/* Applications table */}
+      <div className="overflow-hidden bg-white border border-gray-100 shadow-sm rounded-2xl">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-gray-100">
+              {['Event Name', 'Club', 'Event Date', 'Applied On', 'Status', 'Action'].map(h => (
+                <th key={h} className="text-left px-5 py-3.5 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                  {h}
+                </th>
+              ))}
+            </tr>
+          </thead>
