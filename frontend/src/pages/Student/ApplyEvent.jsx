@@ -123,3 +123,26 @@ const ApplyEvent = () => {
   const [viewingApp, setViewingApp] = useState(null);
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const fetchApplications = async () => {
+      setLoading(true);
+      try {
+        const data = await getMyApplications();
+        const normalized = data.map(app => ({
+          id: app.id,
+          event: app.event?.title || 'Unknown Event',
+          club: app.event?.User?.name || 'Organizer',
+          eventDate: app.event?.date || app.event?.eventDate || 'N/A',
+          appliedOn: new Date(app.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+          status: (app.status || 'Pending').toLowerCase(),
+          form: app.formData || app.form || {}
+        }));
+        setApplications(normalized);
+      } catch (err) {
+        console.error("Error fetching student applications:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchApplications();
+  }, [user]);
