@@ -82,3 +82,38 @@ const ViewDetailsModal = ({ app, onClose }) => {
               </div>
             </div>
           </div>
+          {/* Divider + section label */}
+          <div className="flex items-center gap-3">
+            <div className="flex-1 h-px bg-gray-100" />
+            <span className="text-xs font-semibold tracking-wider text-gray-400 uppercase">Your Application</span>
+            <div className="flex-1 h-px bg-gray-100" />
+          </div>
+
+          {/* Application form fields */}
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <DetailField icon={User} label="Full Name" value={app.form?.name} />
+              <DetailField icon={Mail} label="Email" value={app.form?.email} />
+            </div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <DetailField icon={Phone} label="Phone Number" value={app.form?.phone} />
+              <DetailField icon={Tag} label="Relevant Skills" value={app.form?.skills} />
+            </div>
+            <DetailField icon={MessageSquare} label="Why I Want to Join" value={app.form?.motivation} />
+            <DetailField icon={BookOpen} label="Previous Volunteer Experience" value={app.form?.experience} />
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="flex justify-end px-6 py-4 border-t border-gray-100 bg-gray-50">
+          <button
+            onClick={onClose}
+            className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-blue-400 to-purple-500 hover:from-blue-500 hover:to-purple-600 text-white text-sm font-semibold transition-all shadow-sm hover:shadow-md"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
