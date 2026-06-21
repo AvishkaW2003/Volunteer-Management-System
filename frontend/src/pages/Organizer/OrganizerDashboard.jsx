@@ -401,3 +401,87 @@ const OrganizerDashboard = () => {
                 </table>
               </div>
             </div>
+
+                  {/* NEW SECTION 3: APPROVED VOLUNTEERS */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+          <h2 className="text-xl font-bold text-gray-800">Approved Volunteers</h2>
+          <Link to="/organizer/attendance" className="text-xs text-cyan-600 hover:text-cyan-700 font-bold flex items-center gap-0.5">
+            Manage Attendance <ChevronRight className="w-4 h-4" />
+          </Link>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50 border-b border-gray-100">
+              <tr>
+                {['Volunteer', 'Event', 'Approval Date', 'Attendance', 'Actions'].map((h) => (
+                  <th key={h} className="text-left text-sm font-semibold text-gray-500 uppercase tracking-wide px-6 py-3.5">
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-50">
+              {volunteersList.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="text-center py-10 text-gray-400 font-medium">
+                    No approved volunteers yet.
+                  </td>
+                </tr>
+              ) : (
+                volunteersList.slice(0, 8).map((vol) => (
+                  <tr key={vol.id} className="hover:bg-gray-50/50 transition-colors">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-cyan-100 flex items-center justify-center font-bold text-cyan-600 text-xs shadow-inner">
+                          {vol.studentName.charAt(0)}
+                        </div>
+                        <div>
+                          <div className="text-sm font-bold text-gray-800">{vol.studentName}</div>
+                          <div className="text-xs text-gray-400">{vol.studentEmail}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-sm font-medium text-gray-600 truncate max-w-[200px]">
+                      {vol.eventName}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-500">
+                      {vol.approvalDate}
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full ${
+                        vol.attendanceStatus === 'Present'
+                          ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                          : 'bg-gray-100 text-gray-500 border border-gray-200'
+                      }`}>
+                        <span className={`w-1.5 h-1.5 rounded-full ${vol.attendanceStatus === 'Present' ? 'bg-emerald-500' : 'bg-gray-400'}`} />
+                        {vol.attendanceStatus}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => setSelectedStudent({ name: vol.studentName, email: vol.studentEmail, studentProfile: vol.studentProfile })}
+                          className="px-3 py-1.5 border border-gray-200 rounded-lg text-xs font-semibold text-gray-600 hover:bg-gray-50 transition-colors"
+                        >
+                          View Profile
+                        </button>
+                        <button
+                          onClick={() => handleToggleAttendance(vol)}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
+                            vol.attendanceStatus === 'Present'
+                              ? 'bg-amber-50 text-amber-600 hover:bg-amber-100 border-amber-200'
+                              : 'bg-cyan-50 text-cyan-600 hover:bg-cyan-100 border-cyan-200'
+                          }`}
+                        >
+                          Mark Attendance
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
