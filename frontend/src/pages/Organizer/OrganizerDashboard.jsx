@@ -266,3 +266,52 @@ const OrganizerDashboard = () => {
                       <span className="truncate">{event.location}</span>
                     </div>
                   </div>
+
+                                    {/* Summary Counters */}
+                  <div className="grid grid-cols-2 gap-3 bg-gray-50 rounded-xl p-3 text-center border border-gray-100/50">
+                    <div>
+                      <div className="text-lg font-bold text-gray-800">{event.applicationsCount}</div>
+                      <div className="text-[11px] text-gray-500 uppercase tracking-wider">Applications</div>
+                    </div>
+                    <div>
+                      <div className="text-lg font-bold text-cyan-600">{event.approvedVolunteersCount}</div>
+                      <div className="text-[11px] text-gray-500 uppercase tracking-wider">Approved</div>
+                    </div>
+                  </div>
+
+                  {/* Buttons Stack */}
+                  <div className="pt-2 mt-auto grid grid-cols-3 gap-2">
+                    {String(event.id).startsWith('mock') ? (
+                      <button
+                        onClick={() => alert(`Visualizing details for mock event: ${event.title}`)}
+                        className="px-2.5 py-2 text-xs font-bold text-center border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-cyan-600 transition-colors flex items-center justify-center gap-1"
+                      >
+                        <Eye className="w-3.5 h-3.5" /> View Details
+                      </button>
+                    ) : (
+                      <Link
+                        to={`/events/${event.id}`}
+                        className="px-2.5 py-2 text-xs font-bold text-center border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-cyan-600 transition-colors flex items-center justify-center gap-1"
+                      >
+                        <Eye className="w-3.5 h-3.5" /> View Details
+                      </Link>
+                    )}
+                    <Link
+                      to="/organizer/events"
+                      className="px-2.5 py-2 text-xs font-bold text-center border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-cyan-600 transition-colors flex items-center justify-center gap-1"
+                    >
+                      <Edit className="w-3.5 h-3.5" /> Edit Event
+                    </Link>
+                    <Link
+                      to="/organizer/applications"
+                      className="px-2.5 py-2 text-xs font-bold text-center bg-cyan-50 text-cyan-600 rounded-lg hover:bg-cyan-100 transition-colors flex items-center justify-center gap-1 col-span-1"
+                    >
+                      Manage Applications
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
