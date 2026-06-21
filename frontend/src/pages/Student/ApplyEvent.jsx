@@ -146,3 +146,18 @@ const ApplyEvent = () => {
     };
     fetchApplications();
   }, [user]);
+  const counts = {
+    approved: applications.filter(a => a.status === 'approved').length,
+    pending: applications.filter(a => a.status === 'pending').length,
+    rejected: applications.filter(a => a.status === 'rejected').length,
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="flex items-center gap-2 text-3xl font-bold text-gray-800">
+          My Applications
+        </h1>
+        <p className="mt-1 text-gray-500">Track the status of your event applications</p>
+      </div>
