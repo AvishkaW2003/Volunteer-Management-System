@@ -12,3 +12,17 @@ const STATS = [
   { key: 'pending', label: 'Pending' },
   { key: 'rejected', label: 'Rejected' },
 ];
+/* ── View Details Modal ─────────────────────────────────── */
+const DetailField = ({ icon: Icon, label, value }) => (
+  <div className="flex items-start gap-3">
+    <div className="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+      <Icon className="w-4 h-4 text-purple-500" />
+    </div>
+    <div className="flex-1 min-w-0">
+      <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-0.5">{label}</p>
+      <p className="text-sm font-medium text-gray-700 break-words whitespace-pre-wrap">
+        {value || <span className="italic text-gray-300">Not provided</span>}
+      </p>
+    </div>
+  </div>
+);
