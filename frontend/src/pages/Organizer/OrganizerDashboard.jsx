@@ -192,3 +192,30 @@ const OrganizerDashboard = () => {
             </LineChart>
           </ResponsiveContainer>
         </div>
+
+                {/* Pie chart */}
+                <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+                  <h2 className="text-lg font-bold text-gray-800 mb-4">Event Participation Rate (%)</h2>
+                  <ResponsiveContainer width="100%" height={220}>
+                    <PieChart>
+                      <Pie
+                        data={pieChartData}
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={85}
+                        dataKey="value"
+                        label={({ name, value }) => `${name.substring(0, 15)}...: ${value}%`}
+                        labelLine={true}
+                        fontSize={11}
+                      >
+                        {pieChartData.map((_, i) => (
+                          <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        contentStyle={{ borderRadius: '10px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
