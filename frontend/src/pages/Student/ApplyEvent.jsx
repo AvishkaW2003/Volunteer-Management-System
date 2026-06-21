@@ -64,3 +64,21 @@ const ViewDetailsModal = ({ app, onClose }) => {
             <X className="w-5 h-5" />
           </button>
         </div>
+        <div className="p-6 space-y-6">
+          {/* Event info row */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="flex items-center gap-3 px-4 py-3 bg-blue-50 rounded-xl">
+              <Building2 className="flex-shrink-0 w-4 h-4 text-blue-500" />
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-blue-400">Club / Organizer</p>
+                <p className="text-sm font-semibold text-blue-700">{app.club}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 px-4 py-3 bg-purple-50 rounded-xl">
+              <Calendar className="flex-shrink-0 w-4 h-4 text-purple-500" />
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-purple-400">Event Date</p>
+                <p className="text-sm font-semibold text-purple-700">{formatDateString(app.eventDate)}</p>
+              </div>
+            </div>
+          </div>
