@@ -26,3 +26,16 @@ const DetailField = ({ icon: Icon, label, value }) => (
     </div>
   </div>
 );
+const ViewDetailsModal = ({ app, onClose }) => {
+  const s = STATUS[app.status?.toLowerCase()] || STATUS.pending;
+  const Icon = s.icon;
+
+  const formatDateString = iso => {
+    if (!iso) return '';
+    const parts = iso.split('T')[0].split('-');
+    if (parts.length < 3) return iso;
+    const [y, m, d] = parts;
+    return new Date(y, m - 1, d).toLocaleDateString('en-US', {
+      month: 'short', day: 'numeric', year: 'numeric',
+    });
+  };
