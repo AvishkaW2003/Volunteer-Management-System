@@ -92,3 +92,37 @@ const OrganizerDashboard = () => {
       setActionLoading(false);
     }
   };
+
+    const handleToggleAttendance = async (volunteer) => {
+    try {
+      setActionLoading(true);
+      const newStatus = volunteer.attendanceStatus === "Present" ? "Absent" : "Present";
+      await bulkMarkAttendance(volunteer.eventId, [
+        { userId: volunteer.studentId, status: newStatus }
+      ]);
+      await fetchDashboardData();
+    } catch (err) {
+      alert("Failed to update volunteer attendance: " + err.message);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] py-12">
+        <div className="w-12 h-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+        <p className="text-gray-500 font-medium animate-pulse">Loading organizer dashboard...</p>
+      </div>
+    );
+  }
+
+  const lineChartData = dashboardData?.lineData || [];
+  const pieChartData = dashboardData?.pieData || [];
+
+  const stats = [
+    { label: 'Active Events',        value: dashboardData?.activeEvents || 0,       icon: Calendar,   color: 'from-cyan-500 to-blue-600' },
+    { label: 'Total Applications',   value: dashboardData?.totalApplications || 0,  icon: Users,      color: 'from-blue-400 to-cyan-500' },
+    { label: 'Approved Volunteers',  value: dashboardData?.approvedVolunteersCount || (Array.isArray(dashboardData?.approvedVolunteers) ? dashboardData.approvedVolunteers.length : 0), icon: UserCheck,  color: 'from-cyan-400 to-blue-500' },
+    { label: 'Success Rate',         value: dashboardData?.successRate || '0%',     icon: TrendingUp, color: 'from-blue-500 to-cyan-600' },
+  ];
