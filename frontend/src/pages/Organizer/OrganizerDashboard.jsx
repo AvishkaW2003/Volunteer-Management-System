@@ -136,3 +136,19 @@ const OrganizerDashboard = () => {
           <div className="w-10 h-10 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
         </div>
       )}
+
+      {/* Header */}
+      <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-2">Organizer Dashboard <Sparkles className="w-6 h-6 text-cyan-500 animate-pulse" /></h1>
+          <p className="text-gray-500 text-base mt-1">
+            Manage your events and track volunteer engagement
+          </p>
+        </div>
+        <Link
+          to="/organizer/create-event"
+          className="px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl text-sm font-bold shadow-md hover:shadow-cyan-200/50 hover:scale-[1.02] active:scale-[0.98] transition-all text-center self-start md:self-auto"
+        >
+          + Create New Event
+        </Link>
+      </div>
