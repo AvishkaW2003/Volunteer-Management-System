@@ -69,7 +69,7 @@ sequelize
     console.log("Database connection failed:", err);
   });
 
-sequelize.sync({ alter: true })
+sequelize.sync()
   .then(async () => {
    console.log("Database synced");
     await seedDatabase();

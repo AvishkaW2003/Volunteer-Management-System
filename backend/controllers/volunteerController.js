@@ -1,10 +1,16 @@
 import Event from "../models/eventModel.js";
 import User from "../models/userModel.js";
 import VolunteerRegistration from "../models/volunteerRegistration.js";
+import { getSettings } from "../services/settingsService.js";
 
 // Student applies for an event → creates a Pending row
 export const registerVolunteer = async (req, res) => {
   try {
+    const settings = await getSettings();
+    if (!settings.registrationOpen) {
+      return res.status(400).json({ message: "Registrations are currently closed." });
+    }
+
     const { eventId } = req.params;
 
     const event = await Event.findByPk(eventId);
