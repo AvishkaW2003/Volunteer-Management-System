@@ -1,16 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, CheckCircle, XCircle, Clock } from 'lucide-react';
-
-const MOCK_APPLICATIONS = [
-  { id: 1, name: 'Ashan Perera',         email: 'ashan@uni.lk',     event: 'Beach Cleanup Drive',     appliedDate: '2025-05-20', status: 'Pending' },
-  { id: 2, name: 'Nimasha Silva',        email: 'nimasha@uni.lk',   event: 'Tech Workshop for Youth', appliedDate: '2025-05-21', status: 'Approved' },
-  { id: 3, name: 'Dilshan Wickramasinghe', email: 'dilshan@uni.lk', event: 'Tree Planting Campaign',  appliedDate: '2025-05-22', status: 'Pending' },
-  { id: 4, name: 'Kavya Raj',            email: 'kavya@uni.lk',     event: 'Beach Cleanup Drive',     appliedDate: '2025-05-23', status: 'Approved' },
-  { id: 5, name: 'Tharushi Jayawardena', email: 'tharushi@uni.lk',  event: 'Food Distribution',       appliedDate: '2025-05-24', status: 'Rejected' },
-  { id: 6, name: 'Lahiru Fernando',      email: 'lahiru@uni.lk',    event: 'First Aid Training',      appliedDate: '2025-05-25', status: 'Pending' },
-  { id: 7, name: 'Sanduni Herath',       email: 'sanduni@uni.lk',   event: 'Tech Workshop for Youth', appliedDate: '2025-05-26', status: 'Approved' },
-  { id: 8, name: 'Kasun Mendis',         email: 'kasun@uni.lk',     event: 'Art for Kids Workshop',   appliedDate: '2025-05-27', status: 'Pending' },
-];
+import { getApplicationsForOrganizer, updateApplicationStatus } from '../../services/applicationService';
 
 const statusStyle = {
   Pending:  'bg-yellow-100 text-yellow-700',
@@ -25,17 +15,44 @@ const StatusIcon = ({ status }) => {
 };
 
 const Applications = () => {
-  const [applications, setApplications] = useState(MOCK_APPLICATIONS);
+  const [applications, setApplications] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('All');
+  const [updatingId, setUpdatingId] = useState(null);
 
-  const updateStatus = (id, status) =>
-    setApplications((prev) => prev.map((a) => (a.id === id ? { ...a, status } : a)));
+  const loadApplications = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const data = await getApplicationsForOrganizer();
+      setApplications(data);
+    } catch (err) {
+      setError('Could not load applications from the server.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { loadApplications(); }, []);
+
+  const updateStatus = async (id, status) => {
+    setUpdatingId(id);
+    try {
+      await updateApplicationStatus(id, status);
+      setApplications((prev) => prev.map((a) => (a.id === id ? { ...a, status } : a)));
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to update application status.');
+    } finally {
+      setUpdatingId(null);
+    }
+  };
 
   const filtered = applications.filter((a) => {
     const matchSearch =
-      a.name.toLowerCase().includes(search.toLowerCase()) ||
-      a.event.toLowerCase().includes(search.toLowerCase());
+      a.name?.toLowerCase().includes(search.toLowerCase()) ||
+      a.event?.toLowerCase().includes(search.toLowerCase());
     const matchFilter = filter === 'All' || a.status === filter;
     return matchSearch && matchFilter;
   });
@@ -84,6 +101,12 @@ const Applications = () => {
         </div>
       </div>
 
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-3 mb-5 text-sm font-medium">
+          {error}
+        </div>
+      )}
+
       {/* Table */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="overflow-x-auto">
@@ -98,12 +121,20 @@ const Applications = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {filtered.map((app) => (
+              {loading ? (
+                <tr>
+                  <td colSpan={6} className="text-center py-12 text-gray-400 text-sm">Loading applications…</td>
+                </tr>
+              ) : filtered.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="text-center py-12 text-gray-400 text-sm">No applications found</td>
+                </tr>
+              ) : filtered.map((app) => (
                 <tr key={app.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-5 py-3.5">
                     <div className="flex items-center gap-2.5">
                       <div className="w-8 h-8 rounded-full bg-cyan-100 flex items-center justify-center flex-shrink-0">
-                        <span className="text-cyan-600 text-xs font-bold">{app.name.charAt(0)}</span>
+                        <span className="text-cyan-600 text-xs font-bold">{app.name?.charAt(0)}</span>
                       </div>
                       <span className="text-sm font-semibold text-gray-800">{app.name}</span>
                     </div>
@@ -121,16 +152,18 @@ const Applications = () => {
                     {app.status === 'Pending' ? (
                       <div className="flex items-center gap-2">
                         <button
+                          disabled={updatingId === app.id}
                           onClick={() => updateStatus(app.id, 'Approved')}
                           className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold
-                            bg-green-50 text-green-600 hover:bg-green-100 transition-colors"
+                            bg-green-50 text-green-600 hover:bg-green-100 transition-colors disabled:opacity-50"
                         >
                           <CheckCircle className="w-3.5 h-3.5" /> Approve
                         </button>
                         <button
+                          disabled={updatingId === app.id}
                           onClick={() => updateStatus(app.id, 'Rejected')}
                           className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold
-                            bg-red-50 text-red-500 hover:bg-red-100 transition-colors"
+                            bg-red-50 text-red-500 hover:bg-red-100 transition-colors disabled:opacity-50"
                         >
                           <XCircle className="w-3.5 h-3.5" /> Reject
                         </button>

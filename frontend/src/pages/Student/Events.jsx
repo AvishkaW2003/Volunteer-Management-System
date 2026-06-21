@@ -1,105 +1,32 @@
 import { Search, Calendar, MapPin, Users, ChevronDown, ImageOff, User, Star } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ApplyModal from './ApplyModel';
+import { getEvents } from '../../services/eventService';
 
-const MOCK_EVENTS = [
-  {
-    id: 1,
-    title: 'Beach Cleanup Drive',
-    organizer: 'Eco Club',
-    date: '2026-06-10',
-    time: '08:00 AM',
-    location: 'Santa Monica Beach',
-    totalSlots: 20,
-    acceptedCount: 8,   // ← will come from backend (accepted applications)
-    category: 'Environment',
-    skills: ['Teamwork', 'Physical'],
-    reputationPoints: 80,
-    volunteerHours: 5,
-    description: 'Join us for a refreshing morning of cleaning up our beautiful coastline. Help protect marine life and keep our beaches pristine for future generations.',
-    image: 'https://picsum.photos/seed/beach101/600/260',
-  },
-  {
-    id: 2,
-    title: 'Food Bank Volunteering',
-    organizer: 'Care Club',
-    date: '2026-06-15',
-    time: '09:00 AM',
-    location: 'Downtown Community Center',
-    totalSlots: 10,
-    acceptedCount: 9,
-    category: 'Community',
-    skills: ['Organisation', 'Communication'],
-    reputationPoints: 60,
-    volunteerHours: 4,
-    description: 'Help sort and distribute food packages to families in need. A great opportunity to give back to the community.',
-    // image: 'https://picsum.photos/seed/food202/600/260',
-  },
-  {
-    id: 3,
-    title: 'Youth Tutoring Program',
-    organizer: 'Education First',
-    date: '2026-06-20',
-    time: '10:00 AM',
-    location: 'City Library',
-    totalSlots: 8,
-    acceptedCount: 8,
-    category: 'Education',
-    skills: ['Teaching', 'Patience'],
-    reputationPoints: 100,
-    volunteerHours: 6,
-    description: 'Tutor underprivileged school children in Maths and English. Make a real difference in a child\'s academic journey.',
-    image: 'https://picsum.photos/seed/tutor303/600/260',
-  },
-  {
-    id: 4,
-    title: 'Tree Planting Marathon',
-    organizer: 'Green Team',
-    date: '2026-06-22',
-    time: '07:30 AM',
-    location: 'Central Park',
-    totalSlots: 30,
-    acceptedCount: 6,
-    category: 'Environment',
-    skills: ['Physical', 'Teamwork'],
-    reputationPoints: 90,
-    volunteerHours: 4,
-    description: 'Help us plant 500 trees in one day! A fun outdoor activity that directly contributes to a greener planet.',
-    image: 'https://picsum.photos/seed/tree404/600/260',
-  },
-  {
-    id: 5,
-    title: 'Blood Donation Camp',
-    organizer: 'Health Society',
-    date: '2026-06-25',
-    time: '09:00 AM',
-    location: 'Main Hall, Block A',
-    totalSlots: 50,
-    acceptedCount: 30,
-    category: 'Health',
-    skills: ['First Aid', 'Empathy'],
-    reputationPoints: 120,
-    volunteerHours: 3,
-    description: 'Assist medical staff in running a blood donation drive. Your effort can save multiple lives in a single day.',
-    image: 'https://picsum.photos/seed/health505/600/260',
-  },
-  {
-    id: 6,
-    title: 'Food Distribution Drive',
-    organizer: 'Care Club',
-    date: '2026-06-28',
-    time: '10:00 AM',
-    location: 'Community Centre',
-    totalSlots: 15,
-    acceptedCount: 13,
-    category: 'Community',
-    skills: ['Organisation', 'Driving License'],
-    reputationPoints: 70,
-    volunteerHours: 5,
-    description: 'Deliver food packages to elderly residents and low-income households across the city.',
-    image: 'https://picsum.photos/seed/drive606/600/260',
-  },
-];
+const BACKEND_URL = 'http://localhost:5000';
+
+const resolveImage = (image) => {
+  if (!image) return null;
+  if (image.startsWith('http')) return image;
+  return `${BACKEND_URL}${image}`;
+};
+
+const mapEvent = (ev) => ({
+  id: ev.id,
+  title: ev.title,
+  organizer: ev.User?.name || 'Organizer',
+  date: ev.eventDate,
+  time: ev.time || '10:00 AM',
+  location: ev.location,
+  totalSlots: ev.volunteerRequired,
+  acceptedCount: ev.acceptedCount ?? 0,
+  category: ev.category || 'Community',
+  skills: ev.skills ? ev.skills.split(',').map((s) => s.trim()).filter(Boolean) : [],
+  reputationPoints: ev.reputationPoints ?? 10,
+  volunteerHours: ev.volunteerHours ?? 4,
+  description: ev.description,
+  image: resolveImage(ev.image),
+});
 
 const CATEGORIES = ['All Categories', 'Environment', 'Health', 'Education', 'Community'];
 const SKILLS     = ['All Skills', 'Teamwork', 'Physical', 'Organisation', 'Communication', 'Teaching', 'Patience', 'First Aid', 'Empathy', 'Driving License'];
@@ -129,8 +56,26 @@ const Events = () => {
   const [category,   setCategory]   = useState('All Categories');
   const [skill,      setSkill]      = useState('All Skills');
   const [applyingTo, setApplyingTo] = useState(null);
+  const [events,     setEvents]     = useState([]);
+  const [loading,    setLoading]    = useState(true);
+  const [loadError,  setLoadError]  = useState('');
 
-  const filtered = MOCK_EVENTS.map(ev => ({
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const data = await getEvents();
+        if (!cancelled) setEvents(data.map(mapEvent));
+      } catch (err) {
+        if (!cancelled) setLoadError('Could not load events from the server.');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  const filtered = events.map(ev => ({
     ...ev,
     spotsLeft: ev.totalSlots - ev.acceptedCount,
   })).filter(ev => {
@@ -179,7 +124,21 @@ const Events = () => {
         </div>
       </div>
 
+      {/* Loading / error states */}
+      {loading && (
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <p className="font-medium text-gray-400">Loading events…</p>
+        </div>
+      )}
+
+      {!loading && loadError && (
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <p className="font-medium text-red-400">{loadError}</p>
+        </div>
+      )}
+
       {/* Event Cards */}
+      {!loading && !loadError && (
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
         {filtered.map(ev => {
           const theme   = spotsTheme(ev.spotsLeft, ev.totalSlots);
@@ -302,6 +261,7 @@ const Events = () => {
           </div>
         )}
       </div>
+      )}
 
       {/* Apply Modal */}
       {applyingTo && (

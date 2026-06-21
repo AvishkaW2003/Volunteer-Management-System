@@ -44,8 +44,8 @@ const AdminLayout = () => {
       >
         {/* Logo */}
         <div className="flex items-center gap-3 px-4 py-4 border-b border-gray-100">
-              <div className="w-9 h-9 bg-gradient-to-br from-[#14B8A6] to-[#6EE7D8] rounded-xl flex items-center justify-center flex-shrink-0">
-            <span className="text-white text-sm font-bold">VH</span>
+              <div className="w-9 h-9 bg-gradient-to-br from-[#14B8A6] to-[#6EE7D8] rounded-xl flex items-center justify-center flex-shrink-0 p-1.5 shadow-sm">
+            <img src="/images/logo.png" alt="VolunteerHub" className="w-full h-full object-contain rounded-md" />
           </div>
           <span className="font-bold text-gray-800 text-base">VolunteerHub</span>
         </div>
@@ -102,8 +102,8 @@ const AdminLayout = () => {
               <Menu className="w-5 h-5" />
             </button>
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 bg-gradient-to-br from-[#14B8A6] to-[#6EE7D8] rounded-lg flex items-center justify-center">  
-                <span className="text-white text-xs font-bold">VH</span>
+              <div className="w-7 h-7 bg-gradient-to-br from-[#14B8A6] to-[#6EE7D8] rounded-lg flex items-center justify-center p-1 shadow-sm">
+                <img src="/images/logo.png" alt="VolunteerHub" className="w-full h-full object-contain rounded-sm" />
               </div>
               <span className="font-bold text-gray-800 text-sm">VolunteerHub</span>
             </div>

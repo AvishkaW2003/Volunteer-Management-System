@@ -34,23 +34,6 @@ const roles = [
     ),
     path: '/register/organizer',
   },
-  {
-    key: 'admin',
-    label: 'Admin',
-    description: 'Manage users, approve events, and oversee the platform',
-    gradient: 'from-[#14B8A6] to-[#6EE7D8]',
-    cardGradient: 'from-[#14B8A6]/20 to-[#6EE7D8]/20',
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" className="w-11 h-11 text-white" fill="none"
-        viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-          d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955
-             11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824
-             10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-      </svg>
-    ),
-   path: '/login/admin',
-  },
 ];
 
 const RoleSelectPage = ({ mode = 'register' }) => {
@@ -73,18 +56,8 @@ const RoleSelectPage = ({ mode = 'register' }) => {
       <div className="relative z-10 flex flex-col items-center w-full max-w-6xl">
 
         {/* Logo and Title */}
-        <div className="flex flex-col items-center mb-10 gap-3">
-          <div className="w-18 h-18 bg-gradient-to-br from-blue-400 to-indigo-600
-                          rounded-2xl flex items-center justify-center shadow-xl p-4">
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 text-white"
-              fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10
-                   0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3
-                   3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0
-                   0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-          </div>
+        <div className="flex flex-col items-center mb-10 gap-2">
+          <img src="/images/logo.png" alt="VolunteerHub" className="w-[200px] h-[180px] rounded-md shadow-xl object-cover" />
           <h1 className="text-4xl font-extrabold text-white drop-shadow-lg tracking-tight">
             VolunteerHub
           </h1>
@@ -94,32 +67,41 @@ const RoleSelectPage = ({ mode = 'register' }) => {
         </div>
 
         {/* Role Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-7 w-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-14 w-full max-w-3xl">
           {roles.map((role) => {
-            const targetPath = role.key === 'admin' 
-              ? '/login/admin' 
-              : (isLogin ? `/login/${role.key}` : `/register/${role.key}`);
-            
+            const targetPath = isLogin ? `/login/${role.key}` : `/register/${role.key}`;
+
             return (
               <div
                 key={role.key}
                 onClick={() => navigate(targetPath)}
                 className={`bg-gradient-to-br ${role.cardGradient}
-                           backdrop-blur-md rounded-3xl p-8 flex flex-col items-center gap-5
+                           backdrop-blur-md rounded-3xl p-12 flex flex-col items-center gap-7
                            cursor-pointer border border-white/30 shadow-2xl
                            hover:scale-105 hover:border-white/60 hover:shadow-blue-500/30
                            transition-all duration-250`}
                 style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(147,197,253,0.12) 100%)' }}
               >
                 {/* Icon */}
-                <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${role.gradient}
+                <div className={`w-28 h-28 rounded-2xl bg-gradient-to-br ${role.gradient}
                                  flex items-center justify-center shadow-lg`}>
-                  {role.icon}
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-14 h-14 text-white"
+                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    {role.key === 'student'
+                      ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                          d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10
+                             0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2
+                             2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0
+                             012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                    }
+                  </svg>
                 </div>
 
                 {/* Text */}
                 <div className="text-center">
-                  <h2 className="text-2xl font-bold text-white mb-2 drop-shadow">
+                  <h2 className="text-3xl font-bold text-white mb-3 drop-shadow">
                     {role.label}
                   </h2>
                   <p className="text-white/80 text-base leading-relaxed font-medium">
@@ -128,7 +110,7 @@ const RoleSelectPage = ({ mode = 'register' }) => {
                 </div>
 
                 {/* CTA hint */}
-                <span className="text-sm text-blue-200 font-semibold tracking-wide mt-1">
+                <span className="text-base text-blue-200 font-semibold tracking-wide mt-1">
                   {isLogin ? 'Sign In →' : 'Get Started →'}
                 </span>
               </div>

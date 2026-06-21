@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
 import bcrypt from "bcryptjs";
 import { seedDatabase } from "./config/seed.js";
 import User from "./models/userModel.js";
@@ -31,9 +33,12 @@ import roleMiddleware from "./middleware/roleMiddleware.js";
 
 dotenv.config();
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/events", eventRoutes);

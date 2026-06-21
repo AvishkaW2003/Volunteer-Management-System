@@ -1,42 +1,99 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Calendar, MapPin, Users, Tag, AlignLeft, Clock, ChevronLeft } from 'lucide-react';
+import { Calendar, MapPin, Users, Tag, AlignLeft, Clock, ChevronLeft, Star, ImagePlus, X } from 'lucide-react';
+import { createEvent } from '../../services/eventService';
 
 const CATEGORIES = ['Community Service', 'Environment', 'Education', 'Health', 'Technology', 'Sports', 'Arts & Culture'];
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
+
+const Field = ({ label, required, children }) => (
+  <div>
+    <label className="block text-base font-medium text-gray-700 mb-1.5">
+      {label} {required && <span className="text-red-400">*</span>}
+    </label>
+    {children}
+  </div>
+);
 
 const CreateEvent = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [imageError, setImageError] = useState('');
   const [form, setForm] = useState({
     title: '', category: '', description: '',
     date: '', time: '', location: '',
-    maxVolunteers: '', skills: '',
+    maxVolunteers: '', skills: '', reputationPoints: '',
   });
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    await new Promise((r) => setTimeout(r, 800));
-    setLoading(false);
-    setSuccess(true);
-    setTimeout(() => {
-      setSuccess(false);
-      navigate('/organizer/events');
-    }, 1500);
+  const handleImageChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+      setImageError('Unsupported file type. Please upload a JPG, PNG, or WEBP image.');
+      setImageFile(null);
+      setImagePreview(null);
+      e.target.value = '';
+      return;
+    }
+    if (file.size > MAX_IMAGE_SIZE) {
+      setImageError('Image is too large. Maximum allowed size is 5MB.');
+      setImageFile(null);
+      setImagePreview(null);
+      e.target.value = '';
+      return;
+    }
+
+    setImageError('');
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
   };
 
-  const Field = ({ label, required, children }) => (
-    <div>
-      <label className="block text-base font-medium text-gray-700 mb-1.5">
-        {label} {required && <span className="text-red-400">*</span>}
-      </label>
-      {children}
-    </div>
-  );
+  const removeImage = () => {
+    setImageFile(null);
+    setImagePreview(null);
+    setImageError('');
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      const data = new FormData();
+      data.append('title', form.title);
+      data.append('category', form.category);
+      data.append('description', form.description);
+      data.append('date', form.date);
+      data.append('time', form.time);
+      data.append('location', form.location);
+      data.append('maxVolunteers', form.maxVolunteers);
+      data.append('skills', form.skills);
+      if (form.reputationPoints) data.append('reputationPoints', form.reputationPoints);
+      if (imageFile) data.append('image', imageFile);
+
+      await createEvent(data);
+
+      setLoading(false);
+      setSuccess(true);
+      setTimeout(() => {
+        setSuccess(false);
+        navigate('/organizer/events');
+      }, 1500);
+    } catch (err) {
+      setLoading(false);
+      setError(err.response?.data?.message || 'Failed to create event. Please try again.');
+    }
+  };
 
   const inputClass =
     'w-full border border-gray-200 rounded-xl px-3 py-2.5 text-base text-gray-700 placeholder-gray-400 outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100 transition-all bg-gray-50';
@@ -67,6 +124,12 @@ const CreateEvent = () => {
       {success && (
         <div className="bg-green-50 border border-green-200 text-green-700 rounded-xl px-4 py-3 mb-5 text-sm font-medium">
           Event created successfully! Redirecting…
+        </div>
+      )}
+
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-3 mb-5 text-sm font-medium">
+          {error}
         </div>
       )}
 
@@ -157,14 +220,61 @@ const CreateEvent = () => {
             </Field>
           </div>
 
-          {/* Skills */}
-          <Field label="Required Skills">
-            <input
-              name="skills" value={form.skills} onChange={handleChange}
-              placeholder="e.g. Leadership, First Aid, Communication"
-              className={inputClass}
-            />
-            <p className="text-xs text-gray-400 mt-1">Separate multiple skills with commas</p>
+          {/* Reputation Points + Skills */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <Field label="Volunteer Reputation Points">
+              {iconInput(
+                <Star className="w-4 h-4" />,
+                <input
+                  type="number" name="reputationPoints" value={form.reputationPoints} onChange={handleChange} min="0"
+                  placeholder="e.g. 50"
+                  className="flex-1 outline-none text-base text-gray-700 placeholder-gray-400 bg-transparent w-full"
+                />
+              )}
+              <p className="text-xs text-gray-400 mt-1">Points volunteers earn for completing this event</p>
+            </Field>
+
+            <Field label="Required Skills">
+              <input
+                name="skills" value={form.skills} onChange={handleChange}
+                placeholder="e.g. Leadership, First Aid, Communication"
+                className={inputClass}
+              />
+              <p className="text-xs text-gray-400 mt-1">Separate multiple skills with commas</p>
+            </Field>
+          </div>
+
+          {/* Event Image (optional) */}
+          <Field label="Event Image (optional)">
+            {imagePreview ? (
+              <div className="relative w-full max-w-sm">
+                <img src={imagePreview} alt="Event preview" className="w-full h-44 object-cover rounded-xl border border-gray-200" />
+                <button
+                  type="button"
+                  onClick={removeImage}
+                  className="absolute top-2 right-2 p-1.5 rounded-full bg-white/90 text-gray-600 hover:text-red-500 shadow-sm transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-gray-200 rounded-xl px-4 py-6 bg-gray-50 cursor-pointer hover:border-cyan-300 hover:bg-cyan-50/40 transition-all">
+                <ImagePlus className="w-6 h-6 text-gray-400" />
+                <span className="text-sm font-medium text-gray-500">Click to upload an event image</span>
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+              </label>
+            )}
+            <p className="text-xs text-gray-400 mt-1">
+              Allowed formats: JPG, PNG, WEBP — max size 5MB. Adding an image is optional; you can publish without one.
+            </p>
+            {imageError && (
+              <p className="text-xs font-medium text-red-500 mt-1">{imageError}</p>
+            )}
           </Field>
 
           {/* Actions */}

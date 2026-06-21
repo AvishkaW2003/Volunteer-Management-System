@@ -51,7 +51,10 @@ async (
   try {
 
     const events =
-      await Event.findAll();
+      await Event.findAll({
+        include: [{ model: User, attributes: ["id", "name"] }],
+        order: [["eventDate", "ASC"]],
+      });
 
     res.json(events);
 

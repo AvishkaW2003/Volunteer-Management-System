@@ -10,6 +10,7 @@ import {
 } from "../controllers/eventController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 import roleMiddleware from "../middleware/roleMiddleware.js";
+import { uploadEventImage } from "../middleware/uploadMiddleware.js";
 
 const router = express.Router();
 
@@ -24,7 +25,7 @@ router.get("/organizer/stats", authMiddleware, roleMiddleware("organizer"), getO
 router.get("/organizer/mine", authMiddleware, roleMiddleware("organizer"), getMyEvents);
 
 // Organizer — create, update, delete
-router.post("/", authMiddleware, roleMiddleware("organizer"), createEvent);
+router.post("/", authMiddleware, roleMiddleware("organizer"), uploadEventImage, createEvent);
 router.put("/:id", authMiddleware, roleMiddleware("organizer"), updateEvent);
 router.delete("/:id", authMiddleware, roleMiddleware("organizer"), deleteEvent);
 

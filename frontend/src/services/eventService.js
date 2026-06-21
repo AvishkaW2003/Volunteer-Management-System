@@ -13,6 +13,22 @@ export const getEvents = async () => {
   return response.data;
 };
 
+// Get events created by the logged-in organizer
+export const getMyEvents = async () => {
+  const response = await axios.get(`${API_URL}/organizer/mine`, {
+    headers: getAuthHeader(),
+  });
+  return response.data;
+};
+
+// Get dashboard stats for the logged-in organizer
+export const getOrganizerStats = async () => {
+  const response = await axios.get(`${API_URL}/organizer/stats`, {
+    headers: getAuthHeader(),
+  });
+  return response.data;
+};
+
 // Get single event by ID (public)
 export const getEventById = async (id) => {
   const response = await axios.get(`${API_URL}/${id}`);
@@ -34,7 +50,6 @@ export const updateEvent = async (id, eventData) => {
   });
   return response.data;
 };
-
 // Delete event (organizer only)
 export const deleteEvent = async (id) => {
   const response = await axios.delete(`${API_URL}/${id}`, {
