@@ -161,3 +161,21 @@ const ApplyEvent = () => {
         </h1>
         <p className="mt-1 text-gray-500">Track the status of your event applications</p>
       </div>
+      {/* Summary stat cards */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        {STATS.map(({ key, label }) => {
+          const s = STATUS[key];
+          const Icon = s.icon;
+          return (
+            <div key={key} className="flex items-center gap-4 p-5 bg-white border border-gray-100 shadow-sm rounded-2xl">
+              <div className={`w-12 h-12 rounded-2xl ${s.iconBg} flex items-center justify-center flex-shrink-0`}>
+                <Icon className={`w-6 h-6 ${s.iconCls}`} />
+              </div>
+              <div>
+                <p className="text-3xl font-extrabold text-gray-800">{counts[key]}</p>
+                <p className="text-sm font-medium text-gray-500">{label}</p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
