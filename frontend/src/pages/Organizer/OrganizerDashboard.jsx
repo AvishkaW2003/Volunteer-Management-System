@@ -93,7 +93,7 @@ const OrganizerDashboard = () => {
     }
   };
 
-    const handleToggleAttendance = async (volunteer) => {
+  const handleToggleAttendance = async (volunteer) => {
     try {
       setActionLoading(true);
       const newStatus = volunteer.attendanceStatus === "Present" ? "Absent" : "Present";
@@ -121,8 +121,18 @@ const OrganizerDashboard = () => {
   const pieChartData = dashboardData?.pieData || [];
 
   const stats = [
-    { label: 'Active Events',        value: dashboardData?.activeEvents || 0,       icon: Calendar,   color: 'from-cyan-500 to-blue-600' },
-    { label: 'Total Applications',   value: dashboardData?.totalApplications || 0,  icon: Users,      color: 'from-blue-400 to-cyan-500' },
-    { label: 'Approved Volunteers',  value: dashboardData?.approvedVolunteersCount || (Array.isArray(dashboardData?.approvedVolunteers) ? dashboardData.approvedVolunteers.length : 0), icon: UserCheck,  color: 'from-cyan-400 to-blue-500' },
-    { label: 'Success Rate',         value: dashboardData?.successRate || '0%',     icon: TrendingUp, color: 'from-blue-500 to-cyan-600' },
+    { label: 'Active Events', value: dashboardData?.activeEvents || 0, icon: Calendar, color: 'from-cyan-500 to-blue-600' },
+    { label: 'Total Applications', value: dashboardData?.totalApplications || 0, icon: Users, color: 'from-blue-400 to-cyan-500' },
+    { label: 'Approved Volunteers', value: dashboardData?.approvedVolunteersCount || (Array.isArray(dashboardData?.approvedVolunteers) ? dashboardData.approvedVolunteers.length : 0), icon: UserCheck, color: 'from-cyan-400 to-blue-500' },
+    { label: 'Success Rate', value: dashboardData?.successRate || '0%', icon: TrendingUp, color: 'from-blue-500 to-cyan-600' },
   ];
+
+  return (
+    <div className={`space-y-8 pb-12 relative ${actionLoading ? 'opacity-80 pointer-events-none transition-opacity duration-200' : ''}`}>
+
+      {/* Action Overlay Loader */}
+      {actionLoading && (
+        <div className="fixed inset-0 bg-white/30 backdrop-blur-[1px] flex items-center justify-center z-50">
+          <div className="w-10 h-10 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      )}
