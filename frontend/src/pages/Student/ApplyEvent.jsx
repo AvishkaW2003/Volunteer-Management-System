@@ -191,3 +191,53 @@ const ApplyEvent = () => {
               ))}
             </tr>
           </thead>
+          <tbody className="divide-y divide-gray-50">
+            {applications.map(app => {
+              const statusKey = (app.status || 'pending').toLowerCase();
+              const s = STATUS[statusKey] || STATUS.pending;
+              const Icon = s.icon;
+              return (
+                <tr key={app.id} className="transition-colors hover:bg-purple-50/30">
+                  <td className="px-5 py-4 font-semibold text-gray-800">{app.event}</td>
+                  <td className="px-5 py-4 text-gray-500">{app.club}</td>
+                  <td className="px-5 py-4 text-gray-500">{app.eventDate}</td>
+                  <td className="px-5 py-4 text-gray-500">{app.appliedOn}</td>
+                  <td className="px-5 py-4">
+                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${s.badge}`}>
+                      <Icon className="w-3.5 h-3.5" /> {s.label}
+                    </span>
+                  </td>
+                  <td className="px-5 py-4">
+                    {statusKey === 'approved' && (
+                      <button
+                        onClick={() => setViewingApp(app)}
+                        className="text-sm font-semibold text-purple-600 transition-colors hover:text-purple-800"
+                      >
+                        View Details
+                      </button>
+                    )}
+                    {statusKey === 'pending' && (
+                      <button className="text-sm font-semibold text-red-500 transition-colors hover:text-red-700">
+                        Withdraw
+                      </button>
+                    )}
+                    {statusKey === 'rejected' && (
+                      <span className="text-gray-300">—</span>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      {/* View Details Modal */}
+      {viewingApp && (
+        <ViewDetailsModal app={viewingApp} onClose={() => setViewingApp(null)} />
+      )}
+    </div>
+  );
+};
+
+export default ApplyEvent;
