@@ -1,12 +1,41 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Calendar, MapPin, Users, Tag, AlignLeft, Clock, ChevronLeft, Star, ImagePlus, X } from 'lucide-react';
+import { Calendar, MapPin, Users, Tag, AlignLeft, Clock, ChevronLeft } from 'lucide-react';
+import { getOrganizerSettings } from '../../services/userService';
 import { createEvent } from '../../services/eventService';
 
 const CATEGORIES = ['Community Service', 'Environment', 'Education', 'Health', 'Technology', 'Sports', 'Arts & Culture'];
-const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
-const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
 
+const PRESET_BANNERS = [
+  { title: 'IEEE WIE Day', url: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800' },
+  { title: 'IEEE Path Forward 3.0', url: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800' },
+  { title: 'PearlHack 4.0', url: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=800' },
+  { title: 'First Aid Training', url: 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=800' },
+  { title: 'Tree Plantation Drive', url: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800' },
+  { title: 'Blood Donation Camp', url: 'https://images.unsplash.com/photo-1615461066841-6116e61058f4?w=800' },
+];
+
+const getFallbackImage = (title, category) => {
+  const t = (title || '').toLowerCase();
+  if (t.includes('wie') || t.includes('women in engineering')) return PRESET_BANNERS[0].url;
+  if (t.includes('path forward')) return PRESET_BANNERS[1].url;
+  if (t.includes('pearlhack') || t.includes('hackathon')) return PRESET_BANNERS[2].url;
+  if (t.includes('first aid') || t.includes('training') || t.includes('cpr')) return PRESET_BANNERS[3].url;
+  if (t.includes('tree') || t.includes('plantation') || t.includes('plant')) return PRESET_BANNERS[4].url;
+  if (t.includes('blood') || t.includes('donation')) return PRESET_BANNERS[5].url;
+
+  const cat = (category || '').toLowerCase();
+  if (cat.includes('environment')) {
+    return 'https://images.unsplash.com/photo-1473448912268-2022ce9509d8?w=800';
+  }
+  if (cat.includes('technology') || cat.includes('education')) {
+    return 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800';
+  }
+  if (cat.includes('health') || cat.includes('healthcare')) {
+    return 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=800';
+  }
+  return 'https://images.unsplash.com/photo-1559027615-cd44874e90e5?w=800';
+};
 const Field = ({ label, required, children }) => (
   <div>
     <label className="block text-base font-medium text-gray-700 mb-1.5">
@@ -16,72 +45,98 @@ const Field = ({ label, required, children }) => (
   </div>
 );
 
+const inputClass =
+  'w-full border border-gray-200 rounded-xl px-3 py-2.5 text-base text-gray-700 placeholder-gray-400 outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100 transition-all bg-gray-50';
+
+const iconInput = (icon, input) => (
+  <div className="flex items-center border border-gray-200 rounded-xl px-3 py-2.5 gap-2 bg-gray-50 focus-within:border-cyan-400 focus-within:ring-2 focus-within:ring-cyan-100 transition-all">
+    <span className="text-gray-400 flex-shrink-0">{icon}</span>
+    {input}
+  </div>
+);
+
 const CreateEvent = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [error, setError] = useState('');
-  const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
-  const [imageError, setImageError] = useState('');
   const [form, setForm] = useState({
     title: '', category: '', description: '',
     date: '', time: '', location: '',
-    maxVolunteers: '', skills: '', reputationPoints: '',
+    maxVolunteers: '', skills: '', image: '',
   });
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setForm(prev => ({ ...prev, image: reader.result }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const selectPresetImage = (url) => {
+    setForm(prev => ({ ...prev, image: url }));
+  };
+
+  useEffect(() => {
+    const fetchDefaultPreferences = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        let settingsData;
+        if (token && token.startsWith('dummy')) {
+          const stored = localStorage.getItem('mock_org_settings');
+          if (stored) {
+            settingsData = JSON.parse(stored);
+          } else {
+            settingsData = {
+              eventPreferences: { defaultCategory: 'Technology', defaultVolunteerLimit: 40, defaultEventLocation: 'Main Auditorium' }
+            };
+          }
+        } else {
+          settingsData = await getOrganizerSettings();
+        }
+
+        if (settingsData && settingsData.eventPreferences) {
+          const { defaultCategory, defaultVolunteerLimit, defaultEventLocation } = settingsData.eventPreferences;
+          setForm(prev => ({
+            ...prev,
+            category: prev.category || defaultCategory || '',
+            maxVolunteers: prev.maxVolunteers || (defaultVolunteerLimit ? String(defaultVolunteerLimit) : ''),
+            location: prev.location || defaultEventLocation || ''
+          }));
+        }
+      } catch (err) {
+        console.error('Failed to load organizer default preferences for event creation:', err);
+      }
+    };
+    fetchDefaultPreferences();
+  }, []);
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleImageChange = (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
-      setImageError('Unsupported file type. Please upload a JPG, PNG, or WEBP image.');
-      setImageFile(null);
-      setImagePreview(null);
-      e.target.value = '';
-      return;
-    }
-    if (file.size > MAX_IMAGE_SIZE) {
-      setImageError('Image is too large. Maximum allowed size is 5MB.');
-      setImageFile(null);
-      setImagePreview(null);
-      e.target.value = '';
-      return;
-    }
-
-    setImageError('');
-    setImageFile(file);
-    setImagePreview(URL.createObjectURL(file));
-  };
-
-  const removeImage = () => {
-    setImageFile(null);
-    setImagePreview(null);
-    setImageError('');
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
     setLoading(true);
 
     try {
-      const data = new FormData();
-      data.append('title', form.title);
-      data.append('category', form.category);
-      data.append('description', form.description);
-      data.append('date', form.date);
-      data.append('time', form.time);
-      data.append('location', form.location);
-      data.append('maxVolunteers', form.maxVolunteers);
-      data.append('skills', form.skills);
-      if (form.reputationPoints) data.append('reputationPoints', form.reputationPoints);
-      if (imageFile) data.append('image', imageFile);
+      const eventData = {
+        title: form.title,
+        category: form.category,
+        description: form.description,
+        eventDate: form.date,
+        time: form.time || '10:00 AM',
+        location: form.location,
+        volunteerRequired: parseInt(form.maxVolunteers) || 0,
+        skills: form.skills || '',
+        image: form.image || getFallbackImage(form.title, form.category),
+        reputationPoints: 100, // standard points
+        volunteerHours: 4 // standard hours
+      };
 
-      await createEvent(data);
+      await createEvent(eventData);
 
       setLoading(false);
       setSuccess(true);
@@ -90,20 +145,12 @@ const CreateEvent = () => {
         navigate('/organizer/events');
       }, 1500);
     } catch (err) {
+      console.error("Error creating event:", err);
+      alert(err.response?.data?.message || err.message || "Failed to create event");
       setLoading(false);
-      setError(err.response?.data?.message || 'Failed to create event. Please try again.');
     }
   };
 
-  const inputClass =
-    'w-full border border-gray-200 rounded-xl px-3 py-2.5 text-base text-gray-700 placeholder-gray-400 outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100 transition-all bg-gray-50';
-
-  const iconInput = (icon, input) => (
-    <div className="flex items-center border border-gray-200 rounded-xl px-3 py-2.5 gap-2 bg-gray-50 focus-within:border-cyan-400 focus-within:ring-2 focus-within:ring-cyan-100 transition-all">
-      <span className="text-gray-400 flex-shrink-0">{icon}</span>
-      {input}
-    </div>
-  );
 
   return (
     <div>
@@ -124,12 +171,6 @@ const CreateEvent = () => {
       {success && (
         <div className="bg-green-50 border border-green-200 text-green-700 rounded-xl px-4 py-3 mb-5 text-sm font-medium">
           Event created successfully! Redirecting…
-        </div>
-      )}
-
-      {error && (
-        <div className="bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-3 mb-5 text-sm font-medium">
-          {error}
         </div>
       )}
 
@@ -220,61 +261,92 @@ const CreateEvent = () => {
             </Field>
           </div>
 
-          {/* Reputation Points + Skills */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <Field label="Volunteer Reputation Points">
-              {iconInput(
-                <Star className="w-4 h-4" />,
-                <input
-                  type="number" name="reputationPoints" value={form.reputationPoints} onChange={handleChange} min="0"
-                  placeholder="e.g. 50"
-                  className="flex-1 outline-none text-base text-gray-700 placeholder-gray-400 bg-transparent w-full"
-                />
-              )}
-              <p className="text-xs text-gray-400 mt-1">Points volunteers earn for completing this event</p>
-            </Field>
+          {/* Skills */}
+          <Field label="Required Skills">
+            <input
+              name="skills" value={form.skills} onChange={handleChange}
+              placeholder="e.g. Leadership, First Aid, Communication"
+              className={inputClass}
+            />
+            <p className="text-xs text-gray-400 mt-1">Separate multiple skills with commas</p>
+          </Field>
 
-            <Field label="Required Skills">
-              <input
-                name="skills" value={form.skills} onChange={handleChange}
-                placeholder="e.g. Leadership, First Aid, Communication"
-                className={inputClass}
-              />
-              <p className="text-xs text-gray-400 mt-1">Separate multiple skills with commas</p>
-            </Field>
-          </div>
+          {/* Event Banner Image */}
+          <Field label="Event Banner Image">
+            <div className="space-y-4">
+              {/* Custom Upload Box */}
+              <div className="flex flex-col sm:flex-row gap-4 items-center">
+                <div className="w-full sm:w-1/2 h-36 border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center p-3 text-center bg-gray-50 hover:border-cyan-400 transition-colors relative overflow-hidden group">
+                  {form.image ? (
+                    <>
+                      <img src={form.image} alt="Preview" className="absolute inset-0 w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold pointer-events-none">
+                        Change Image
+                      </div>
+                    </>
+                  ) : (
+                    <div className="text-gray-400">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 mx-auto mb-1 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      <span className="text-xs font-medium">Click to upload custom banner</span>
+                    </div>
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="absolute inset-0 opacity-0 cursor-pointer"
+                  />
+                </div>
 
-          {/* Event Image (optional) */}
-          <Field label="Event Image (optional)">
-            {imagePreview ? (
-              <div className="relative w-full max-w-sm">
-                <img src={imagePreview} alt="Event preview" className="w-full h-44 object-cover rounded-xl border border-gray-200" />
-                <button
-                  type="button"
-                  onClick={removeImage}
-                  className="absolute top-2 right-2 p-1.5 rounded-full bg-white/90 text-gray-600 hover:text-red-500 shadow-sm transition-colors"
-                >
-                  <X className="w-4 h-4" />
-                </button>
+                <div className="w-full sm:w-1/2 text-left">
+                  <p className="text-sm font-semibold text-gray-700">Custom Banner Upload</p>
+                  <p className="text-xs text-gray-400 mt-1">Upload a JPG, PNG or WEBP image. High resolution landscape aspect ratios (e.g. 16:9) work best.</p>
+                  {form.image && (
+                    <button
+                      type="button"
+                      onClick={() => setForm(prev => ({ ...prev, image: '' }))}
+                      className="mt-3 text-xs font-bold text-red-500 hover:text-red-600 transition-colors border-none bg-transparent cursor-pointer"
+                    >
+                      Clear Selection
+                    </button>
+                  )}
+                </div>
               </div>
-            ) : (
-              <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-gray-200 rounded-xl px-4 py-6 bg-gray-50 cursor-pointer hover:border-cyan-300 hover:bg-cyan-50/40 transition-all">
-                <ImagePlus className="w-6 h-6 text-gray-400" />
-                <span className="text-sm font-medium text-gray-500">Click to upload an event image</span>
-                <input
-                  type="file"
-                  accept="image/jpeg,image/png,image/webp"
-                  onChange={handleImageChange}
-                  className="hidden"
-                />
-              </label>
-            )}
-            <p className="text-xs text-gray-400 mt-1">
-              Allowed formats: JPG, PNG, WEBP — max size 5MB. Adding an image is optional; you can publish without one.
-            </p>
-            {imageError && (
-              <p className="text-xs font-medium text-red-500 mt-1">{imageError}</p>
-            )}
+
+              {/* Preset Selector Grid */}
+              <div className="space-y-2">
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Or Select From Preset Banners</p>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {PRESET_BANNERS.map((preset) => {
+                    const isSelected = form.image === preset.url;
+                    return (
+                      <button
+                        key={preset.title}
+                        type="button"
+                        onClick={() => selectPresetImage(preset.url)}
+                        className={`group relative h-20 rounded-xl overflow-hidden text-left border transition-all ${isSelected ? 'border-cyan-500 ring-2 ring-cyan-100 shadow-sm' : 'border-gray-100 hover:border-cyan-300'
+                          }`}
+                      >
+                        <img src={preset.url} alt={preset.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-200" />
+                        <div className={`absolute inset-0 transition-opacity flex flex-col justify-end p-2 ${isSelected ? 'bg-gradient-to-t from-cyan-900/90 via-cyan-900/50 to-transparent' : 'bg-gradient-to-t from-black/80 via-black/30 to-transparent'
+                          }`}>
+                          <span className="text-[10px] font-bold text-white leading-tight line-clamp-1">{preset.title}</span>
+                        </div>
+                        {isSelected && (
+                          <div className="absolute top-1.5 right-1.5 w-4.5 h-4.5 bg-cyan-500 text-white rounded-full flex items-center justify-center shadow">
+                            <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
           </Field>
 
           {/* Actions */}
@@ -283,9 +355,9 @@ const CreateEvent = () => {
               type="submit"
               disabled={loading}
               className="flex-1 py-3 rounded-xl text-white font-semibold text-sm
-                bg-gradient-to-r from-cyan-400 to-blue-500
-                hover:from-cyan-500 hover:to-blue-600
-                transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
+                          bg-gradient-to-r from-cyan-400 to-blue-500
+                          hover:from-cyan-500 hover:to-blue-600
+                          transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {loading ? 'Publishing…' : 'Publish Event'}
             </button>
@@ -293,7 +365,7 @@ const CreateEvent = () => {
               type="button"
               onClick={() => navigate('/organizer/events')}
               className="px-6 py-3 rounded-xl text-cyan-600 font-semibold text-sm
-                border border-cyan-200 hover:bg-cyan-50 transition-all duration-200"
+                          border border-cyan-200 hover:bg-cyan-50 transition-all duration-200"
             >
               Cancel
             </button>
