@@ -23,6 +23,7 @@ const OrganizerLogin = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
+
     try {
       const data = await loginUser({
         email: formData.email,
@@ -33,7 +34,7 @@ const OrganizerLogin = () => {
         return;
       }
       login(data.user, data.token);
-      navigate('/organizer/dashboard');
+      navigate('/');
     } catch (err) {
       if (!err.response) {
         setError('Could not connect to backend server. Please ensure the backend is running on port 5000.');
@@ -51,7 +52,21 @@ const OrganizerLogin = () => {
 
       {/* Logo */}
       <div className="flex items-center gap-2 mb-6">
-        <img src="/images/logo.png" alt="VolunteerHub" className="w-9 h-9 rounded-xl object-cover" />
+        <div className="w-9 h-9 bg-gradient-to-br from-blue-500
+                        to-purple-600 rounded-xl flex items-center
+                        justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg"
+            className="w-5 h-5 text-white" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round"
+              strokeWidth={2}
+              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10
+                 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3
+                 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283
+                 .356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3
+                 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </div>
         <span className="text-lg font-bold text-gray-800">
           VolunteerHub
         </span>
@@ -94,12 +109,6 @@ const OrganizerLogin = () => {
               Organizer Login
             </h2>
           </div>
-          <button
-            onClick={() => navigate('/signin')}
-            className="text-sm text-blue-500 hover:text-blue-600
-                       font-medium transition-colors">
-            Change Role
-          </button>
         </div>
 
         {/* Error Message */}
@@ -181,8 +190,10 @@ const OrganizerLogin = () => {
 
             {/* Forgot Password */}
             <div className="text-right mt-1">
-              <span className="text-xs text-blue-500
-                               cursor-pointer hover:underline">
+              <span
+                onClick={() => navigate('/forgot-password')}
+                className="text-xs text-blue-500 cursor-pointer hover:underline"
+              >
                 Forgot password?
               </span>
             </div>
@@ -224,14 +235,24 @@ const OrganizerLogin = () => {
 
       </div>
 
-      {/* Back to Role Select */}
+      {/* Link to Student Login */}
       <p className="mt-6 text-sm text-gray-500">
         Not an organizer?{' '}
         <span
           onClick={() => navigate('/signin')}
           className="text-blue-500 font-medium cursor-pointer
                      hover:underline">
-          Choose a different role
+          Log in as a student
+        </span>
+      </p>
+
+      {/* Link to Admin Portal */}
+      <p className="mt-3 text-sm text-gray-500">
+        <span
+          onClick={() => navigate('/admin/login')}
+          className="text-blue-500 font-medium cursor-pointer
+                     hover:underline">
+          Admin Portal &rarr;
         </span>
       </p>
 

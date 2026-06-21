@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { registerUser } from '../../services/authService';
+import { registerOrganizer } from '../../services/authService';
 
 const OrganizerRegister = () => {
   const navigate = useNavigate();
@@ -35,19 +35,24 @@ const OrganizerRegister = () => {
 
     try {
       const payload = {
-        role: 'organizer',
-        clubName: formData.clubName,
-        contactNumber: formData.contactNumber,
+        organizationName: formData.clubName,
+        phone: formData.contactNumber,
         email: formData.email,
         password: formData.password,
       };
-      await registerUser(payload);
+      await registerOrganizer(payload);
       navigate('/login/organizer');
     } catch (err) {
       if (!err.response) {
         setError('Could not connect to backend server. Please ensure the backend is running on port 5000.');
       } else {
-        setError(err.response?.data?.message || 'Registration failed. Please try again.');
+        const data = err.response?.data;
+        if (data && data.errors && Array.isArray(data.errors)) {
+          const fieldMsgs = data.errors.map(e => `${e.field}: ${e.message}`).join(', ');
+          setError(fieldMsgs);
+        } else {
+          setError(data?.message || 'Registration failed. Please try again.');
+        }
       }
     } finally {
       setLoading(false);
@@ -55,14 +60,25 @@ const OrganizerRegister = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-sky-50 to-blue-100 flex flex-col
+    <div className="min-h-screen bg-gray-100 flex flex-col
                     items-center justify-center px-4 py-10">
 
       {/* Logo */}
       <div className="flex items-center gap-2 mb-6">
-        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-500
-                        flex items-center justify-center shadow-md p-1">
-          <img src="/images/logo.png" alt="VolunteerHub" className="w-full h-full rounded-lg object-cover" />
+        <div className="w-9 h-9 bg-gradient-to-br from-blue-500
+                        to-purple-600 rounded-xl flex items-center
+                        justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg"
+            className="w-5 h-5 text-white" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round"
+              strokeWidth={2}
+              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10
+                 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3
+                 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283
+                 .356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3
+                 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
         </div>
         <span className="text-lg font-bold text-gray-800">
           VolunteerHub
