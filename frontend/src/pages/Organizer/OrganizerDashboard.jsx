@@ -485,3 +485,60 @@ const OrganizerDashboard = () => {
           </table>
         </div>
       </div>
+
+            {/* NEW SECTION 4: EVENT PERFORMANCE SUMMARY */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-100">
+          <h2 className="text-xl font-bold text-gray-800">Event Performance Summary</h2>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50 border-b border-gray-100">
+              <tr>
+                {['Event Name', 'Applications Received', 'Approved Volunteers', 'Attendance Count', 'Success Rate %'].map((h) => (
+                  <th key={h} className="text-left text-sm font-semibold text-gray-500 uppercase tracking-wide px-6 py-3.5">
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-50">
+              {performanceList.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="text-center py-10 text-gray-400 font-medium">
+                    No performance data available.
+                  </td>
+                </tr>
+              ) : (
+                performanceList.map((item) => (
+                  <tr key={item.id} className="hover:bg-gray-50/50 transition-colors">
+                    <td className="px-6 py-4 text-sm font-bold text-gray-800">
+                      {item.eventName}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-600">
+                      {item.applicationsReceived}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-600">
+                      {item.approvedVolunteers}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-600">
+                      {item.attendanceCount}
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <span className="text-sm font-bold text-gray-800">{item.successRate}%</span>
+                        <div className="w-24 h-1.5 bg-gray-100 rounded-full overflow-hidden flex-shrink-0">
+                          <div
+                            className="h-full bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full transition-all"
+                            style={{ width: `${item.successRate}%` }}
+                          />
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
