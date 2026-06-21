@@ -315,3 +315,89 @@ const OrganizerDashboard = () => {
           </div>
         )}
       </div>
+
+            {/* NEW SECTION 2: RECENT APPLICATIONS */}
+            <div id="recent-applications-section" className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+              <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                <h2 className="text-xl font-bold text-gray-800">Recent Applications</h2>
+                <Link to="/organizer/applications" className="text-xs text-cyan-600 hover:text-cyan-700 font-bold flex items-center gap-0.5">
+                  View All <ChevronRight className="w-4 h-4" />
+                </Link>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50 border-b border-gray-100">
+                    <tr>
+                      {['Volunteer', 'Event', 'Applied Date', 'Status', 'Actions'].map((h) => (
+                        <th key={h} className="text-left text-sm font-semibold text-gray-500 uppercase tracking-wide px-6 py-3.5">
+                          {h}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-50">
+                    {applicationsList.length === 0 ? (
+                      <tr>
+                        <td colSpan={5} className="text-center py-10 text-gray-400 font-medium">
+                          No applications received yet.
+                        </td>
+                      </tr>
+                    ) : (
+                      applicationsList.slice(0, 8).map((app) => (
+                        <tr key={app.id} className="hover:bg-gray-50/50 transition-colors">
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 rounded-full bg-cyan-100 flex items-center justify-center font-bold text-cyan-600 text-xs shadow-inner">
+                                {app.studentName.charAt(0)}
+                              </div>
+                              <div>
+                                <div className="text-sm font-bold text-gray-800">{app.studentName}</div>
+                                <div className="text-xs text-gray-400">{app.studentEmail}</div>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 text-sm font-medium text-gray-600 truncate max-w-[200px]">
+                            {app.eventName}
+                          </td>
+                          <td className="px-6 py-4 text-sm text-gray-500">
+                            {app.appliedDate}
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full ${appStatusStyle[app.status] || 'bg-gray-100 text-gray-700'}`}>
+                              <StatusIcon status={app.status} />
+                              {app.status}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => setSelectedStudent({ name: app.studentName, email: app.studentEmail, studentProfile: app.studentProfile })}
+                                className="px-3 py-1.5 border border-gray-200 rounded-lg text-xs font-semibold text-gray-600 hover:bg-gray-50 transition-colors flex items-center gap-1"
+                              >
+                                View
+                              </button>
+                              {app.status === 'Pending' && (
+                                <>
+                                  <button
+                                    onClick={() => handleApproveApplication(app.id)}
+                                    className="px-3 py-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 border border-emerald-100 rounded-lg text-xs font-bold transition-all"
+                                  >
+                                    Approve
+                                  </button>
+                                  <button
+                                    onClick={() => handleRejectApplication(app.id)}
+                                    className="px-3 py-1.5 bg-rose-50 text-rose-600 hover:bg-rose-100 border border-rose-100 rounded-lg text-xs font-bold transition-all"
+                                  >
+                                    Reject
+                                  </button>
+                                </>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
