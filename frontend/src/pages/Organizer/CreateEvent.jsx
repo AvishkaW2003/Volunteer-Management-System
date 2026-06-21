@@ -235,3 +235,146 @@ const CreateEvent = () => {
               )}
             </Field>
           </div>
+
+          {/* Location + Max Volunteers */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <Field label="Location" required>
+              {iconInput(
+                <MapPin className="w-4 h-4" />,
+                <input
+                  name="location" value={form.location} onChange={handleChange} required
+                  placeholder="Colombo, Sri Lanka"
+                  className="flex-1 outline-none text-base text-gray-700 placeholder-gray-400 bg-transparent w-full"
+                />
+              )}
+            </Field>
+
+            <Field label="Max Volunteers" required>
+              {iconInput(
+                <Users className="w-4 h-4" />,
+                <input
+                  type="number" name="maxVolunteers" value={form.maxVolunteers} onChange={handleChange} required min="1"
+                  placeholder="30"
+                  className="flex-1 outline-none text-base text-gray-700 placeholder-gray-400 bg-transparent w-full"
+                />
+              )}
+            </Field>
+          </div>
+
+          {/* Skills */}
+          <Field label="Required Skills">
+            <input
+              name="skills" value={form.skills} onChange={handleChange}
+              placeholder="e.g. Leadership, First Aid, Communication"
+              className={inputClass}
+            />
+            <p className="text-xs text-gray-400 mt-1">Separate multiple skills with commas</p>
+          </Field>
+
+          {/* Event Banner Image */}
+          <Field label="Event Banner Image">
+            <div className="space-y-4">
+              {/* Custom Upload Box */}
+              <div className="flex flex-col sm:flex-row gap-4 items-center">
+                <div className="w-full sm:w-1/2 h-36 border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center p-3 text-center bg-gray-50 hover:border-cyan-400 transition-colors relative overflow-hidden group">
+                  {form.image ? (
+                    <>
+                      <img src={form.image} alt="Preview" className="absolute inset-0 w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold pointer-events-none">
+                        Change Image
+                      </div>
+                    </>
+                  ) : (
+                    <div className="text-gray-400">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 mx-auto mb-1 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      <span className="text-xs font-medium">Click to upload custom banner</span>
+                    </div>
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="absolute inset-0 opacity-0 cursor-pointer"
+                  />
+                </div>
+
+                <div className="w-full sm:w-1/2 text-left">
+                  <p className="text-sm font-semibold text-gray-700">Custom Banner Upload</p>
+                  <p className="text-xs text-gray-400 mt-1">Upload a JPG, PNG or WEBP image. High resolution landscape aspect ratios (e.g. 16:9) work best.</p>
+                  {form.image && (
+                    <button
+                      type="button"
+                      onClick={() => setForm(prev => ({ ...prev, image: '' }))}
+                      className="mt-3 text-xs font-bold text-red-500 hover:text-red-600 transition-colors border-none bg-transparent cursor-pointer"
+                    >
+                      Clear Selection
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Preset Selector Grid */}
+              <div className="space-y-2">
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Or Select From Preset Banners</p>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {PRESET_BANNERS.map((preset) => {
+                    const isSelected = form.image === preset.url;
+                    return (
+                      <button
+                        key={preset.title}
+                        type="button"
+                        onClick={() => selectPresetImage(preset.url)}
+                        className={`group relative h-20 rounded-xl overflow-hidden text-left border transition-all ${isSelected ? 'border-cyan-500 ring-2 ring-cyan-100 shadow-sm' : 'border-gray-100 hover:border-cyan-300'
+                          }`}
+                      >
+                        <img src={preset.url} alt={preset.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-200" />
+                        <div className={`absolute inset-0 transition-opacity flex flex-col justify-end p-2 ${isSelected ? 'bg-gradient-to-t from-cyan-900/90 via-cyan-900/50 to-transparent' : 'bg-gradient-to-t from-black/80 via-black/30 to-transparent'
+                          }`}>
+                          <span className="text-[10px] font-bold text-white leading-tight line-clamp-1">{preset.title}</span>
+                        </div>
+                        {isSelected && (
+                          <div className="absolute top-1.5 right-1.5 w-4.5 h-4.5 bg-cyan-500 text-white rounded-full flex items-center justify-center shadow">
+                            <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </Field>
+
+          {/* Actions */}
+          <div className="flex gap-3 pt-2">
+            <button
+              type="submit"
+              disabled={loading}
+              className="flex-1 py-3 rounded-xl text-white font-semibold text-sm
+                          bg-gradient-to-r from-cyan-400 to-blue-500
+                          hover:from-cyan-500 hover:to-blue-600
+                          transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {loading ? 'Publishing…' : 'Publish Event'}
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate('/organizer/events')}
+              className="px-6 py-3 rounded-xl text-cyan-600 font-semibold text-sm
+                          border border-cyan-200 hover:bg-cyan-50 transition-all duration-200"
+            >
+              Cancel
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default CreateEvent;
