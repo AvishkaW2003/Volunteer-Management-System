@@ -1,3 +1,18 @@
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import {
+  LineChart, Line, PieChart, Pie, Cell,
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+} from 'recharts';
+import {
+  Calendar, Users, UserCheck, TrendingUp,
+  CheckCircle, XCircle, Clock, Eye, Edit,
+  Activity, MapPin, User, ChevronRight, X, Sparkles
+} from 'lucide-react';
+import { getOrganizerDashboardStats } from '../../services/eventService';
+import { approveApplication, rejectApplication } from '../../services/applicationService';
+import { bulkMarkAttendance } from '../../services/attendanceService';
+
 const PIE_COLORS = ['#06B6D4', '#0284C7', '#0EA5E9', '#38BDF8'];
 
 const statusStyle = {
