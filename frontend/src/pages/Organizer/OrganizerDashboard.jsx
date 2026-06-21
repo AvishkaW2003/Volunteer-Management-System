@@ -152,3 +152,43 @@ const OrganizerDashboard = () => {
           + Create New Event
         </Link>
       </div>
+
+      {/* Stat cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6 animate-fadeIn">
+        {stats.map(({ label, value, icon: Icon, color }) => (
+          <div key={label} className={`bg-gradient-to-br ${color} rounded-2xl p-5 text-white shadow-sm hover:scale-[1.02] transition-transform`}>
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                <Icon className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-3xl font-bold">{value}</span>
+            </div>
+            <p className="text-white/80 text-base font-medium">{label}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        {/* Line chart */}
+        <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+          <h2 className="text-lg font-bold text-gray-800 mb-4">Applications Over Time</h2>
+          <ResponsiveContainer width="100%" height={220}>
+            <LineChart data={lineChartData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+              <XAxis dataKey="month" tick={{ fontSize: 13 }} />
+              <YAxis tick={{ fontSize: 13 }} />
+              <Tooltip
+                contentStyle={{ borderRadius: '10px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}
+              />
+              <Line
+                type="monotone"
+                dataKey="applications"
+                stroke="#06B6D4"
+                strokeWidth={2.5}
+                dot={{ fill: '#0284C7', r: 4 }}
+                activeDot={{ r: 6 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
