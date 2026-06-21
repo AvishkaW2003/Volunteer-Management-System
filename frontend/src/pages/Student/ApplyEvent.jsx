@@ -117,3 +117,9 @@ const ViewDetailsModal = ({ app, onClose }) => {
     </div>
   );
 };
+/* ── Main Page ──────────────────────────────────────────── */
+const ApplyEvent = () => {
+  const { user } = useAuth();
+  const [viewingApp, setViewingApp] = useState(null);
+  const [applications, setApplications] = useState([]);
+  const [loading, setLoading] = useState(true);
