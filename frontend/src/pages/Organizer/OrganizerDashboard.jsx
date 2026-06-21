@@ -219,3 +219,30 @@ const OrganizerDashboard = () => {
                   </ResponsiveContainer>
                 </div>
               </div>
+
+      {/* NEW SECTION 1: MY CREATED EVENTS */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <h2 className="text-xl font-bold text-gray-800 mb-5 flex items-center gap-2">
+          My Created Events <span className="text-xs bg-cyan-50 text-cyan-600 px-2.5 py-1 rounded-full font-semibold border border-cyan-100">{eventsList.length} total</span>
+        </h2>
+        {eventsList.length === 0 ? (
+          <div className="text-center py-12 text-gray-400 font-medium">
+            You haven't created any events yet.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {eventsList.map((event) => (
+              <div key={event.id} className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col h-full animate-fadeIn">
+                {/* Image Banner */}
+                <div className="h-44 w-full relative overflow-hidden bg-gray-100">
+                  <img
+                    src={event.image || 'https://images.unsplash.com/photo-1593113598332-cd288d649433?w=800'}
+                    alt={event.title}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute top-3 right-3">
+                    <span className={`text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm ${statusStyle[event.status] || 'bg-gray-100 text-gray-700'}`}>
+                      {event.status}
+                    </span>
+                  </div>
+                </div>
