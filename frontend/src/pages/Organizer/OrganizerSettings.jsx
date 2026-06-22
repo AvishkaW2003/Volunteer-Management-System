@@ -59,14 +59,12 @@ const CustomToggle = ({ checked, onChange, label }) => (
     className="flex items-center gap-3 cursor-pointer focus:outline-none text-left"
   >
     <div
-      className={`relative w-11 h-6 rounded-full transition-colors duration-200 flex-shrink-0 ${
-        checked ? 'bg-gradient-to-r from-cyan-400 to-blue-500' : 'bg-gray-200'
-      }`}
+      className={`relative w-11 h-6 rounded-full transition-colors duration-200 flex-shrink-0 ${checked ? 'bg-gradient-to-r from-cyan-400 to-blue-500' : 'bg-gray-200'
+        }`}
     >
       <div
-        className={`absolute top-0.5 left-0.5 bg-white w-5 h-5 rounded-full shadow transition-transform duration-200 ${
-          checked ? 'transform translate-x-5' : ''
-        }`}
+        className={`absolute top-0.5 left-0.5 bg-white w-5 h-5 rounded-full shadow transition-transform duration-200 ${checked ? 'transform translate-x-5' : ''
+          }`}
       />
     </div>
     <span className="text-sm text-gray-600 font-medium">{label}</span>
@@ -153,3 +151,109 @@ const OrganizerSettings = () => {
     approvedVolunteers: 0,
     certificatesGenerated: 0
   });
+
+  // Local Members Form State
+  const [newMemberName, setNewMemberName] = useState('');
+  const [newMemberRole, setNewMemberRole] = useState('President');
+  const [editingMemberIndex, setEditingMemberIndex] = useState(null);
+  const [editingMemberName, setEditingMemberName] = useState('');
+  const [editingMemberRole, setEditingMemberRole] = useState('President');
+
+  // Password Update State
+  const [passwords, setPasswords] = useState({ current: '', newPass: '', confirm: '' });
+  const [passwordUpdating, setPasswordUpdating] = useState(false);
+  const [passwordSuccess, setPasswordSuccess] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        let settingsData;
+
+        if (token && token.startsWith('dummy')) {
+          settingsData = JSON.parse(localStorage.getItem('mock_org_settings')) || MOCK_ORGANIZER_SETTINGS;
+        } else {
+          try {
+            settingsData = await getOrganizerSettings();
+          } catch (e) {
+            console.log('API error. Using mock data.', e);
+            settingsData = JSON.parse(localStorage.getItem('mock_org_settings')) || MOCK_ORGANIZER_SETTINGS;
+          }
+        }
+
+        setOrgName(settingsData.orgName || '');
+        setEmail(settingsData.email || '');
+        setPhone(settingsData.phone || '');
+        setOrganizationType(settingsData.organizationType || 'IEEE');
+        setDescription(settingsData.description || '');
+        setUniversity(settingsData.university || '');
+        setWebsiteUrl(settingsData.websiteUrl || '');
+        setSocialMediaLinks(settingsData.socialMediaLinks || { facebook: '', twitter: '', linkedin: '', instagram: '' });
+        setMembers(settingsData.members || []);
+        setEventPreferences(settingsData.eventPreferences || { defaultCategory: '', defaultVolunteerLimit: 30, defaultEventLocation: '' });
+        setNotifications({
+          newApplicationSubmitted: settingsData.notifications?.newApplicationSubmitted ?? true,
+          applicationApprovedRejected: settingsData.notifications?.applicationApprovedRejected ?? true,
+          eventApprovedByAdmin: settingsData.notifications?.eventApprovedByAdmin ?? true,
+          eventRejectedByAdmin: settingsData.notifications?.eventRejectedByAdmin ?? true,
+          attendanceReminders: settingsData.notifications?.attendanceReminders ?? true,
+          certificateGenerationReminders: settingsData.notifications?.certificateGenerationReminders ?? true,
+          weeklyActivitySummary: settingsData.notifications?.weeklyActivitySummary ?? true
+        });
+        setCertificateSettings(settingsData.certificateSettings || { organizerName: '', signature: '', template: 'Default', footerText: '' });
+        setLogo(settingsData.logo || '');
+        setStats(settingsData.stats || { eventsCreated: 0, applicationsReceived: 0, approvedVolunteers: 0, certificatesGenerated: 0 });
+
+      } catch (err) {
+        console.error('Error fetching settings:', err);
+        setError('Could not load profile settings.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSettings();
+  }, []);
+
+  // Image Upload and Removal Handlers
+  const handleLogoChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (!['image/jpeg', 'image/png'].includes(file.type)) {
+      setError('Only JPG and PNG formats are supported for organization logo.');
+      return;
+    }
+
+    setError('');
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setLogo(reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleRemoveLogo = () => {
+    setLogo('');
+  };
+
+  const handleSignatureChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (!['image/jpeg', 'image/png'].includes(file.type)) {
+      setError('Only JPG and PNG formats are supported for signature.');
+      return;
+    }
+
+    setError('');
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setCertificateSettings(prev => ({ ...prev, signature: reader.result }));
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleRemoveSignature = () => {
+    setCertificateSettings(prev => ({ ...prev, signature: '' }));
+  };
