@@ -20,3 +20,33 @@ export const getMyAttendance = async () => {
   });
   return response.data;
 };
+
+export const getAttendeesForEvent = async (eventId) => {
+  const response = await axios.get(`${API_URL}/event/${eventId}`, {
+    headers: getAuthHeader(),
+  });
+  return response.data;
+};
+
+export const markAttendance = async (attendanceData) => {
+  const response = await axios.post(`${API_URL}/mark`, attendanceData, {
+    headers: getAuthHeader(),
+  });
+  return response.data;
+};
+
+export const bulkMarkAttendance = async (eventId, records) => {
+  const response = await axios.post(
+    `${API_URL}/bulk-mark`,
+    { eventId, records },
+    { headers: getAuthHeader() }
+  );
+  return response.data;
+};
+
+export const getAttendanceById = async (id) => {
+  const response = await axios.get(`${API_URL}/${id}`, {
+    headers: getAuthHeader(),
+  });
+  return response.data;
+};
