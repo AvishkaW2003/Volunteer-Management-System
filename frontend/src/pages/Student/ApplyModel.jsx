@@ -44,3 +44,9 @@ const ApplyModal = ({ event, onClose }) => {
       }));
     }
   }, [user]);
+  const handleChange = e => {
+    const { name, value, type, checked } = e.target;
+    setForm(p => ({ ...p, [name]: type === 'checkbox' ? checked : value }));
+  };
+
+  const canSubmit = form.name && form.email && form.phone && form.motivation && form.agreed;
