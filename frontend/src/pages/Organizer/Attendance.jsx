@@ -31,13 +31,13 @@ const Attendance = () => {
   // 2. Load approved volunteers for selected event
   useEffect(() => {
     if (!selectedEvent) return;
-    
+
     const fetchAttendees = async () => {
       setLoading(true);
       try {
         const data = await getAttendeesForEvent(selectedEvent);
         setVolunteers(data);
-        
+
         const attendeeRecords = {};
         data.forEach(v => {
           attendeeRecords[v.userId] = v.status === 'Present';
@@ -49,7 +49,7 @@ const Attendance = () => {
         setLoading(false);
       }
     };
-    
+
     fetchAttendees();
   }, [selectedEvent]);
 
@@ -95,7 +95,7 @@ const Attendance = () => {
         <p className="text-gray-500 text-md mt-0.5">Mark volunteer attendance for each event</p>
       </div>
 
-     {/* Event selector */}
+      {/* Event selector */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 mb-5">
         <label className="block text-md font-semibold text-gray-700 mb-2">Select Event</label>
         <select
@@ -142,3 +142,94 @@ const Attendance = () => {
           </button>
         </div>
       </div>
+
+      {/* Attendance table */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50 border-b border-gray-100">
+              <tr>
+                <th className="text-left text-sm font-semibold text-gray-500 uppercase tracking-wide px-5 py-3 w-8">
+                  <CheckSquare className="w-4 h-4 text-purple-400" />
+                </th>
+                <th className="text-left text-sm font-semibold text-gray-500 uppercase tracking-wide px-5 py-3">
+                  Volunteer Name
+                </th>
+                <th className="text-left text-sm font-semibold text-gray-500 uppercase tracking-wide px-5 py-3">
+                  Status
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-50">
+              {loading ? (
+                <tr>
+                  <td colSpan={3} className="text-center py-12 text-gray-400 text-sm">
+                    Loading attendees...
+                  </td>
+                </tr>
+              ) : volunteers.length === 0 ? (
+                <tr>
+                  <td colSpan={3} className="text-center py-12 text-gray-400 text-sm">
+                    No approved volunteers for this event
+                  </td>
+                </tr>
+              ) : volunteers.map((volunteer) => {
+                const isPresent = !!attendance[volunteer.userId];
+                return (
+                  <tr
+                    key={volunteer.userId}
+                    onClick={() => toggle(volunteer.userId)}
+                    className={`cursor-pointer transition-colors ${isPresent ? 'bg-green-50 hover:bg-green-100' : 'hover:bg-gray-50'
+                      }`}
+                  >
+                    <td className="px-5 py-4">
+                      <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${isPresent ? 'bg-cyan-500 border-cyan-500' : 'border-gray-300'
+                        }`}>
+                        {isPresent && (
+                          <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-5 py-4">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-full bg-cyan-100 flex items-center justify-center flex-shrink-0">
+                          <span className="text-cyan-600 text-xs font-bold">{(volunteer.name || '').charAt(0)}</span>
+                        </div>
+                        <span className={`text-sm font-medium ${isPresent ? 'text-gray-800' : 'text-gray-600'}`}>
+                          {volunteer.name}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-5 py-4">
+                      <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${isPresent ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'
+                        }`}>
+                        {isPresent ? 'Present' : 'Absent'}
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+
+        {volunteers.length > 0 && !loading && (
+          <div className="px-5 py-4 border-t border-gray-100 flex justify-end">
+            <button
+              onClick={handleSaveAttendance}
+              className="px-6 py-2.5 rounded-xl text-sm font-semibold text-white
+                bg-gradient-to-r from-cyan-400 to-blue-500
+                hover:from-cyan-500 hover:to-blue-600 transition-all border-none cursor-pointer"
+            >
+              Save Attendance
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default Attendance;
