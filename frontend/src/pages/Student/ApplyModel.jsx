@@ -100,7 +100,7 @@ const ApplyModal = ({ event, onClose }) => {
             </button>
           </div>
 
-          {submitted ? (
+          submitted ? (
             <div className="flex flex-col items-center justify-center gap-4 py-16 text-center">
               <div className="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full">
                 <CheckCircle className="w-8 h-8 text-green-500" />
@@ -109,7 +109,7 @@ const ApplyModal = ({ event, onClose }) => {
               <p className="text-sm text-gray-500">We'll notify you once the organizer reviews it.</p>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-4"></form>
+            <form onSubmit={handleSubmit} className="space-y-4">
             {/* Full Name + Email */}
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
@@ -228,7 +228,7 @@ const ApplyModal = ({ event, onClose }) => {
         </div>
 
       </div>
-    </div>
+    
   );
 };
 
