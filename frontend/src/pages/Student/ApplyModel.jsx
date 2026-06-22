@@ -8,3 +8,16 @@ const inputCls =
   'placeholder-gray-400 transition bg-white';
 
 const labelCls = 'block text-sm font-semibold text-gray-700 mb-1.5';
+const EARN_ITEMS = [
+  ev => `${ev.volunteerHours} certified volunteer hours`,
+  () => 'Digital participation certificate',
+  () => 'Leaderboard points & badges',
+  () => 'Networking with the organizer',
+];
+
+const formatDate = iso => {
+  const [y, m, d] = iso.split('-');
+  return new Date(y, m - 1, d).toLocaleDateString('en-US', {
+    month: 'short', day: 'numeric', year: 'numeric',
+  });
+};
