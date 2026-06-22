@@ -32,3 +32,43 @@ export const generateCertificate = async (eventId, userId, hours) => {
   );
   return response.data;
 };
+
+// Backwards compatibility / Revoke certificate
+export const revokeCertificate = async (id) => {
+  const response = await axios.delete(`${API_URL}/${id}`, {
+    headers: getAuthHeader(),
+  });
+  return response.data;
+};
+
+// Download certificate (url endpoint)
+export const getCertificateDownloadUrl = (id) => {
+  return `${API_URL}/${id}/download`;
+};
+
+// Download certificate as blob PDF
+export const downloadCertificatePdf = async (id) => {
+  const response = await axios.get(`${API_URL}/${id}/download`, {
+    headers: getAuthHeader(),
+    responseType: 'blob',
+  });
+  return response.data;
+};
+
+// Organizer: get certificate dashboard (analytics, pending, generated lists)
+export const getOrganizerCertificates = async () => {
+  const response = await axios.get(API_URL, {
+    headers: getAuthHeader(),
+  });
+  return response.data;
+};
+
+// Organizer: bulk generate certificates
+export const generateBulkCertificates = async (eventId, volunteers) => {
+  const response = await axios.post(
+    `${API_URL}/generate-bulk`,
+    { eventId, volunteers },
+    { headers: getAuthHeader() }
+  );
+  return response.data;
+};
