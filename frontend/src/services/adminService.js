@@ -91,3 +91,31 @@ export const updateAdminUser = async (id, userData) => {
   });
   return response.data;
 };
+
+export const updateUserStatus = async (id, status) => {
+  const response = await axios.put(`${API_URL}/users/${id}/status`, { status }, {
+    headers: getAuthHeader(),
+  });
+  return response.data;
+};
+
+export const getOrganizations = async () => {
+  const response = await axios.get(`${API_URL}/organizations`, {
+    headers: getAuthHeader(),
+  });
+  return response.data;
+};
+
+export const getOrganizationById = async (id) => {
+  const response = await axios.get(`${API_URL}/organizations/${id}`, {
+    headers: getAuthHeader(),
+  });
+  return response.data;
+};
+
+export const getAdminEvents = async () => {
+  const response = await axios.get(`${API_URL}/events`, {
+    headers: getAuthHeader(),
+  });
+  return response.data;
+};
