@@ -13,22 +13,6 @@ export const getEvents = async () => {
   return response.data;
 };
 
-// Get events created by the logged-in organizer
-export const getMyEvents = async () => {
-  const response = await axios.get(`${API_URL}/organizer/mine`, {
-    headers: getAuthHeader(),
-  });
-  return response.data;
-};
-
-// Get dashboard stats for the logged-in organizer
-export const getOrganizerStats = async () => {
-  const response = await axios.get(`${API_URL}/organizer/stats`, {
-    headers: getAuthHeader(),
-  });
-  return response.data;
-};
-
 // Get single event by ID (public)
 export const getEventById = async (id) => {
   const response = await axios.get(`${API_URL}/${id}`);
@@ -50,6 +34,7 @@ export const updateEvent = async (id, eventData) => {
   });
   return response.data;
 };
+
 // Delete event (organizer only)
 export const deleteEvent = async (id) => {
   const response = await axios.delete(`${API_URL}/${id}`, {
@@ -58,21 +43,18 @@ export const deleteEvent = async (id) => {
   return response.data;
 };
 
-// Register as volunteer for an event (student only)
-export const registerForEvent = async (eventId) => {
-  const response = await axios.post(
-    `http://localhost:5000/api/volunteers/register/${eventId}`,
-    {},
-    { headers: getAuthHeader() }
-  );
+// Get organizer's own events
+export const getMyEvents = async () => {
+  const response = await axios.get(`${API_URL}/my-events`, {
+    headers: getAuthHeader(),
+  });
   return response.data;
 };
 
-// Get volunteers for an event (organizer only)
-export const getEventVolunteers = async (eventId) => {
-  const response = await axios.get(
-    `http://localhost:5000/api/volunteers/event/${eventId}`,
-    { headers: getAuthHeader() }
-  );
+// Get organizer dashboard stats (organizer only)
+export const getOrganizerDashboardStats = async () => {
+  const response = await axios.get(`${API_URL}/organizer/stats`, {
+    headers: getAuthHeader(),
+  });
   return response.data;
 };
