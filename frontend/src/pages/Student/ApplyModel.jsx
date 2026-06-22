@@ -21,3 +21,15 @@ const formatDate = iso => {
     month: 'short', day: 'numeric', year: 'numeric',
   });
 };
+const ApplyModal = ({ event, onClose }) => {
+  const { user } = useAuth();
+  const [form, setForm] = useState({
+    name: user?.name || '',
+    email: user?.email || '',
+    phone: user?.phone || '',
+    skills: user?.studentProfile?.skills ? user.studentProfile.skills.join(', ') : '',
+    motivation: '',
+    experience: '',
+    agreed: false,
+  });
+  const [submitted, setSubmitted] = useState(false);
