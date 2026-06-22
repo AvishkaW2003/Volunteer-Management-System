@@ -7,15 +7,27 @@ const getAuthHeader = () => {
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
-export const getCertificates = async () => {
-  const response = await axios.get(API_URL, { headers: getAuthHeader() });
+// Student: get own certificates
+export const getMyCertificates = async () => {
+  const response = await axios.get(`${API_URL}/my-certificates`, {
+    headers: getAuthHeader(),
+  });
   return response.data;
 };
 
-export const issueCertificate = async ({ userId, eventId, issueDate, hours }) => {
+// Organizer: eligible checklist
+export const getEligibleVolunteers = async (eventId) => {
+  const response = await axios.get(`${API_URL}/eligible/${eventId}`, {
+    headers: getAuthHeader(),
+  });
+  return response.data;
+};
+
+// Organizer: generate certificate
+export const generateCertificate = async (eventId, userId, hours) => {
   const response = await axios.post(
-    API_URL,
-    { userId, eventId, issueDate, hours },
+    `${API_URL}/generate`,
+    { eventId, userId, hours },
     { headers: getAuthHeader() }
   );
   return response.data;
