@@ -50,3 +50,26 @@ const ApplyModal = ({ event, onClose }) => {
   };
 
   const canSubmit = form.name && form.email && form.phone && form.motivation && form.agreed;
+  const handleSubmit = async e => {
+    e.preventDefault();
+    if (!canSubmit) return;
+    
+    try {
+      const submissionData = {
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        skills: form.skills,
+        motivation: form.motivation,
+        experience: form.experience
+      };
+      
+      await applyToEvent(event.id, submissionData);
+      
+      setSubmitted(true);
+      setTimeout(onClose, 1800);
+    } catch (err) {
+      console.error("Error submitting application:", err);
+      alert(err.response?.data?.message || err.message || "Failed to submit application");
+    }
+  };
