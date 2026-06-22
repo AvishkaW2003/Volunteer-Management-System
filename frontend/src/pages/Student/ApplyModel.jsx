@@ -33,3 +33,14 @@ const ApplyModal = ({ event, onClose }) => {
     agreed: false,
   });
   const [submitted, setSubmitted] = useState(false);
+  useEffect(() => {
+    if (user) {
+      setForm(prev => ({
+        ...prev,
+        name: prev.name || user.name || '',
+        email: prev.email || user.email || '',
+        phone: prev.phone || user.phone || '',
+        skills: prev.skills || (user.studentProfile?.skills ? user.studentProfile.skills.join(', ') : ''),
+      }));
+    }
+  }, [user]);
