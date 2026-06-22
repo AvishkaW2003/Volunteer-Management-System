@@ -292,3 +292,57 @@ const Certificates = () => {
           </div>
         </div>
       )}
+
+           {/* Preview Modal */}
+      {previewCert && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-[2px] z-50 flex items-center justify-center p-4 print:p-0 print:bg-white print:static">
+          <div className="absolute inset-0 print:hidden" onClick={() => setPreviewCert(null)} />
+          <div className="relative bg-white w-full max-w-4xl rounded-3xl shadow-2xl border border-slate-100 overflow-hidden print:border-none print:shadow-none print:static animate-scaleUp">
+            
+            {/* Modal Actions Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 pb-3 print:hidden">
+              <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+                <Award className="text-cyan-500" /> Certificate Preview
+              </h3>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handlePrint}
+                  className="px-4 py-2 border border-gray-200 hover:bg-gray-50 text-gray-700 rounded-xl text-sm font-bold flex items-center gap-1.5 transition-colors"
+                >
+                  <Printer className="w-4 h-4" /> Print / PDF
+                </button>
+                <button
+                  onClick={() => setPreviewCert(null)}
+                  className="p-1.5 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Print Area - Certificate Template Frame */}
+            <div className="p-8 bg-slate-50 flex items-center justify-center print:bg-white print:p-0">
+              <div className="w-full bg-[#FAF9F6] border-[12px] border-double border-amber-800/20 p-12 text-center relative overflow-hidden font-serif min-h-[460px] rounded-2xl print:border-amber-800/40 print:bg-white">
+                
+                {/* Background watermark decorations */}
+                <div className="absolute inset-0 flex items-center justify-center opacity-[0.02] pointer-events-none">
+                  <Award className="w-[300px] h-[300px] text-amber-800" />
+                </div>
+
+                {/* Logo / Header */}
+                <div className="flex flex-col items-center mb-6">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 text-white flex items-center justify-center text-xl font-bold shadow-md mb-2">
+                    VH
+                  </div>
+                  <span className="text-[11px] font-sans font-extrabold uppercase tracking-[0.2em] text-cyan-600">VolunteerHub</span>
+                </div>
+
+                {/* Title */}
+                <h2 className="text-3xl font-bold text-amber-900 tracking-wide mb-4">
+                  Certificate of Participation
+                </h2>
+                
+                {/* Presentation Text */}
+                <p className="text-sm font-sans italic text-gray-500 mb-6">
+                  This certificate is proudly awarded to
+                </p>
