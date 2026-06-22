@@ -173,8 +173,8 @@ const Certificates = () => {
                     <div className="flex justify-between items-start">
                       <h3 className="font-extrabold text-sm text-slate-800 line-clamp-1">{ev.name}</h3>
                       <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full border ${ev.status === 'Completed'
-                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                          : 'bg-amber-50 text-amber-700 border-amber-200'
+                        ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                        : 'bg-amber-50 text-amber-700 border-amber-200'
                         }`}>
                         {ev.status}
                       </span>
@@ -199,7 +199,7 @@ const Certificates = () => {
         )}
       </div>
 
-     {/* Selected Event Console */}
+      {/* Selected Event Console */}
       {!loading && selectedEvent && (
         <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 space-y-6">
           {/* Header Console controls */}
@@ -258,11 +258,10 @@ const Certificates = () => {
                       <td className="px-6 py-4 font-bold text-slate-800">{vol.name}</td>
                       <td className="px-6 py-4 text-slate-400">{vol.email}</td>
                       <td className="px-6 py-4">
-                        <span className={`px-2 py-0.5 rounded-full border text-[10px] font-bold ${
-                          vol.generated 
+                        <span className={`px-2 py-0.5 rounded-full border text-[10px] font-bold ${vol.generated
                             ? 'bg-emerald-50 text-emerald-700 border-emerald-100'
                             : 'bg-amber-50 text-amber-700 border-amber-100'
-                        }`}>
+                          }`}>
                           {vol.generated ? 'Generated' : 'Pending'}
                         </span>
                       </td>
@@ -293,12 +292,12 @@ const Certificates = () => {
         </div>
       )}
 
-           {/* Preview Modal */}
+      {/* Preview Modal */}
       {previewCert && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-[2px] z-50 flex items-center justify-center p-4 print:p-0 print:bg-white print:static">
           <div className="absolute inset-0 print:hidden" onClick={() => setPreviewCert(null)} />
           <div className="relative bg-white w-full max-w-4xl rounded-3xl shadow-2xl border border-slate-100 overflow-hidden print:border-none print:shadow-none print:static animate-scaleUp">
-            
+
             {/* Modal Actions Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 pb-3 print:hidden">
               <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
@@ -323,7 +322,7 @@ const Certificates = () => {
             {/* Print Area - Certificate Template Frame */}
             <div className="p-8 bg-slate-50 flex items-center justify-center print:bg-white print:p-0">
               <div className="w-full bg-[#FAF9F6] border-[12px] border-double border-amber-800/20 p-12 text-center relative overflow-hidden font-serif min-h-[460px] rounded-2xl print:border-amber-800/40 print:bg-white">
-                
+
                 {/* Background watermark decorations */}
                 <div className="absolute inset-0 flex items-center justify-center opacity-[0.02] pointer-events-none">
                   <Award className="w-[300px] h-[300px] text-amber-800" />
@@ -341,8 +340,83 @@ const Certificates = () => {
                 <h2 className="text-3xl font-bold text-amber-900 tracking-wide mb-4">
                   Certificate of Participation
                 </h2>
-                
+
                 {/* Presentation Text */}
                 <p className="text-sm font-sans italic text-gray-500 mb-6">
                   This certificate is proudly awarded to
                 </p>
+
+                {/* Recipient Name */}
+                <h1 className="text-4xl font-extrabold text-gray-800 tracking-wider mb-6 underline decoration-double decoration-amber-800/20 underline-offset-8">
+                  {previewCert.name}
+                </h1>
+
+                {/* Participation Text */}
+                <div className="max-w-xl mx-auto space-y-4 text-gray-600 font-sans text-sm leading-relaxed mb-8">
+                  <p>
+                    for successfully participating and completing <strong className="text-gray-800 font-semibold">{previewCert.volunteerHours || 4} hours</strong> of voluntary services in the event
+                  </p>
+                  <p className="text-lg font-serif font-bold text-cyan-800 italic">
+                    {previewCert.eventName}
+                  </p>
+                  <p>
+                    organized by <strong className="text-gray-800 font-semibold">IEEE Student Branch</strong>.
+                  </p>
+                </div>
+
+                {/* Signatures & Verification Row */}
+                <div className="grid grid-cols-3 gap-6 pt-6 border-t border-gray-100/50 mt-10 font-sans text-xs">
+                  {/* Completion Date */}
+                  <div className="text-left">
+                    <span className="text-gray-400 block mb-1 uppercase tracking-wider text-[10px]">Completion Date</span>
+                    <span className="text-gray-700 font-bold">{previewCert.issueDate}</span>
+                  </div>
+
+                  {/* QR Code Verification */}
+                  <div className="flex flex-col items-center">
+                    <div className="w-16 h-16 border border-gray-200 bg-white p-1 rounded-lg flex items-center justify-center shadow-inner mb-1.5">
+                      <div className="grid grid-cols-4 gap-0.5 w-full h-full opacity-60">
+                        {[...Array(16)].map((_, i) => (
+                          <div key={i} className={`rounded-[1px] ${i % 3 === 0 || i % 7 === 0 ? 'bg-gray-800' : 'bg-transparent'}`} />
+                        ))}
+                      </div>
+                    </div>
+                    <span className="text-[9px] font-mono text-gray-400 uppercase tracking-widest">{previewCert.certId}</span>
+                  </div>
+
+                  {/* Organizer Info */}
+                  <div className="text-right">
+                    <span className="text-gray-400 block mb-1 uppercase tracking-wider text-[10px]">Organizer Signature</span>
+                    <span className="text-amber-800 font-bold italic font-serif text-sm">IEEE Club Chair</span>
+                    <span className="text-gray-400 block mt-0.5 text-[10px]">VolunteerHub Network</span>
+                  </div>
+                </div>
+
+                {/* Secure stamp badge */}
+                <div className="absolute bottom-20 left-12 opacity-80 print:opacity-100">
+                  <div className="flex items-center gap-1 border border-cyan-300 text-cyan-600 bg-cyan-50/50 px-2 py-1 rounded font-sans text-[9px] font-bold uppercase tracking-wider select-none">
+                    <ShieldCheck className="w-3.5 h-3.5 text-cyan-500" /> Secure Verification
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-4 bg-slate-50 border-t border-slate-100 flex justify-end print:hidden">
+              <button
+                onClick={() => setPreviewCert(null)}
+                className="bg-white border border-slate-200 hover:border-slate-300 text-slate-700 font-bold px-5 py-2 rounded-xl text-xs cursor-pointer shadow-sm"
+              >
+                Close Preview
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+};
+
+export default Certificates;
