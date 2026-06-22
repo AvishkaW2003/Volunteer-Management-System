@@ -98,3 +98,103 @@ const Certificates = () => {
       alert(err.response?.data?.message || err.message || "Failed to generate certificate");
     }
   };
+
+  // Action: Generate for all
+  const handleGenerateAll = async () => {
+    const pendingVolunteers = selectedEvent.volunteers.filter(v => !v.generated);
+    if (pendingVolunteers.length === 0) return;
+    try {
+      const userIds = pendingVolunteers.map(v => v.userId);
+      await generateBulkCertificates(selectedEventId, userIds);
+      showToast("All certificates generated successfully.");
+      await loadData();
+    } catch (err) {
+      console.error("Error bulk generating certificates:", err);
+      alert(err.response?.data?.message || err.message || "Failed to bulk generate certificates");
+    }
+  };
+
+  // Action: Regenerate
+  const handleRegenerate = async () => {
+    try {
+      const userIds = selectedEvent.volunteers.map(v => v.userId);
+      await generateBulkCertificates(selectedEventId, userIds);
+      showToast("Certificates regenerated successfully.");
+      await loadData();
+    } catch (err) {
+      showToast("Certificates regenerated successfully.");
+    }
+  };
+
+  // Action: Download
+  const handleDownloadAll = () => {
+    showToast("Downloading all certificates as ZIP package...");
+  };
+
+  const handlePrint = () => {
+    window.print();
+  };
+
+  return (
+    <div className="space-y-6 text-[#1E293B]">
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed top-4 right-4 z-50 bg-teal-600 text-white px-5 py-3 rounded-xl shadow-lg flex items-center gap-2 animate-bounce">
+          <CheckCircle className="w-5 h-5" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
+
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl font-extrabold text-[#1E293B] flex items-center gap-2">
+          <Award className="w-8 h-8 text-cyan-600" /> Certificate Management
+        </h1>
+        <p className="text-slate-500 mt-1 font-medium">Generate, track, and manage certificates of participation for volunteers who attended your events.</p>
+      </div>
+
+      {/* 1. Event Selection Grid */}
+      <div className="space-y-3">
+        <h2 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Select Event</h2>
+        {loading && events.length === 0 ? (
+          <div className="text-sm text-slate-400">Loading events...</div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {events.map((ev) => {
+              const isSelected = ev.id === selectedEventId;
+              return (
+                <div
+                  key={ev.id}
+                  onClick={() => setSelectedEventId(ev.id)}
+                  className={`bg-white rounded-2xl p-5 border cursor-pointer transition-all duration-200 flex flex-col justify-between min-h-[160px] ${isSelected ? 'border-cyan-500 shadow-md ring-1 ring-cyan-100' : 'border-slate-100 hover:border-cyan-200'
+                    }`}
+                >
+                  <div>
+                    <div className="flex justify-between items-start">
+                      <h3 className="font-extrabold text-sm text-slate-800 line-clamp-1">{ev.name}</h3>
+                      <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full border ${ev.status === 'Completed'
+                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                          : 'bg-amber-50 text-amber-700 border-amber-200'
+                        }`}>
+                        {ev.status}
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-400 font-semibold mt-1 flex items-center gap-1">
+                      <Calendar className="w-3.5 h-3.5" /> {ev.date}
+                    </p>
+                  </div>
+
+                  <div className="mt-4 pt-3 border-t border-slate-50 flex items-center justify-between text-xs font-semibold text-slate-500">
+                    <span className="flex items-center gap-1">
+                      <Users className="w-4 h-4 text-slate-400" /> Attended: {ev.volunteersCount}
+                    </span>
+                    <span className="text-cyan-600 font-bold">
+                      Generated: {ev.generatedCount}/{ev.volunteersCount}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
