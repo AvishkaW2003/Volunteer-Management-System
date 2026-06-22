@@ -40,3 +40,39 @@ export const getOrganizerApplications = async (eventId) => {
   });
   return response.data;
 };
+
+// Organizer approves application
+export const approveApplication = async (id) => {
+  const response = await axios.put(
+    `${API_URL}/${id}/approve`,
+    {},
+    { headers: getAuthHeader() }
+  );
+  return response.data;
+};
+
+// Organizer rejects application
+export const rejectApplication = async (id) => {
+  const response = await axios.put(
+    `${API_URL}/${id}/reject`,
+    {},
+    { headers: getAuthHeader() }
+  );
+  return response.data;
+};
+
+// Retrieve application details by ID
+export const getApplicationById = async (id) => {
+  const response = await axios.get(`${API_URL}/${id}`, {
+    headers: getAuthHeader(),
+  });
+  return response.data;
+};
+
+// Organizer retrieves all applications across all their events
+export const getOrganizerAllApplications = async () => {
+  const response = await axios.get('http://localhost:5000/api/volunteers/applications', {
+    headers: getAuthHeader(),
+  });
+  return response.data;
+};
