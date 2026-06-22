@@ -133,3 +133,29 @@ const ApplyModal = ({ event, onClose }) => {
                 <label className={labelCls}>Relevant Skills</label>
                 <input type="text" name="skills" value={form.skills} onChange={handleChange} placeholder="e.g., First Aid, Communication, Teaching" className={inputCls} />
               </div>
+              {/* Motivation */}
+              <div>
+                <label className={labelCls}>Why do you want to join? <span className="text-red-400">*</span></label>
+                <textarea name="motivation" value={form.motivation} onChange={handleChange} rows={4} placeholder="Share your motivation for joining this event..." className={`${inputCls} resize-none`} required />
+              </div>
+
+              {/* Experience */}
+              <div>
+                <label className={labelCls}>Previous Volunteer Experience</label>
+                <textarea name="experience" value={form.experience} onChange={handleChange} rows={3} placeholder="Tell us about any past volunteering experience (optional)..." className={`${inputCls} resize-none`} />
+              </div>
+
+              {/* Agreement checkbox */}
+              <label className="flex items-start gap-3 p-4 transition-colors border border-gray-100 cursor-pointer rounded-xl hover:bg-purple-50/40">
+                <div className="relative flex-shrink-0 mt-0.5">
+                  <input type="checkbox" name="agreed" checked={form.agreed} onChange={handleChange} className="sr-only" />
+                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${form.agreed ? 'bg-gradient-to-br from-blue-500 to-purple-600 border-transparent' : 'border-gray-300 bg-white'}`}>
+                    {form.agreed && (
+                      <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                  </div>
+                </div>
+                <span className="text-sm text-gray-600">I agree to the volunteer code of conduct and confirm that the information above is accurate.</span>
+              </label>
