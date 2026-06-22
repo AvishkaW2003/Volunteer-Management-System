@@ -159,3 +159,19 @@ const ApplyModal = ({ event, onClose }) => {
                 </div>
                 <span className="text-sm text-gray-600">I agree to the volunteer code of conduct and confirm that the information above is accurate.</span>
               </label>
+              {/* Buttons */}
+              <div className="flex gap-3 pt-1">
+                <button
+                  type="submit"
+                  disabled={!canSubmit}
+                  className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-sm transition-all ${canSubmit ? 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-sm hover:shadow-md' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`}
+                >
+                  <Sparkles className="w-4 h-4" /> Submit Application
+                </button>
+                <button type="button" onClick={onClose} className="px-6 py-3 text-sm font-semibold text-gray-600 transition-colors border border-gray-200 rounded-xl hover:bg-gray-50">
+                  Cancel
+                </button>
+              </div>
+            </form>
+          )}
+        </div>
