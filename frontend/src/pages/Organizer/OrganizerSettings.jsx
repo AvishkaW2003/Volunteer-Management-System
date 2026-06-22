@@ -891,3 +891,149 @@ const OrganizerSettings = () => {
               </div>
             </div>
           </SectionCard>
+
+          {/* Section 7: Notifications */}
+          <SectionCard icon={Bell} title="Notification Settings">
+            <div className="space-y-4">
+              <CustomToggle
+                checked={notifications.newApplicationSubmitted}
+                onChange={() => setNotifications({ ...notifications, newApplicationSubmitted: !notifications.newApplicationSubmitted })}
+                label="Email me when a new volunteer application is submitted for my events"
+              />
+              <CustomToggle
+                checked={notifications.applicationApprovedRejected}
+                onChange={() => setNotifications({ ...notifications, applicationApprovedRejected: !notifications.applicationApprovedRejected })}
+                label="Email me when my application decision is finalized"
+              />
+              <CustomToggle
+                checked={notifications.eventApprovedByAdmin}
+                onChange={() => setNotifications({ ...notifications, eventApprovedByAdmin: !notifications.eventApprovedByAdmin })}
+                label="Email me when my submitted event is approved by admin"
+              />
+              <CustomToggle
+                checked={notifications.eventRejectedByAdmin}
+                onChange={() => setNotifications({ ...notifications, eventRejectedByAdmin: !notifications.eventRejectedByAdmin })}
+                label="Email me when my submitted event is rejected by admin"
+              />
+              <CustomToggle
+                checked={notifications.attendanceReminders}
+                onChange={() => setNotifications({ ...notifications, attendanceReminders: !notifications.attendanceReminders })}
+                label="Email me event attendance marking reminders"
+              />
+              <CustomToggle
+                checked={notifications.certificateGenerationReminders}
+                onChange={() => setNotifications({ ...notifications, certificateGenerationReminders: !notifications.certificateGenerationReminders })}
+                label="Email me certificate generation reminders"
+              />
+              <CustomToggle
+                checked={notifications.weeklyActivitySummary}
+                onChange={() => setNotifications({ ...notifications, weeklyActivitySummary: !notifications.weeklyActivitySummary })}
+                label="Receive weekly activity and registration summaries"
+              />
+            </div>
+          </SectionCard>
+
+          {/* Global Save Panel */}
+          <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm flex items-center justify-between">
+            <span className="text-xs text-gray-400 font-semibold">Verify all settings panels above before saving.</span>
+            <button
+              onClick={handleSaveSettings}
+              disabled={saving}
+              className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-bold text-sm rounded-xl transition flex items-center justify-center gap-2.5 shadow hover:shadow-md disabled:opacity-75"
+            >
+              {saving ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <Check className="w-4 h-4" />
+                  Save Changes
+                </>
+              )}
+            </button>
+          </div>
+
+        </div>
+
+        {/* Sidebar Security panel */}
+        <div className="lg:col-span-4 space-y-8">
+
+          <SectionCard icon={Lock} title="Security">
+            <p className="text-xs text-gray-500 -mt-2 mb-4">
+              Change your account password securely below.
+            </p>
+
+            {passwordSuccess && (
+              <div className="mb-4 p-3 rounded-xl bg-green-50 border border-green-200 text-green-700 font-semibold text-xs flex items-center gap-2 shadow-sm">
+                <Check className="w-4 h-4 text-green-500" />
+                {passwordSuccess}
+              </div>
+            )}
+
+            {passwordError && (
+              <div className="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 font-semibold text-xs flex items-center gap-2 shadow-sm">
+                <X className="w-4 h-4 text-red-500" />
+                {passwordError}
+              </div>
+            )}
+
+            <form onSubmit={handlePasswordUpdate} className="space-y-4">
+              <div>
+                <label className={labelCls}>Current Password</label>
+                <input
+                  type="password"
+                  className={inputCls}
+                  placeholder="Enter current password"
+                  value={passwords.current}
+                  onChange={(e) => setPasswords({ ...passwords, current: e.target.value })}
+                />
+              </div>
+              <div>
+                <label className={labelCls}>New Password</label>
+                <input
+                  type="password"
+                  className={inputCls}
+                  placeholder="Enter new password (min. 6 chars)"
+                  value={passwords.newPass}
+                  onChange={(e) => setPasswords({ ...passwords, newPass: e.target.value })}
+                />
+              </div>
+              <div>
+                <label className={labelCls}>Confirm New Password</label>
+                <input
+                  type="password"
+                  className={inputCls}
+                  placeholder="Re-enter new password"
+                  value={passwords.confirm}
+                  onChange={(e) => setPasswords({ ...passwords, confirm: e.target.value })}
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={passwordUpdating}
+                className="w-full py-2.5 bg-gray-800 hover:bg-gray-900 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 shadow"
+              >
+                {passwordUpdating ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    Updating...
+                  </>
+                ) : (
+                  <>
+                    <Lock className="w-3.5 h-3.5" />
+                    Update Password
+                  </>
+                )}
+              </button>
+            </form>
+          </SectionCard>
+
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default OrganizerSettings;
