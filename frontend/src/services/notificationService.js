@@ -32,3 +32,29 @@ export const markAsRead = async (id) => {
   );
   return response.data;
 };
+
+// Mark all notifications as read
+export const markAllAsRead = async () => {
+  const response = await axios.put(
+    `${API_URL}/read-all`,
+    {},
+    { headers: getAuthHeader() }
+  );
+  return response.data;
+};
+
+// Delete notification
+export const deleteNotification = async (id) => {
+  const response = await axios.delete(`${API_URL}/${id}`, {
+    headers: getAuthHeader(),
+  });
+  return response.data;
+};
+
+// Fetch admin notifications
+export const getAdminNotifications = async () => {
+  const response = await axios.get('http://localhost:5000/api/admin/notifications', {
+    headers: getAuthHeader(),
+  });
+  return response.data;
+};
