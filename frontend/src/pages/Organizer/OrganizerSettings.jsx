@@ -654,3 +654,123 @@ const OrganizerSettings = () => {
               </div>
             </div>
           </SectionCard>
+
+          {/* Section 4: Members manager */}
+          <SectionCard icon={Users} title="Organization Members Manager">
+            <p className="text-xs text-gray-500 -mt-2 mb-4">
+              Maintain an active list of committee members. These details will help structure club credentials.
+            </p>
+
+            <div className="space-y-3">
+              {members.length === 0 ? (
+                <div className="text-center py-6 text-gray-400 text-sm border border-dashed border-gray-200 rounded-xl bg-gray-50/50">
+                  No members added yet. Add committee roles below.
+                </div>
+              ) : (
+                members.map((m, idx) => (
+                  <div key={idx} className="flex items-center justify-between p-3.5 bg-gray-50 border border-gray-100 rounded-xl transition-all">
+                    {editingMemberIndex === idx ? (
+                      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full animate-fadeIn">
+                        <input
+                          type="text"
+                          className={inputCls}
+                          value={editingMemberName}
+                          onChange={(e) => setEditingMemberName(e.target.value)}
+                          placeholder="Member Name"
+                        />
+                        <select
+                          className={inputCls}
+                          value={editingMemberRole}
+                          onChange={(e) => setEditingMemberRole(e.target.value)}
+                        >
+                          <option value="President">President</option>
+                          <option value="Vice President">Vice President</option>
+                          <option value="Secretary">Secretary</option>
+                          <option value="Event Coordinator">Event Coordinator</option>
+                        </select>
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={handleSaveEditMember}
+                            className="p-2.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl shadow transition"
+                          >
+                            <Check className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setEditingMemberIndex(null)}
+                            className="p-2.5 bg-gray-400 hover:bg-gray-500 text-white rounded-xl shadow transition"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        <div>
+                          <h4 className="text-sm font-bold text-gray-800">{m.name}</h4>
+                          <span className="inline-block text-[11px] font-bold text-cyan-600 bg-cyan-50 px-2 py-0.5 rounded mt-0.5 border border-cyan-100">
+                            {m.role}
+                          </span>
+                        </div>
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={() => handleStartEditMember(idx)}
+                            className="p-2 text-gray-400 hover:text-cyan-600 hover:bg-cyan-50 rounded-lg transition"
+                          >
+                            <Edit2 className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveMember(idx)}
+                            className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+
+            <div className="border-t border-gray-100 pt-5 mt-4">
+              <h4 className="text-xs font-bold text-gray-700 mb-2.5">Add Committee Member:</h4>
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
+                <div className="sm:col-span-5">
+                  <label className="block text-[11px] font-semibold text-gray-500 mb-1">Member Name</label>
+                  <input
+                    type="text"
+                    className={inputCls}
+                    placeholder="Enter name"
+                    value={newMemberName}
+                    onChange={(e) => setNewMemberName(e.target.value)}
+                  />
+                </div>
+                <div className="sm:col-span-5">
+                  <label className="block text-[11px] font-semibold text-gray-500 mb-1">Role</label>
+                  <select
+                    className={inputCls}
+                    value={newMemberRole}
+                    onChange={(e) => setNewMemberRole(e.target.value)}
+                  >
+                    <option value="President">President</option>
+                    <option value="Vice President">Vice President</option>
+                    <option value="Secretary">Secretary</option>
+                    <option value="Event Coordinator">Event Coordinator</option>
+                  </select>
+                </div>
+                <div className="sm:col-span-2">
+                  <button
+                    type="button"
+                    onClick={handleAddMember}
+                    className="w-full py-2.5 bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow"
+                  >
+                    <Plus className="w-4 h-4" /> Add
+                  </button>
+                </div>
+              </div>
+            </div>
+          </SectionCard>
