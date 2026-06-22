@@ -78,3 +78,44 @@ export const getAuditLogs = async () => {
   return response.data;
 };
 
+export const createAdminUser = async (userData) => {
+  const response = await axios.post(`${API_URL}/users`, userData, {
+    headers: getAuthHeader(),
+  });
+  return response.data;
+};
+
+export const updateAdminUser = async (id, userData) => {
+  const response = await axios.put(`${API_URL}/users/${id}`, userData, {
+    headers: getAuthHeader(),
+  });
+  return response.data;
+};
+
+export const updateUserStatus = async (id, status) => {
+  const response = await axios.put(`${API_URL}/users/${id}/status`, { status }, {
+    headers: getAuthHeader(),
+  });
+  return response.data;
+};
+
+export const getOrganizations = async () => {
+  const response = await axios.get(`${API_URL}/organizations`, {
+    headers: getAuthHeader(),
+  });
+  return response.data;
+};
+
+export const getOrganizationById = async (id) => {
+  const response = await axios.get(`${API_URL}/organizations/${id}`, {
+    headers: getAuthHeader(),
+  });
+  return response.data;
+};
+
+export const getAdminEvents = async () => {
+  const response = await axios.get(`${API_URL}/events`, {
+    headers: getAuthHeader(),
+  });
+  return response.data;
+};
