@@ -26,3 +26,35 @@ export const createEvent = async (eventData) => {
   });
   return response.data;
 };
+
+// Update event (organizer only)
+export const updateEvent = async (id, eventData) => {
+  const response = await axios.put(`${API_URL}/${id}`, eventData, {
+    headers: getAuthHeader(),
+  });
+  return response.data;
+};
+
+// Delete event (organizer only)
+export const deleteEvent = async (id) => {
+  const response = await axios.delete(`${API_URL}/${id}`, {
+    headers: getAuthHeader(),
+  });
+  return response.data;
+};
+
+// Get organizer's own events
+export const getMyEvents = async () => {
+  const response = await axios.get(`${API_URL}/my-events`, {
+    headers: getAuthHeader(),
+  });
+  return response.data;
+};
+
+// Get organizer dashboard stats (organizer only)
+export const getOrganizerDashboardStats = async () => {
+  const response = await axios.get(`${API_URL}/organizer/stats`, {
+    headers: getAuthHeader(),
+  });
+  return response.data;
+};
