@@ -7,18 +7,46 @@ const getAuthHeader = () => {
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
-export const getAttendanceByEvent = async (eventId) => {
-  const response = await axios.get(`${API_URL}/${eventId}`, {
+export const getAttendanceStats = async () => {
+  const response = await axios.get(`${API_URL}/stats`, {
     headers: getAuthHeader(),
   });
   return response.data;
 };
 
-export const saveAttendance = async (eventId, records) => {
+export const getMyAttendance = async () => {
+  const response = await axios.get(`${API_URL}/my-attendance`, {
+    headers: getAuthHeader(),
+  });
+  return response.data;
+};
+
+export const getAttendeesForEvent = async (eventId) => {
+  const response = await axios.get(`${API_URL}/event/${eventId}`, {
+    headers: getAuthHeader(),
+  });
+  return response.data;
+};
+
+export const markAttendance = async (attendanceData) => {
+  const response = await axios.post(`${API_URL}/mark`, attendanceData, {
+    headers: getAuthHeader(),
+  });
+  return response.data;
+};
+
+export const bulkMarkAttendance = async (eventId, records) => {
   const response = await axios.post(
-    API_URL,
+    `${API_URL}/bulk-mark`,
     { eventId, records },
     { headers: getAuthHeader() }
   );
+  return response.data;
+};
+
+export const getAttendanceById = async (id) => {
+  const response = await axios.get(`${API_URL}/${id}`, {
+    headers: getAuthHeader(),
+  });
   return response.data;
 };
