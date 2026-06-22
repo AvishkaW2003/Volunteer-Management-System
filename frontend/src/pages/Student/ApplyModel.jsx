@@ -73,3 +73,11 @@ const ApplyModal = ({ event, onClose }) => {
       alert(err.response?.data?.message || err.message || "Failed to submit application");
     }
   };
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-start justify-center p-4 py-8 overflow-y-auto bg-black/40 backdrop-blur-sm"
+      onClick={e => e.target === e.currentTarget && onClose()}
+    >
+      <div className="flex flex-col w-full max-w-5xl overflow-hidden bg-white shadow-2xl rounded-2xl lg:flex-row">
+        {/* ── Left: Application Form ───────────────────── */}
+        <div className="flex-1 p-6 lg:p-8"></div>
