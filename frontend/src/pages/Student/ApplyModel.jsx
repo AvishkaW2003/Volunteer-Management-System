@@ -173,5 +173,63 @@ const ApplyModal = ({ event, onClose }) => {
                 </button>
               </div>
             </form>
-          )}
+          ){'}'}
         </div>
+        {/* ── Right: Event Details Sidebar ─────────────── */}
+        <div className="flex flex-col w-full gap-4 p-6 border-t border-gray-100 lg:w-72 bg-gray-50 lg:border-t-0 lg:border-l">
+          {/* Event Details card */}
+          <div className="p-4 space-y-3 bg-white border border-gray-100 rounded-xl">
+            <h3 className="flex items-center gap-2 text-sm font-bold text-gray-800">
+              <Heart className="w-4 h-4 text-purple-400" /> Event Details
+            </h3>
+            <div className="space-y-2.5">
+              <div className="flex items-start gap-2.5">
+                <Calendar className="w-4 h-4 text-blue-400 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm font-medium text-gray-700">{formatDate(event.date)}</p>
+                  <p className="text-xs text-gray-400">{event.time}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <MapPin className="flex-shrink-0 w-4 h-4 text-purple-400" />
+                <p className="text-sm text-gray-700">{event.location}</p>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <Users className="flex-shrink-0 w-4 h-4 text-green-500" />
+                <p className="text-sm font-medium text-green-600">{event.spotsLeft} spots remaining</p>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <Clock className="flex-shrink-0 w-4 h-4 text-orange-400" />
+                <p className="text-sm text-gray-700">{event.volunteerHours} volunteer hours</p>
+              </div>
+            </div>
+            {event.description && (
+              <>
+                <div className="border-t border-gray-100" />
+                <p className="text-xs leading-relaxed text-gray-500">{event.description}</p>
+              </>
+            )}
+          </div>
+
+          {/* What you'll earn */}
+          <div className="p-4 space-y-3 border border-purple-100 rounded-xl bg-gradient-to-br from-blue-50 to-purple-50">
+            <h3 className="flex items-center gap-2 text-sm font-bold text-gray-800">
+              <Award className="w-4 h-4 text-purple-500" /> What you'll earn
+            </h3>
+            <div className="space-y-2">
+              {EARN_ITEMS.map((fn, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <CheckCircle className="flex-shrink-0 w-4 h-4 text-green-500" />
+                  <span className="text-xs text-gray-700">{fn(event)}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+};
+
+export default ApplyModal;
