@@ -110,3 +110,26 @@ const ApplyModal = ({ event, onClose }) => {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4"></form>
+            {/* Full Name + Email */}
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <label className={labelCls}>Full Name <span className="text-red-400">*</span></label>
+                  <input type="text" name="name" value={form.name} onChange={handleChange} placeholder="John Doe" className={inputCls} required />
+                </div>
+                <div>
+                  <label className={labelCls}>Email <span className="text-red-400">*</span></label>
+                  <input type="email" name="email" value={form.email} onChange={handleChange} placeholder="you@university.edu" className={inputCls} required />
+                </div>
+              </div>
+
+              {/* Phone */}
+              <div>
+                <label className={labelCls}>Phone Number <span className="text-red-400">*</span></label>
+                <input type="tel" name="phone" value={form.phone} onChange={handleChange} placeholder="+1 (555) 000-0000" className={inputCls} required />
+              </div>
+
+              {/* Relevant Skills */}
+              <div>
+                <label className={labelCls}>Relevant Skills</label>
+                <input type="text" name="skills" value={form.skills} onChange={handleChange} placeholder="e.g., First Aid, Communication, Teaching" className={inputCls} />
+              </div>
