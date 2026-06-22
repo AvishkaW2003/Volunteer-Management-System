@@ -198,3 +198,97 @@ const Certificates = () => {
           </div>
         )}
       </div>
+
+     {/* Selected Event Console */}
+      {!loading && selectedEvent && (
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 space-y-6">
+          {/* Header Console controls */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-100">
+            <div>
+              <h2 className="text-lg font-black text-slate-800">{selectedEvent.name}</h2>
+              <p className="text-xs text-slate-400 font-semibold mt-0.5">Manage certifications for this event.</p>
+            </div>
+
+            <div className="flex flex-wrap gap-2.5">
+              <button
+                onClick={handleGenerateAll}
+                disabled={selectedEvent.generatedCount === selectedEvent.volunteersCount}
+                className="py-2 px-4 bg-cyan-600 hover:bg-cyan-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Award className="w-4 h-4" /> Generate Certificates
+              </button>
+              <button
+                onClick={handleRegenerate}
+                className="py-2 px-4 bg-white border border-slate-200 hover:border-cyan-500 hover:text-cyan-600 text-slate-600 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
+              >
+                <RefreshCw className="w-4 h-4" /> Regenerate Certificates
+              </button>
+              <button
+                onClick={handleDownloadAll}
+                className="py-2 px-4 bg-white border border-slate-200 hover:border-cyan-500 hover:text-cyan-600 text-slate-600 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
+              >
+                <Download className="w-4 h-4" /> Download Certificates
+              </button>
+            </div>
+          </div>
+
+          {/* Volunteers List table */}
+          <div>
+            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Eligible Volunteers (Attended)</h3>
+            <div className="overflow-hidden rounded-xl border border-slate-100">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-slate-50 border-b border-slate-100 text-slate-500 font-bold uppercase tracking-wider">
+                  <tr>
+                    <th className="px-6 py-3.5">Volunteer</th>
+                    <th className="px-6 py-3.5">Email</th>
+                    <th className="px-6 py-3.5">Status</th>
+                    <th className="px-6 py-3.5">Certificate ID</th>
+                    <th className="px-6 py-3.5 text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-50 font-medium text-slate-600">
+                  {selectedEvent.volunteers.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="text-center py-6 text-slate-400">
+                        No attended volunteers for this event.
+                      </td>
+                    </tr>
+                  ) : selectedEvent.volunteers.map((vol) => (
+                    <tr key={vol.id} className="hover:bg-slate-50/50">
+                      <td className="px-6 py-4 font-bold text-slate-800">{vol.name}</td>
+                      <td className="px-6 py-4 text-slate-400">{vol.email}</td>
+                      <td className="px-6 py-4">
+                        <span className={`px-2 py-0.5 rounded-full border text-[10px] font-bold ${
+                          vol.generated 
+                            ? 'bg-emerald-50 text-emerald-700 border-emerald-100'
+                            : 'bg-amber-50 text-amber-700 border-amber-100'
+                        }`}>
+                          {vol.generated ? 'Generated' : 'Pending'}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 font-mono font-bold text-slate-500">{vol.certId || '—'}</td>
+                      <td className="px-6 py-4 text-right">
+                        {vol.generated ? (
+                          <button
+                            onClick={() => setPreviewCert({ ...vol, eventName: selectedEvent.name, eventDate: selectedEvent.date, volunteerHours: selectedEvent.volunteerHours })}
+                            className="py-1 px-3 bg-white border border-slate-200 hover:border-cyan-500 hover:text-cyan-600 text-slate-600 rounded-lg text-xs font-bold transition-all shadow-sm inline-flex items-center gap-1"
+                          >
+                            <Eye className="w-3.5 h-3.5" /> View
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => handleGenerateSingle(vol)}
+                            className="py-1 px-3 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg text-xs font-bold transition-all shadow-sm"
+                          >
+                            Generate
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
