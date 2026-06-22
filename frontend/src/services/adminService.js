@@ -78,16 +78,3 @@ export const getAuditLogs = async () => {
   return response.data;
 };
 
-export const createAdminUser = async (userData) => {
-  const response = await axios.post(`${API_URL}/users`, userData, {
-    headers: getAuthHeader(),
-  });
-  return response.data;
-};
-
-export const updateAdminUser = async (id, userData) => {
-  const response = await axios.put(`${API_URL}/users/${id}`, userData, {
-    headers: getAuthHeader(),
-  });
-  return response.data;
-};
