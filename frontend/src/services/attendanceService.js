@@ -7,18 +7,16 @@ const getAuthHeader = () => {
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
-export const getAttendanceByEvent = async (eventId) => {
-  const response = await axios.get(`${API_URL}/${eventId}`, {
+export const getAttendanceStats = async () => {
+  const response = await axios.get(`${API_URL}/stats`, {
     headers: getAuthHeader(),
   });
   return response.data;
 };
 
-export const saveAttendance = async (eventId, records) => {
-  const response = await axios.post(
-    API_URL,
-    { eventId, records },
-    { headers: getAuthHeader() }
-  );
+export const getMyAttendance = async () => {
+  const response = await axios.get(`${API_URL}/my-attendance`, {
+    headers: getAuthHeader(),
+  });
   return response.data;
 };
