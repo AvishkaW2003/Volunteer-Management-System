@@ -1,32 +1,40 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/volunteers';
+const API_URL = 'http://localhost:5000/api/applications';
 
 const getAuthHeader = () => {
   const token = localStorage.getItem('token');
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
-// Organizer — all applications across their events
-export const getApplicationsForOrganizer = async () => {
-  const response = await axios.get(`${API_URL}/applications`, {
-    headers: getAuthHeader(),
-  });
-  return response.data;
-};
-
-// Organizer — approve or reject a single application
-export const updateApplicationStatus = async (id, status) => {
-  const response = await axios.patch(
-    `${API_URL}/applications/${id}/status`,
-    { status },
+// Student applies for an event
+export const applyToEvent = async (eventId, formData) => {
+  const response = await axios.post(
+    API_URL,
+    { eventId, formData },
     { headers: getAuthHeader() }
   );
   return response.data;
 };
 
-// Organizer — approved volunteers for one event
-export const getEventVolunteers = async (eventId) => {
+// Student retrieves their own applications
+export const getMyApplications = async () => {
+  const response = await axios.get(`${API_URL}/my-applications`, {
+    headers: getAuthHeader(),
+  });
+  return response.data;
+};
+
+// Organizer retrieves statistics
+export const getApplicationStats = async () => {
+  const response = await axios.get(`${API_URL}/stats`, {
+    headers: getAuthHeader(),
+  });
+  return response.data;
+};
+
+// Organizer retrieves applications for a specific event
+export const getOrganizerApplications = async (eventId) => {
   const response = await axios.get(`${API_URL}/event/${eventId}`, {
     headers: getAuthHeader(),
   });
