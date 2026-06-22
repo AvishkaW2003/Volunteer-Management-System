@@ -257,3 +257,197 @@ const OrganizerSettings = () => {
   const handleRemoveSignature = () => {
     setCertificateSettings(prev => ({ ...prev, signature: '' }));
   };
+
+   // MembersCRUD Operations
+    const handleAddMember = () => {
+      const cleanName = newMemberName.trim();
+      if (!cleanName) return;
+      
+      const duplicate = members.some(m => m.name.toLowerCase() === cleanName.toLowerCase());
+      if (duplicate) {
+        setError('A member with this name already exists.');
+        return;
+      }
+      
+      setError('');
+      const newMember = { name: cleanName, role: newMemberRole };
+      setMembers([...members, newMember]);
+      setNewMemberName('');
+      setNewMemberRole('President');
+    };
+  
+    const handleRemoveMember = (index) => {
+      setMembers(members.filter((_, i) => i !== index));
+    };
+  
+    const handleStartEditMember = (index) => {
+      setEditingMemberIndex(index);
+      setEditingMemberName(members[index].name);
+      setEditingMemberRole(members[index].role);
+    };
+  
+    const handleSaveEditMember = () => {
+      const cleanName = editingMemberName.trim();
+      if (!cleanName) return;
+  
+      const duplicate = members.some((m, i) => i !== editingMemberIndex && m.name.toLowerCase() === cleanName.toLowerCase());
+      if (duplicate) {
+        setError('A member with this name already exists.');
+        return;
+      }
+  
+      setError('');
+      const updated = [...members];
+      updated[editingMemberIndex] = { name: cleanName, role: editingMemberRole };
+      setMembers(updated);
+      setEditingMemberIndex(null);
+      setEditingMemberName('');
+    };
+  
+    // Social Links Updater
+    const handleSocialChange = (key, value) => {
+      setSocialMediaLinks(prev => ({
+        ...prev,
+        [key]: value
+      }));
+    };
+  
+    // Event Preferences Updater
+    const handlePrefChange = (key, value) => {
+      setEventPreferences(prev => ({
+        ...prev,
+        [key]: value
+      }));
+    };
+  
+    // Global Save
+    const handleSaveSettings = async () => {
+      setSaving(true);
+      setError('');
+      setSuccess('');
+  
+      if (!orgName.trim()) {
+        setError('Organization Name is required.');
+        setSaving(false);
+        return;
+      }
+  
+      const payload = {
+        orgName,
+        phone,
+        organizationType,
+        description,
+        university,
+        websiteUrl,
+        socialMediaLinks,
+        members,
+        eventPreferences,
+        notifications,
+        certificateSettings,
+        logo
+      };
+  
+      try {
+        const token = localStorage.getItem('token');
+        if (token && token.startsWith('dummy')) {
+          localStorage.setItem('mock_org_settings', JSON.stringify(payload));
+          updateUser({
+            ...user,
+            name: orgName,
+            phone,
+            organizerProfile: {
+              ...user?.organizerProfile,
+              ...payload
+            }
+          });
+        } else {
+          await updateOrganizerSettings(payload);
+          updateUser({
+            ...user,
+            name: orgName,
+            phone,
+            organizerProfile: {
+              ...user?.organizerProfile,
+              ...payload
+            }
+          });
+        }
+        setSuccess('Settings successfully updated!');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setTimeout(() => setSuccess(''), 4000);
+      } catch (err) {
+        setError(err.response?.data?.message || 'Failed to save settings details.');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } finally {
+        setSaving(false);
+      }
+    };
+  
+    // Password Changer Action
+    const handlePasswordUpdate = async (e) => {
+      e.preventDefault();
+      setPasswordError('');
+      setPasswordSuccess('');
+  
+      const { current, newPass, confirm } = passwords;
+      if (!current || !newPass || !confirm) {
+        setPasswordError('Please fill in all password fields.');
+        return;
+      }
+  
+      if (newPass !== confirm) {
+        setPasswordError('New password and confirmation do not match.');
+        return;
+      }
+  
+      if (newPass.length < 6) {
+        setPasswordError('New password must be at least 6 characters.');
+        return;
+      }
+  
+      setPasswordUpdating(true);
+      try {
+        const token = localStorage.getItem('token');
+        if (token && token.startsWith('dummy')) {
+          await new Promise(resolve => setTimeout(resolve, 800));
+          setPasswordSuccess('Password successfully updated!');
+        } else {
+          await changePassword({ currentPassword: current, newPassword: newPass });
+          setPasswordSuccess('Password successfully updated!');
+        }
+        setPasswords({ current: '', newPass: '', confirm: '' });
+        setTimeout(() => setPasswordSuccess(''), 4000);
+      } catch (err) {
+        setPasswordError(err.response?.data?.message || 'Failed to update password. Verify current password.');
+      } finally {
+        setPasswordUpdating(false);
+      }
+    };
+  
+    if (loading) {
+      return (
+        <div className="flex flex-col items-center justify-center min-h-[60vh] gap-3">
+          <Loader2 className="w-10 h-10 text-cyan-500 animate-spin" />
+          <p className="text-gray-500 text-sm font-semibold">Loading settings profile...</p>
+        </div>
+      );
+    }
+  
+    const statConfig = [
+      { label: 'Events Created', value: stats.eventsCreated, icon: Calendar, bg: 'bg-cyan-50 text-cyan-600' },
+      { label: 'Applications Received', value: stats.applicationsReceived, icon: Users, bg: 'bg-blue-50 text-blue-600' },
+      { label: 'Approved Volunteers', value: stats.approvedVolunteers, icon: UserCheck, bg: 'bg-emerald-50 text-emerald-600' },
+      { label: 'Certificates Generated', value: stats.certificatesGenerated, icon: Award, bg: 'bg-indigo-50 text-indigo-600' }
+    ];
+  
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Title */}
+        <div className="mb-8 border-b border-gray-100 pb-5">
+          <h1 className="text-3xl font-extrabold text-gray-800 tracking-tight flex items-center gap-2">
+            Settings <Sparkles className="w-6 h-6 text-cyan-500" />
+          </h1>
+          <p className="mt-1.5 text-gray-500 text-base">
+            Manage your organization profile, preferences, members list, templates, and security configuration.
+          </p>
+        </div>
