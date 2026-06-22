@@ -1,56 +1,105 @@
-import { Bell, CheckCheck } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { myNotifications, markNotificationRead, markAllNotificationsRead } from '../../services/notificationService';
+import {
+  Bell, CheckCheck, UserPlus, CheckCircle2, XCircle, ClipboardCheck, Award, Clock
+} from 'lucide-react';
+import { getNotifications, markAsRead, markAllAsRead } from '../../services/notificationService';
 
-const timeAgo = (iso) => {
-  const diffMs = Date.now() - new Date(iso).getTime();
-  const mins = Math.floor(diffMs / 60000);
-  if (mins < 1) return 'just now';
-  if (mins < 60) return `${mins} min ago`;
-  const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `${hrs} hr${hrs !== 1 ? 's' : ''} ago`;
-  const days = Math.floor(hrs / 24);
-  return `${days} day${days !== 1 ? 's' : ''} ago`;
+const getIconAndStyle = (type) => {
+  switch (type) {
+    case 'Application':
+      return { Icon: UserPlus, color: 'bg-blue-100 text-blue-600 border-blue-200' };
+    case 'Attendance':
+      return { Icon: ClipboardCheck, color: 'bg-cyan-100 text-cyan-600 border-cyan-200' };
+    case 'Approved':
+      return { Icon: CheckCircle2, color: 'bg-green-100 text-green-600 border-green-200' };
+    case 'Rejected':
+      return { Icon: XCircle, color: 'bg-red-100 text-red-600 border-red-200' };
+    case 'Pending':
+      return { Icon: Award, color: 'bg-amber-100 text-amber-600 border-amber-200' };
+    case 'Reminder':
+      return { Icon: Clock, color: 'bg-indigo-100 text-indigo-600 border-indigo-200' };
+    default:
+      return { Icon: Bell, color: 'bg-blue-100 text-blue-600 border-blue-200' };
+  }
+};
+
+const formatTime = (dateStr) => {
+  if (!dateStr) return '';
+  const date = new Date(dateStr);
+  const now = new Date();
+  const diffMs = now - date;
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHrs = Math.floor(diffMins / 60);
+  const diffDays = Math.floor(diffHrs / 24);
+
+  if (diffMins < 1) return 'Just now';
+  if (diffMins < 60) return `${diffMins} min ago`;
+  if (diffHrs < 24) return `${diffHrs} ${diffHrs === 1 ? 'hr' : 'hrs'} ago`;
+  if (diffDays === 1) return 'Yesterday';
+  return date.toLocaleDateString();
 };
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
 
-  const load = async () => {
-    setLoading(true);
-    setError('');
+  const loadNotifications = async () => {
     try {
-      const data = await myNotifications();
-      setNotifications(data);
+      setLoading(true);
+      const data = await getNotifications();
+      const normalized = data.map((n) => {
+        let type = 'Reminder';
+        if (n.title.toLowerCase().includes('application')) type = 'Application';
+        else if (n.title.toLowerCase().includes('attendance')) type = 'Attendance';
+        else if (n.title.toLowerCase().includes('approved') || n.message.toLowerCase().includes('approved')) type = 'Approved';
+        else if (n.title.toLowerCase().includes('rejected') || n.message.toLowerCase().includes('rejected')) type = 'Rejected';
+        else if (n.title.toLowerCase().includes('pending') || n.message.toLowerCase().includes('pending')) type = 'Pending';
+
+        return {
+          id: n.id,
+          title: n.title,
+          message: n.message,
+          read: n.isRead,
+          time: formatTime(n.createdAt),
+          type
+        };
+      });
+      setNotifications(normalized);
     } catch (err) {
-      setError('Could not load notifications from the server.');
+      console.error("Error loading notifications:", err);
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    loadNotifications();
+  }, []);
 
-  const unread = notifications.filter((n) => !n.isRead).length;
+  const unread = notifications.filter((n) => !n.read).length;
 
   const handleMarkAllRead = async () => {
     try {
-      await markAllNotificationsRead();
-      setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
+      await markAllAsRead();
+      setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+      window.dispatchEvent(new Event('voms_notifications_updated'));
     } catch (err) {
-      setError('Failed to mark all as read.');
+      console.error("Failed to mark all read:", err);
     }
   };
 
-  const handleMarkRead = async (n) => {
-    if (n.isRead) return;
-    try {
-      await markNotificationRead(n.id);
-      setNotifications((prev) => prev.map((x) => (x.id === n.id ? { ...x, isRead: true } : x)));
-    } catch (err) {
-      setError('Failed to mark notification as read.');
+  const handleMarkRead = async (id) => {
+    const notif = notifications.find(n => n.id === id);
+    if (notif && !notif.read) {
+      try {
+        await markAsRead(id);
+        setNotifications((prev) =>
+          prev.map((n) => (n.id === id ? { ...n, read: true } : n))
+        );
+        window.dispatchEvent(new Event('voms_notifications_updated'));
+      } catch (err) {
+        console.error("Failed to mark read:", err);
+      }
     }
   };
 
@@ -67,52 +116,51 @@ const Notifications = () => {
           <button
             onClick={handleMarkAllRead}
             className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold
-              text-purple-600 border border-cyan-200 hover:bg-purple-50 transition-colors"
+                text-purple-600 border border-cyan-200 hover:bg-purple-50 transition-colors"
           >
             <CheckCheck className="w-4 h-4" /> Mark all read
           </button>
         )}
       </div>
 
-      {error && (
-        <div className="bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-3 mb-5 text-sm font-medium">
-          {error}
-        </div>
-      )}
-
       {loading ? (
-        <div className="flex items-center justify-center py-20 text-gray-400 text-sm">Loading notifications…</div>
+        <div className="bg-white rounded-2xl border border-gray-100 p-8 text-center shadow-sm">
+          <p className="text-gray-500 font-semibold animate-pulse text-base">Loading notifications...</p>
+        </div>
       ) : notifications.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 text-center">
-          <Bell className="w-10 h-10 mb-3 text-gray-200" />
-          <p className="font-medium text-gray-400">No notifications yet</p>
+        <div className="bg-white rounded-2xl border border-gray-100 p-8 text-center shadow-sm text-gray-400">
+          <Bell className="w-8 h-8 mx-auto mb-2 text-gray-300" />
+          <p className="text-base font-semibold">No notifications found</p>
         </div>
       ) : (
         <div className="space-y-3">
-          {notifications.map((n) => (
-            <div
-              key={n.id}
-              onClick={() => handleMarkRead(n)}
-              className={`bg-white rounded-2xl border shadow-sm p-4 flex items-start gap-4 cursor-pointer
-                transition-all hover:shadow-md ${n.isRead ? 'border-gray-100' : 'border-cyan-200'}`}
-            >
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${n.isRead ? 'bg-gray-100 text-gray-500' : 'bg-cyan-100 text-cyan-600'}`}>
-                <Bell className="w-5 h-5" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between gap-2">
-                  <p className={`text-base font-semibold ${n.isRead ? 'text-gray-700' : 'text-gray-900'}`}>
-                    {n.title}
-                  </p>
-                  <span className="text-sm text-gray-400 flex-shrink-0">{timeAgo(n.createdAt)}</span>
+          {notifications.map((n) => {
+            const { Icon, color } = getIconAndStyle(n.type);
+            return (
+              <div
+                key={n.id}
+                onClick={() => handleMarkRead(n.id)}
+                className={`bg-white rounded-2xl border shadow-sm p-4 flex items-start gap-4 cursor-pointer
+                    transition-all hover:shadow-md ${n.read ? 'border-gray-100' : 'border-cyan-200'}`}
+              >
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${color}`}>
+                  <Icon className="w-5 h-5" />
                 </div>
-                <p className="text-base text-gray-500 mt-0.5">{n.message}</p>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className={`text-base font-semibold ${n.read ? 'text-gray-700' : 'text-gray-900'}`}>
+                      {n.title}
+                    </p>
+                    <span className="text-sm text-gray-400 flex-shrink-0">{n.time}</span>
+                  </div>
+                  <p className="text-base text-gray-500 mt-0.5">{n.message}</p>
+                </div>
+                {!n.read && (
+                  <div className="w-2.5 h-2.5 bg-cyan-500 rounded-full flex-shrink-0 mt-1" />
+                )}
               </div>
-              {!n.isRead && (
-                <div className="w-2.5 h-2.5 bg-cyan-500 rounded-full flex-shrink-0 mt-1" />
-              )}
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
