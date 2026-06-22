@@ -94,3 +94,51 @@ const Attendance = () => {
         <h1 className="text-3xl font-bold text-gray-800">Attendance</h1>
         <p className="text-gray-500 text-md mt-0.5">Mark volunteer attendance for each event</p>
       </div>
+
+     {/* Event selector */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 mb-5">
+        <label className="block text-md font-semibold text-gray-700 mb-2">Select Event</label>
+        <select
+          value={selectedEvent}
+          onChange={(e) => setSelectedEvent(e.target.value)}
+          className="w-full sm:w-80 border border-gray-200 rounded-xl px-3 py-2.5 text-md
+            text-gray-700 outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-100
+            transition-all bg-gray-50"
+        >
+          {eventsList.map((e) => <option key={e.id} value={e.id}>{e.title}</option>)}
+        </select>
+      </div>
+
+      {/* Stats + actions */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 bg-cyan-50 text-cyan-700 px-4 py-2 rounded-xl text-sm font-semibold">
+            <Users className="w-4 h-4" />
+            {presentCount} / {volunteers.length} Present
+          </div>
+          {volunteers.length > 0 && (
+            <div className="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-cyan-500 rounded-full transition-all duration-300"
+                style={{ width: `${(presentCount / volunteers.length) * 100}%` }}
+              />
+            </div>
+          )}
+        </div>
+        <div className="flex gap-2">
+          <button
+            onClick={() => markAll(true)}
+            className="px-4 py-2 rounded-xl text-xs font-semibold bg-green-50 text-green-600
+              hover:bg-green-100 transition-colors"
+          >
+            Mark All Present
+          </button>
+          <button
+            onClick={() => markAll(false)}
+            className="px-4 py-2 rounded-xl text-xs font-semibold bg-gray-100 text-gray-600
+              hover:bg-gray-200 transition-colors"
+          >
+            Clear All
+          </button>
+        </div>
+      </div>
