@@ -774,3 +774,120 @@ const OrganizerSettings = () => {
               </div>
             </div>
           </SectionCard>
+
+          {/* Section 5: Event Preferences */}
+          <SectionCard icon={Calendar} title="Event Preferences">
+            <p className="text-xs text-gray-500 -mt-2 mb-4">
+              Default preferences populated automatically when creating new events.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+              <div>
+                <label className={labelCls}>Default Category</label>
+                <select
+                  className={inputCls}
+                  value={eventPreferences.defaultCategory}
+                  onChange={(e) => handlePrefChange('defaultCategory', e.target.value)}
+                >
+                  <option value="">None</option>
+                  {CATEGORIES.map(c => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className={labelCls}>Default Limit</label>
+                <input
+                  type="number"
+                  className={inputCls}
+                  placeholder="e.g. 30"
+                  value={eventPreferences.defaultVolunteerLimit}
+                  onChange={(e) => handlePrefChange('defaultVolunteerLimit', parseInt(e.target.value) || 0)}
+                  min="1"
+                />
+              </div>
+              <div>
+                <label className={labelCls}>Default Location</label>
+                <input
+                  type="text"
+                  className={inputCls}
+                  placeholder="e.g. Main Auditorium"
+                  value={eventPreferences.defaultEventLocation}
+                  onChange={(e) => handlePrefChange('defaultEventLocation', e.target.value)}
+                />
+              </div>
+            </div>
+          </SectionCard>
+
+          {/* Section 6: Certificate Settings */}
+          <SectionCard icon={Award} title="Certificate Settings">
+            <p className="text-xs text-gray-500 -mt-2 mb-4">
+              Details populated automatically when issuing volunteer certificates.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label className={labelCls}>Organizer / Issuer Name</label>
+                <input
+                  type="text"
+                  className={inputCls}
+                  placeholder="e.g. Dr. Rohan Goonetilleke"
+                  value={certificateSettings.organizerName}
+                  onChange={(e) => setCertificateSettings(prev => ({ ...prev, organizerName: e.target.value }))}
+                />
+              </div>
+              <div>
+                <label className={labelCls}>Default Certificate Template</label>
+                <select
+                  className={inputCls}
+                  value={certificateSettings.template}
+                  onChange={(e) => setCertificateSettings(prev => ({ ...prev, template: e.target.value }))}
+                >
+                  <option value="Default">Default template</option>
+                  <option value="Classic">Classic template</option>
+                  <option value="Modern">Modern template</option>
+                </select>
+              </div>
+              <div className="sm:col-span-2">
+                <label className={labelCls}>Certificate Footer Text</label>
+                <input
+                  type="text"
+                  className={inputCls}
+                  placeholder="In recognition of outstanding volunteer service."
+                  value={certificateSettings.footerText}
+                  onChange={(e) => setCertificateSettings(prev => ({ ...prev, footerText: e.target.value }))}
+                />
+              </div>
+
+              {/* Signature Uploader */}
+              <div className="sm:col-span-2 border-t border-gray-100 pt-5 mt-2">
+                <label className={labelCls}>Authorized Signature Image</label>
+                <div className="flex flex-col sm:flex-row items-center gap-6 bg-gray-50/50 p-4 border border-gray-100 rounded-2xl">
+                  <div className="w-48 h-20 bg-white border border-gray-200 rounded-xl overflow-hidden flex items-center justify-center p-2 relative shadow-inner">
+                    {certificateSettings.signature ? (
+                      <img src={certificateSettings.signature} alt="Signature Preview" className="max-w-full max-h-full object-contain" />
+                    ) : (
+                      <span className="text-xs text-gray-400 font-semibold italic">No Signature Loaded</span>
+                    )}
+                  </div>
+                  <div className="flex-1 text-center sm:text-left space-y-2">
+                    <p className="text-xs font-semibold text-gray-700">Upload signature file</p>
+                    <p className="text-[11px] text-gray-400">Supported formats: JPG or PNG. Make sure background is clean or transparent.</p>
+                    <div className="flex flex-wrap gap-2.5 justify-center sm:justify-start">
+                      <label className="px-4 py-2 bg-white hover:bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-gray-600 cursor-pointer shadow-sm transition">
+                        Select Signature
+                        <input type="file" className="hidden" accept="image/png, image/jpeg" onChange={handleSignatureChange} />
+                      </label>
+                      {certificateSettings.signature && (
+                        <button
+                          type="button"
+                          onClick={handleRemoveSignature}
+                          className="px-4 py-2 bg-red-50 text-red-600 border border-red-100 rounded-xl text-xs font-bold hover:bg-red-100 transition"
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </SectionCard>
