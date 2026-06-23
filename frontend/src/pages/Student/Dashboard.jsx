@@ -22,3 +22,29 @@ const Dashboard = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [viewingCert, setViewingCert] = useState(null);
+
+  useEffect(() => {
+    const fetchDashboard = async () => {
+      setLoading(true);
+      try {
+        const res = await getStudentDashboard();
+        setData(res);
+      } catch (err) {
+        console.error('Error fetching student dashboard data:', err);
+        setData({
+          joinedEventsCount: 0,
+          reputationPoints: 0,
+          certificatesCount: 0,
+          volunteerHours: 0,
+          joinedEvents: [],
+          certificates: [],
+          hoursHistory: [],
+          reputationActivities: [],
+          rankLevel: 'Beginner Volunteer'
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDashboard();
+  }, [user]);
