@@ -141,3 +141,42 @@ const Dashboard = () => {
           </div>
         )}
       </div>
+      {/* ── MY CERTIFICATES SECTION ────────────────────── */}
+      <div className="p-6 space-y-4 bg-white border border-gray-100 shadow-sm rounded-2xl">
+        <h2 className="text-xl font-bold text-gray-800">My Certificates</h2>
+        {data.certificates.length === 0 ? (
+          <div className="py-10 text-center">
+            <Award className="w-12 h-12 mx-auto mb-3 text-purple-100" />
+            <p className="font-medium text-gray-400">No certificates earned yet.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {data.certificates.map((cert) => (
+              <div key={cert.id} className="flex flex-col justify-between p-4 transition-shadow border border-gray-100 rounded-xl hover:shadow-sm">
+                <div>
+                  <div className="flex items-center justify-center w-10 h-10 mb-3 text-purple-500 rounded-lg bg-purple-50">
+                    <Award className="w-5 h-5" />
+                  </div>
+                  <h3 className="text-sm font-bold text-gray-800">{cert.event} Certificate</h3>
+                  <p className="mt-1 text-xs text-gray-400">Completed: {cert.completedOn}</p>
+                  <p className="px-2 py-1 mt-2 font-mono text-xs text-gray-500 rounded bg-gray-50 w-fit">{cert.certificateId}</p>
+                </div>
+                <div className="flex gap-2 mt-4">
+                  <button 
+                    onClick={() => setViewingCert(cert)}
+                    className="flex-1 py-1.5 rounded-lg text-xs font-bold bg-purple-50 text-purple-600 hover:bg-purple-100 transition-colors flex items-center justify-center gap-1 border-none cursor-pointer"
+                  >
+                    <Eye className="w-3 h-3" /> View Certificate
+                  </button>
+                  <button 
+                    onClick={() => downloadCertificate(cert)}
+                    className="flex-1 py-1.5 rounded-lg text-xs font-bold bg-gradient-to-r from-blue-400 to-purple-500 text-white hover:opacity-90 transition-opacity flex items-center justify-center gap-1 border-none cursor-pointer"
+                  >
+                    <Download className="w-3 h-3" /> Download Certificate
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
