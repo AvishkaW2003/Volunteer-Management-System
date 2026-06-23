@@ -63,3 +63,27 @@ const Dashboard = () => {
     { label: 'Certificates Earned', value: data.certificatesCount,  icon: Award    },
     { label: 'Volunteer Hours',     value: data.volunteerHours,  icon: Clock    },
   ];
+  return (
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold text-gray-800">Student Dashboard</h1>
+        <p className="mt-1 text-gray-500">Welcome back! Here's your volunteer summary.</p>
+      </div>
+
+      {/* Stat Cards — full gradient, icon top-left, value top-right, label bottom */}
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+        {stats.map(({ label, value, icon: Icon }) => (
+          <div
+            key={label}
+            className="bg-gradient-to-br from-blue-400 to-purple-500 rounded-2xl p-5 shadow-sm flex flex-col justify-between min-h-[110px]"
+          >
+            <div className="flex items-start justify-between">
+              <div className="flex items-center justify-center flex-shrink-0 rounded-full w-11 h-11 bg-white/20">
+                <Icon className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-3xl font-bold text-white">{value}</span>
+            </div>
+            <p className="mt-4 text-sm font-medium text-white/80">{label}</p>
+          </div>
+        ))}
+      </div>
