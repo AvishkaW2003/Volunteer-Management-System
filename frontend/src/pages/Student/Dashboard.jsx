@@ -87,3 +87,12 @@ const Dashboard = () => {
           </div>
         ))}
       </div>
+      {/* ── MY JOINED EVENTS SECTION ───────────────────── */}
+      <div className="p-6 space-y-4 bg-white border border-gray-100 shadow-sm rounded-2xl">
+        <h2 className="text-xl font-bold text-gray-800">My Joined Events</h2>
+        {data.joinedEvents.length === 0 ? (
+          <div className="py-10 text-center">
+            <Calendar className="w-12 h-12 mx-auto mb-3 text-purple-100" />
+            <p className="font-medium text-gray-400">You haven't joined any events yet.</p>
+          </div>
+        ) : (
