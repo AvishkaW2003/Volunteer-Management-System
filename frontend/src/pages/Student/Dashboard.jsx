@@ -206,3 +206,43 @@ const Dashboard = () => {
             </div>
           )}
         </div>
+        {/* Reputation Score & Activities */}
+        <div className="p-6 space-y-4 bg-white border border-gray-100 shadow-sm rounded-2xl">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-bold text-gray-800">Reputation Activity</h2>
+            <div className="flex items-center gap-2">
+              <span className="px-3 py-1 text-xs font-bold text-purple-600 rounded-full bg-purple-50">
+                Rank: {data.rankLevel}
+              </span>
+              <span className="px-3 py-1 text-xs font-bold rounded-full bg-amber-50 text-amber-600">
+                Score: {data.reputationPoints} pts
+              </span>
+            </div>
+          </div>
+          {data.reputationActivities.length === 0 ? (
+            <p className="text-sm text-gray-400">No reputation activities logged yet.</p>
+          ) : (
+            <div className="pr-1 overflow-y-auto divide-y divide-gray-50 max-h-64">
+              {data.reputationActivities.map((item) => (
+                <div key={item.id} className="flex items-center justify-between py-3 text-sm">
+                  <div>
+                    <p className="font-bold text-gray-800">{item.event}</p>
+                    <p className="text-xs text-gray-400 mt-0.5">{item.date}</p>
+                  </div>
+                  <span className="font-bold text-purple-600">+{item.points} Points</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Certificate Modal Preview */}
+      {viewingCert && (
+        <CertificateModal cert={viewingCert} onClose={() => setViewingCert(null)} />
+      )}
+    </div>
+  );
+};
+
+export default Dashboard;
