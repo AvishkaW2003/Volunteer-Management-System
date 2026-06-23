@@ -17,3 +17,8 @@ const downloadCertificate = async (cert) => {
     console.error("Failed to download certificate PDF", error);
   }
 };
+const Dashboard = () => {
+  const { user } = useAuth();
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [viewingCert, setViewingCert] = useState(null);
