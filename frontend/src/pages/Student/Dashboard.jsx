@@ -180,3 +180,29 @@ const Dashboard = () => {
           </div>
         )}
       </div>
+      {/* ── HOURS AND REPUTATION SIDE-BY-SIDE ──────────── */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        {/* Hours History */}
+        <div className="p-6 space-y-4 bg-white border border-gray-100 shadow-sm rounded-2xl">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-bold text-gray-800">Volunteer Hours History</h2>
+            <span className="px-3 py-1 text-xs font-bold text-blue-600 rounded-full bg-blue-50">
+              Total: {data.volunteerHours} hrs
+            </span>
+          </div>
+          {data.hoursHistory.length === 0 ? (
+            <p className="text-sm text-gray-400">No volunteer hours logged yet.</p>
+          ) : (
+            <div className="pr-1 overflow-y-auto divide-y divide-gray-50 max-h-64">
+              {data.hoursHistory.map((item) => (
+                <div key={item.id} className="flex items-center justify-between py-3 text-sm">
+                  <div>
+                    <p className="font-bold text-gray-800">{item.event}</p>
+                    <p className="text-xs text-gray-400 mt-0.5">{item.date}</p>
+                  </div>
+                  <span className="font-bold text-emerald-600">+{item.hours} hrs</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
