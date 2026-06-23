@@ -1,48 +1,19 @@
-import { Calendar, Trophy, Award, Clock } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useAuth } from '../../context/AuthContext';
+import { Link } from 'react-router-dom';
+import { Calendar, Trophy, Award, Clock, MapPin, Download, Eye, X } from 'lucide-react';
+import { getStudentDashboard } from '../../services/userService';
+import { downloadCertificatePdf } from '../../services/certificateService';
 
-const stats = [
-  { label: 'Events Joined',       value: 12,  icon: Calendar },
-  { label: 'Reputation Points',   value: 850, icon: Trophy   },
-  { label: 'Certificates Earned', value: 8,   icon: Award    },
-  { label: 'Volunteer Hours',     value: 48,  icon: Clock    },
-];
-
-const Dashboard = () => (
-  <div className="space-y-6">
-    <div>
-      <h1 className="text-3xl font-bold text-gray-800">Student Dashboard</h1>
-      <p className="text-gray-500 mt-1">Welcome back! Here's your volunteer summary.</p>
-    </div>
-
-    {/* Stat Cards — full gradient, icon top-left, value top-right, label bottom */}
-    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
-      {stats.map(({ label, value, icon: Icon }) => (
-        <div
-          key={label}
-          className="bg-gradient-to-br from-blue-400 to-purple-500 rounded-2xl p-5 shadow-sm
-            flex flex-col justify-between min-h-[110px]"
-        >
-          <div className="flex items-start justify-between">
-            <div className="w-11 h-11 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
-              <Icon className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-3xl font-bold text-white">{value}</span>
-          </div>
-          <p className="text-sm font-medium text-white/80 mt-4">{label}</p>
-        </div>
-      ))}
-    </div>
-
-    {/* Upcoming Events */}
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-      <h2 className="text-lg font-bold text-gray-800 mb-4">Upcoming Events</h2>
-      <div className="flex flex-col items-center justify-center py-10 text-center">
-        <Calendar className="w-12 h-12 text-purple-100 mb-3" />
-        <p className="text-gray-400 font-medium">No upcoming events</p>
-        <p className="text-gray-300 text-sm mt-1">Browse events to find volunteer opportunities</p>
-      </div>
-    </div>
-  </div>
-);
-
-export default Dashboard;
+const downloadCertificate = async (cert) => {
+  try {
+    const blobData = await downloadCertificatePdf(cert.id);
+    const blob = new Blob([blobData], { type: 'application/pdf' });
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = `certificate-${cert.certificateId || cert.id}.pdf`;
+    link.click();
+  } catch (error) {
+    console.error("Failed to download certificate PDF", error);
+  }
+};
