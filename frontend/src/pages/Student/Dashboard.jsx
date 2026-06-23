@@ -96,3 +96,48 @@ const Dashboard = () => {
             <p className="font-medium text-gray-400">You haven't joined any events yet.</p>
           </div>
         ) : (
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {data.joinedEvents.map((je) => (
+              <div key={je.id} className="flex flex-col overflow-hidden transition-shadow border border-gray-100 sm:flex-row rounded-xl hover:shadow-sm">
+                <img 
+                  src={je.image || `https://picsum.photos/seed/${encodeURIComponent(je.title)}/300/200`} 
+                  alt={je.title} 
+                  className="object-cover w-full h-32 sm:w-32 bg-gray-50"
+                  onError={e => {
+                    e.currentTarget.src = 'https://picsum.photos/seed/placeholder/300/200';
+                  }}
+                />
+                <div className="flex flex-col justify-between flex-1 p-4">
+                  <div>
+                    <span className="text-[10px] uppercase font-bold text-purple-600 tracking-wider">{je.organizer}</span>
+                    <h3 className="font-bold text-gray-800 text-sm mt-0.5">{je.title}</h3>
+                    <div className="flex flex-wrap mt-2 text-xs text-gray-400 gap-x-3 gap-y-1">
+                      <span className="flex items-center gap-1"><Calendar className="w-3 h-3 text-purple-400" /> {je.date}</span>
+                      <span className="flex items-center gap-1"><MapPin className="w-3 h-3 text-purple-400" /> {je.location}</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between mt-4">
+                    <div className="flex gap-2">
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                        je.applicationStatus === 'Approved' ? 'bg-blue-50 text-blue-600' :
+                        je.applicationStatus === 'Rejected' ? 'bg-red-50 text-red-600' :
+                        'bg-amber-50 text-amber-600'
+                      }`}>
+                        App: {je.applicationStatus}
+                      </span>
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                        je.attendanceStatus === 'Present' ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-500'
+                      }`}>
+                        Att: {je.attendanceStatus}
+                      </span>
+                    </div>
+                    <Link to={`/events/${je.eventId}`} className="text-xs font-bold text-blue-600 hover:underline">
+                      View Details
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
