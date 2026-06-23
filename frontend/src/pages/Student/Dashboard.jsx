@@ -48,3 +48,18 @@ const Dashboard = () => {
     };
     fetchDashboard();
   }, [user]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="w-12 h-12 border-b-2 border-blue-600 rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  const stats = [
+    { label: 'Events Joined',       value: data.joinedEventsCount, icon: Calendar },
+    { label: 'Reputation Points',   value: data.reputationPoints, icon: Trophy   },
+    { label: 'Certificates Earned', value: data.certificatesCount,  icon: Award    },
+    { label: 'Volunteer Hours',     value: data.volunteerHours,  icon: Clock    },
+  ];
