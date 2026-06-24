@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import sequelize from "../config/db.js";
+import sequelize from "../config/database.js";
 import User from "./userModel.js";
 
 const Event = sequelize.define("Event", {
@@ -33,12 +33,21 @@ const Event = sequelize.define("Event", {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  status: {
-    type: DataTypes.ENUM("pending", "approved", "rejected"),
-    defaultValue: "pending",
+  approvalStatus: {
+    type: DataTypes.ENUM("Pending", "Approved", "Rejected"),
+    defaultValue: "Pending",
   },
 
-  
+  status: {
+    type: DataTypes.ENUM("Draft", "Upcoming", "Active", "Completed", "Archived"),
+    defaultValue: "Upcoming",
+  },
+
+  acceptedCount: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+  },
+
   image: {
     type: DataTypes.STRING,
     allowNull: true,
