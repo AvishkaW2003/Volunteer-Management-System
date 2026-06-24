@@ -52,3 +52,15 @@ const History = () => {
         </h1>
         <p className="mt-1 text-gray-500">Your completed volunteer activities</p>
       </div>
+      {/* 3 Dynamic Summary Cards */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        {stats.map(({ value, suffix, label }) => (
+          <div key={label}
+            className="p-6 shadow-sm bg-gradient-to-br from-blue-400 to-purple-500 rounded-2xl shadow-purple-200">
+            <p className="text-3xl font-extrabold text-white">
+              {value}{suffix}
+            </p>
+            <p className="mt-1 text-sm font-medium text-white/70">{label}</p>
+          </div>
+        ))}
+      </div>
