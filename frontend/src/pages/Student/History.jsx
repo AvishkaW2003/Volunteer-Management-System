@@ -64,3 +64,16 @@ const History = () => {
           </div>
         ))}
       </div>
+      {/* History Table */}
+      <div className="overflow-hidden bg-white border border-gray-100 shadow-sm rounded-2xl">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead className="border-b border-gray-100 bg-gray-50">
+              <tr>
+                {['Event Name', 'Club', 'Participation Date', 'Volunteer Hours', 'Reputation Points', 'Certificate Status'].map(h => (
+                  <th key={h} className="px-5 py-3 text-xs font-semibold tracking-wider text-left text-gray-400 uppercase">
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
