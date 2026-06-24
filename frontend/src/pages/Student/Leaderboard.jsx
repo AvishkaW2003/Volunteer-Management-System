@@ -57,3 +57,15 @@ const Leaderboard = () => {
         </h1>
         <p className="mt-1 text-gray-500">Top volunteers by reputation score</p>
       </div>
+      {/* ── Top 3 Cards ─────────────────────────────── */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        {loading && leaderboardList.length === 0 ? (
+          <div className="col-span-3 py-6 text-center text-gray-450">Loading leaderboard top 3...</div>
+        ) : (
+          top3.map(v => {
+            const isFirst = v.rank === 1;
+            return (
+              <div
+                key={v.rank}
+                className={`rounded-2xl p-5 flex flex-col items-center gap-3 text-center ${isFirst ? 'bg-gradient-to-br from-blue-400 to-purple-500 shadow-lg shadow-purple-200' : 'bg-white border border-gray-100 shadow-sm'}`}
+              ></div>
