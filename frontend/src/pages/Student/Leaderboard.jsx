@@ -130,3 +130,34 @@ const Leaderboard = () => {
                 </td>
               </tr>
             ) : (
+              leaderboardList.map(v => (
+                <tr key={v.rank} className="transition-colors hover:bg-purple-50/40">
+                  {/* Rank */}
+                  <td className="px-5 py-4">
+                    <RankIcon rank={v.rank} />
+                  </td>
+
+                  {/* Volunteer */}
+                  <td className="px-5 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center justify-center flex-shrink-0 w-8 h-8 text-xs font-bold text-purple-600 bg-purple-100 rounded-full">
+                        {initials(v.name)}
+                      </div>
+                      <span className="font-medium text-gray-800">{v.name}</span>
+                    </div>
+                  </td>
+
+                  {/* Score */}
+                  <td className="px-5 py-4">
+                    <span className="text-base font-bold text-purple-600">{v.score}</span>
+                  </td>
+
+                  {/* Events */}
+                  <td className="px-5 py-4 text-gray-500">{v.events}</td>
+
+                  {/* Hours */}
+                  <td className="px-5 py-4 text-gray-500">{v.hours}</td>
+                </tr>
+              ))
+            )}
+          </tbody>
