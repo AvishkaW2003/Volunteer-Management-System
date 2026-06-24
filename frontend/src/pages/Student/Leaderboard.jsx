@@ -69,3 +69,16 @@ const Leaderboard = () => {
                 key={v.rank}
                 className={`rounded-2xl p-5 flex flex-col items-center gap-3 text-center ${isFirst ? 'bg-gradient-to-br from-blue-400 to-purple-500 shadow-lg shadow-purple-200' : 'bg-white border border-gray-100 shadow-sm'}`}
               ></div>
+              {/* Rank icon — top-left */}
+                <div className="self-start">
+                  {v.rank === 1 && <Trophy className="w-7 h-7 text-amber-300" />}
+                  {v.rank === 2 && <Medal className="text-gray-400 w-7 h-7" />}
+                  {v.rank === 3 && <Award className="text-orange-400 w-7 h-7" />}
+                </div>
+
+                {/* Avatar */}
+                <div
+                  className={`w-16 h-16 rounded-full flex items-center justify-center text-lg font-bold ${isFirst ? 'bg-white/20 text-white' : 'bg-purple-100 text-purple-600'}`}
+                >
+                  {initials(v.name)}
+                </div>
