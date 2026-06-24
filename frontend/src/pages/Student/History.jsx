@@ -91,3 +91,33 @@ const History = () => {
                   </td>
                 </tr>
               ) : (
+                historyList.map(h => (
+                  <tr key={h.id} className="transition-colors hover:bg-purple-50/30">
+                    <td className="px-5 py-3.5 font-semibold text-gray-800">{h.event}</td>
+                    <td className="px-5 py-3.5 text-gray-500">{h.organizer}</td>
+                    <td className="px-5 py-3.5 text-gray-500">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="w-3.5 h-3.5 text-gray-400" /> {h.completedOn}
+                      </div>
+                    </td>
+                    <td className="px-5 py-3.5 font-semibold text-gray-700">{h.hours || 0} hrs</td>
+                    <td className="px-5 py-3.5">
+                      <span className="font-bold text-purple-600">{h.reputationPoints || 0}</span>
+                    </td>
+                    <td className="px-5 py-3.5">
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-50 text-green-700 border border-green-150">
+                        <CheckCircle className="w-3 h-3 text-green-600" /> {h.status || 'Issued'}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default History;
