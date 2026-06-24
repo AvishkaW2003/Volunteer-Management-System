@@ -43,3 +43,12 @@ const History = () => {
     { value: totalHours, suffix: 'h', label: 'Total Hours' },
     { value: totalPoints, suffix: '', label: 'Points Earned' },
   ];
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="flex items-center gap-2 text-3xl font-bold text-gray-800">
+          Volunteer History
+        </h1>
+        <p className="mt-1 text-gray-500">Your completed volunteer activities</p>
+      </div>
