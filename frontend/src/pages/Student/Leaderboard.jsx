@@ -46,3 +46,14 @@ const Leaderboard = () => {
     };
     fetchLeaderboardData();
   }, [user]);
+  const top3 = leaderboardList.slice(0, 3);
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="flex items-center gap-2 text-3xl font-bold text-gray-800">
+          Leaderboard
+        </h1>
+        <p className="mt-1 text-gray-500">Top volunteers by reputation score</p>
+      </div>
