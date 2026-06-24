@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Trophy, Medal, Award } from 'lucide-react';
 import axios from 'axios';
+
 const initials = name => {
   if (!name) return 'V';
   const parts = name.split(' ').filter(Boolean);
@@ -9,6 +10,7 @@ const initials = name => {
   if (parts.length === 1) return parts[0][0].toUpperCase();
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase().slice(0, 2);
 };
+
 const RankIcon = ({ rank }) => {
   if (rank === 1) return <Trophy className="w-5 h-5 text-amber-400" />;
   if (rank === 2) return <Medal className="w-5 h-5 text-gray-400" />;
@@ -19,10 +21,12 @@ const RankIcon = ({ rank }) => {
     </span>
   );
 };
+
 const Leaderboard = () => {
   const { user } = useAuth();
   const [leaderboardList, setLeaderboardList] = useState([]);
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const fetchLeaderboardData = async () => {
       setLoading(true);
@@ -46,10 +50,12 @@ const Leaderboard = () => {
     };
     fetchLeaderboardData();
   }, [user]);
+
   const top3 = leaderboardList.slice(0, 3);
 
   return (
     <div className="space-y-6">
+
       {/* Header */}
       <div>
         <h1 className="flex items-center gap-2 text-3xl font-bold text-gray-800">
@@ -57,6 +63,7 @@ const Leaderboard = () => {
         </h1>
         <p className="mt-1 text-gray-500">Top volunteers by reputation score</p>
       </div>
+
       {/* ── Top 3 Cards ─────────────────────────────── */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         {loading && leaderboardList.length === 0 ? (
@@ -67,9 +74,12 @@ const Leaderboard = () => {
             return (
               <div
                 key={v.rank}
-                className={`rounded-2xl p-5 flex flex-col items-center gap-3 text-center ${isFirst ? 'bg-gradient-to-br from-blue-400 to-purple-500 shadow-lg shadow-purple-200' : 'bg-white border border-gray-100 shadow-sm'}`}
-              ></div>
-              {/* Rank icon — top-left */}
+                className={`rounded-2xl p-5 flex flex-col items-center gap-3 text-center
+                  ${isFirst
+                    ? 'bg-gradient-to-br from-blue-400 to-purple-500 shadow-lg shadow-purple-200'
+                    : 'bg-white border border-gray-100 shadow-sm'}`}
+              >
+                {/* Rank icon — top-left */}
                 <div className="self-start">
                   {v.rank === 1 && <Trophy className="w-7 h-7 text-amber-300" />}
                   {v.rank === 2 && <Medal className="text-gray-400 w-7 h-7" />}
@@ -78,10 +88,12 @@ const Leaderboard = () => {
 
                 {/* Avatar */}
                 <div
-                  className={`w-16 h-16 rounded-full flex items-center justify-center text-lg font-bold ${isFirst ? 'bg-white/20 text-white' : 'bg-purple-100 text-purple-600'}`}
+                  className={`w-16 h-16 rounded-full flex items-center justify-center text-lg font-bold
+                    ${isFirst ? 'bg-white/20 text-white' : 'bg-purple-100 text-purple-600'}`}
                 >
                   {initials(v.name)}
                 </div>
+
                 {/* Name */}
                 <p className={`font-bold text-base leading-tight ${isFirst ? 'text-white' : 'text-gray-800'}`}>
                   {v.name}
@@ -101,6 +113,7 @@ const Leaderboard = () => {
           })
         )}
       </div>
+
       {/* ── Full Table ──────────────────────────────── */}
       <div className="overflow-hidden bg-white border border-gray-100 shadow-sm rounded-2xl">
         <table className="w-full text-sm">
@@ -132,6 +145,7 @@ const Leaderboard = () => {
             ) : (
               leaderboardList.map(v => (
                 <tr key={v.rank} className="transition-colors hover:bg-purple-50/40">
+
                   {/* Rank */}
                   <td className="px-5 py-4">
                     <RankIcon rank={v.rank} />
@@ -161,3 +175,11 @@ const Leaderboard = () => {
               ))
             )}
           </tbody>
+        </table>
+      </div>
+
+    </div>
+  );
+};
+
+export default Leaderboard;
