@@ -82,3 +82,22 @@ const Leaderboard = () => {
                 >
                   {initials(v.name)}
                 </div>
+                {/* Name */}
+                <p className={`font-bold text-base leading-tight ${isFirst ? 'text-white' : 'text-gray-800'}`}>
+                  {v.name}
+                </p>
+
+                {/* Score */}
+                <p className={`text-4xl font-extrabold ${isFirst ? 'text-white' : 'text-gray-800'}`}>
+                  {v.score}
+                </p>
+
+                {/* Sub-stats */}
+                <p className={`text-sm ${isFirst ? 'text-white/70' : 'text-gray-400'}`}>
+                  {v.events} events · {v.hours} hrs
+                </p>
+              </div>
+            );
+          })
+        )}
+      </div>
