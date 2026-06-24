@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import sequelize from "../config/db.js";
+import sequelize from "../config/database.js";
 import User from "./userModel.js";
 import Event from "./eventModel.js";
 
@@ -16,8 +16,20 @@ const VolunteerRegistration = sequelize.define(
       type: DataTypes.ENUM("Pending", "Approved", "Rejected"),
       defaultValue: "Pending",
     },
+    formData: {
+      type: DataTypes.JSON,
+      allowNull: true,
+    },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    indexes: [
+      {
+        unique: true,
+        fields: ["UserId", "EventId"],
+      },
+    ],
+  }
 );
 
 // A student (User) can register for many events; an event can have many students
