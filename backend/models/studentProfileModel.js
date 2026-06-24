@@ -105,3 +105,37 @@ const StudentProfile = sequelize.define(
     timestamps: true,
   }
 );
+
+// Auto-generate studentId if not provided
+const generateStudentId = async () => {
+  let unique = false;
+  let studentId = "";
+  while (!unique) {
+    const digits = Math.floor(100000 + Math.random() * 900000);
+    studentId = `STU${digits}`;
+    const existing = await StudentProfile.findOne({ where: { studentId } });
+    if (!existing) {
+      unique = true;
+    }
+  }
+  return studentId;
+};
+
+StudentProfile.beforeValidate(async (profile) => {
+  if (!profile.studentId) {
+    profile.studentId = await generateStudentId();
+  }
+});
+
+// Associations
+User.hasOne(StudentProfile, {
+  foreignKey: "userId",
+  as: "studentProfile",
+  onDelete: "CASCADE",
+});
+StudentProfile.belongsTo(User, {
+  foreignKey: "userId",
+  as: "user",
+});
+
+export default StudentProfile;
