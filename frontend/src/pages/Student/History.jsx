@@ -34,3 +34,12 @@ const History = () => {
           status: 'Issued'
         }));
         setHistoryList(normalized);
+        const totalHours = historyList.reduce((sum, h) => sum + (h.hours || 0), 0);
+  const totalPoints = historyList.reduce((sum, h) => sum + (h.reputationPoints || 0), 0);
+  const totalEvents = historyList.length;
+
+  const stats = [
+    { value: totalEvents, suffix: '', label: 'Events Completed' },
+    { value: totalHours, suffix: 'h', label: 'Total Hours' },
+    { value: totalPoints, suffix: '', label: 'Points Earned' },
+  ];
