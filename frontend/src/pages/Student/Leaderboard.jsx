@@ -23,3 +23,26 @@ const Leaderboard = () => {
   const { user } = useAuth();
   const [leaderboardList, setLeaderboardList] = useState([]);
   const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const fetchLeaderboardData = async () => {
+      setLoading(true);
+      try {
+        const token = localStorage.getItem('token');
+        const headers = token ? { Authorization: `Bearer ${token}` } : {};
+        const response = await axios.get('http://localhost:5000/api/leaderboard', { headers });
+        const mapped = response.data.map((item, idx) => ({
+          rank: idx + 1,
+          name: item.name || 'Volunteer',
+          score: item.reputationPoints || 0,
+          events: item.totalCertificates || 0,
+          hours: item.totalHours || 0
+        }));
+        setLeaderboardList(mapped);
+      } catch (err) {
+        console.error("Error fetching leaderboard:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchLeaderboardData();
+  }, [user]);
