@@ -22,3 +22,15 @@ const History = () => {
     };
     fetchHistory();
   }, [user]);
+  const data = await getMyAttendance();
+        const presentRecords = data.filter(rec => rec.status === 'Present');
+        const normalized = presentRecords.map(rec => ({
+          id: rec.id,
+          event: rec.event?.title || 'Unknown Event',
+          organizer: rec.event?.User?.name || 'Organizer',
+          completedOn: new Date(rec.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
+          hours: rec.event?.volunteerHours || 4,
+          reputationPoints: rec.event?.reputationPoints || 10,
+          status: 'Issued'
+        }));
+        setHistoryList(normalized);
