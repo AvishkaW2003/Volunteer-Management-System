@@ -19,3 +19,7 @@ const RankIcon = ({ rank }) => {
     </span>
   );
 };
+const Leaderboard = () => {
+  const { user } = useAuth();
+  const [leaderboardList, setLeaderboardList] = useState([]);
+  const [loading, setLoading] = useState(true);
