@@ -9,3 +9,13 @@ const initials = name => {
   if (parts.length === 1) return parts[0][0].toUpperCase();
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase().slice(0, 2);
 };
+const RankIcon = ({ rank }) => {
+  if (rank === 1) return <Trophy className="w-5 h-5 text-amber-400" />;
+  if (rank === 2) return <Medal className="w-5 h-5 text-gray-400" />;
+  if (rank === 3) return <Award className="w-5 h-5 text-orange-400" />;
+  return (
+    <span className="inline-flex items-center justify-center text-sm font-semibold text-gray-500 bg-gray-100 rounded-full w-7 h-7">
+      {rank}
+    </span>
+  );
+};
