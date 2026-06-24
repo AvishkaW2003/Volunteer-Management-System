@@ -101,3 +101,19 @@ const Leaderboard = () => {
           })
         )}
       </div>
+      {/* ── Full Table ──────────────────────────────── */}
+      <div className="overflow-hidden bg-white border border-gray-100 shadow-sm rounded-2xl">
+        <table className="w-full text-sm">
+          <thead className="border-b border-gray-100 bg-gray-50">
+            <tr>
+              {['Rank', 'Volunteer', 'Score', 'Events', 'Hours'].map(h => (
+                <th
+                  key={h}
+                  className="px-5 py-3 text-xs font-semibold tracking-wider text-left text-gray-400 uppercase"
+                >
+                  {h}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          
