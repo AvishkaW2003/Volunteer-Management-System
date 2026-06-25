@@ -82,3 +82,17 @@ const Notifications = () => {
       console.error("Failed to mark all read:", err);
     }
   };
+  const handleMarkRead = async (id) => {
+    const notif = notifications.find(n => n.id === id);
+    if (notif && !notif.read) {
+      try {
+        await markAsRead(id);
+        setNotifications((prev) =>
+          prev.map((n) => (n.id === id ? { ...n, read: true } : n))
+        );
+        window.dispatchEvent(new Event('voms_notifications_updated'));
+      } catch (err) {
+        console.error("Failed to mark read:", err);
+      }
+    }
+  };
