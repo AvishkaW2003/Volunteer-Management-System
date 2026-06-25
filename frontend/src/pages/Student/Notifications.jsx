@@ -68,3 +68,8 @@ const Notifications = () => {
       setLoading(false);
     }
   };
+  useEffect(() => {
+    loadNotifications();
+  }, []);
+
+  const unread = notifications.filter((n) => !n.read).length;
