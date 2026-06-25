@@ -36,3 +36,6 @@ const formatTime = (dateStr) => {
   if (diffDays === 1) return 'Yesterday';
   return date.toLocaleDateString();
 };
+const Notifications = () => {
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(true);
