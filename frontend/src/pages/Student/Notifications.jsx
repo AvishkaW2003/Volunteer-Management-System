@@ -114,3 +114,13 @@ const Notifications = () => {
           </button>
         )}
       </div>
+      {loading ? (
+        <div className="p-8 text-center bg-white border border-gray-100 shadow-sm rounded-2xl">
+          <p className="text-base font-semibold text-gray-500 animate-pulse">Loading notifications...</p>
+        </div>
+      ) : notifications.length === 0 ? (
+        <div className="p-8 text-center text-gray-400 bg-white border border-gray-100 shadow-sm rounded-2xl">
+          <Bell className="w-8 h-8 mx-auto mb-2 text-gray-300" />
+          <p className="text-base font-semibold">No notifications found</p>
+        </div>
+      ) : (
