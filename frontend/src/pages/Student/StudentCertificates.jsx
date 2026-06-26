@@ -106,3 +106,27 @@ const StudentCertificates = () => {
   const [viewing, setViewing] = useState(null);
   const [certificates, setCertificates] = useState([]);
   const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const fetchCerts = async () => {
+      try {
+        setLoading(true);
+        const data = await getMyCertificates();
+        const mapped = (data || []).map(c => ({
+          id: c.id,
+          certificateId: c.certificateNumber,
+          event: c.eventName,
+          organizer: 'VolunteerHub',
+          completedOn: c.issueDate,
+          hours: c.hours,
+          volunteerName: user?.name || 'Volunteer',
+          reputationPoints: c.reputationPointsEarned
+        }));
+        setCertificates(mapped);
+      } catch (err) {
+        console.error("Error fetching student certificates:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCerts();
+  }, [user]);
