@@ -39,3 +39,30 @@ const CertificateModal = ({ cert, onClose }) => (
           </button>
         </div>
       </div>
+      {/* Certificate body */}
+      <div className="p-6">
+        <div className="p-1.5 rounded-2xl bg-gradient-to-br from-blue-400 to-purple-500">
+          <div className="px-10 py-10 text-center bg-white rounded-xl">
+            {/* Logo */}
+            <div className="flex items-center justify-center gap-3 mb-6">
+              <div className="flex items-center justify-center flex-shrink-0 w-11 h-11 rounded-xl bg-gradient-to-br from-blue-400 to-purple-500">
+                <span className="text-sm font-black text-white">VH</span>
+              </div>
+              <span className="text-xl font-extrabold text-gray-800">VolunteerHub</span>
+            </div>
+
+            {/* Accent line */}
+            <div className="w-16 h-1 mx-auto mb-6 rounded-full bg-gradient-to-r from-blue-400 to-purple-500" />
+
+            {/* Title */}
+            <p className="text-xs font-bold uppercase tracking-[4px] text-purple-500 mb-5">
+              Certificate of Participation
+            </p>
+
+            <p className="mb-2 text-sm text-gray-400">This certifies that</p>
+            <p className="mb-3 text-3xl italic font-bold text-gray-800">{cert.volunteerName}</p>
+            <p className="mb-2 text-sm text-gray-400">has successfully completed volunteer service at</p>
+            <p className="mb-1 text-xl font-extrabold text-purple-600">{cert.event}</p>
+            <p className="text-sm text-gray-400 mb-7">
+              Organized by <span className="font-semibold text-gray-600">{cert.organizer}</span>
+            </p>
