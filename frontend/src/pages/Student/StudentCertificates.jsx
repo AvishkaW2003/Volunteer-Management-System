@@ -173,3 +173,20 @@ const StudentCertificates = () => {
                 </p>
               </div>
             </div>
+            {/* Actions Footer */}
+            <div className="px-6 py-4 bg-slate-50/50 border-t border-slate-100 flex items-center justify-between gap-3">
+              <button
+                onClick={() => setViewing(cert)}
+                className="flex-1 py-2 bg-white border border-slate-200 hover:border-purple-500 hover:text-purple-600 text-slate-600 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center justify-center gap-1.5"
+              >
+                <Eye className="w-3.5 h-3.5 flex-shrink-0" />
+                <span>View</span>
+              </button>
+              <button
+                onClick={() => downloadCertificate(cert)}
+                className="flex-1 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-bold transition-all shadow-md flex items-center justify-center gap-1.5"
+              >
+                <Download className="w-3.5 h-3.5 flex-shrink-0" />
+                <span>Download</span>
+              </button>
+            </div>
