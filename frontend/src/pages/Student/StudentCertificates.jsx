@@ -190,3 +190,6 @@ const StudentCertificates = () => {
                 <span>Download</span>
               </button>
             </div>
+            </div>
+        ))}
+      </div>
