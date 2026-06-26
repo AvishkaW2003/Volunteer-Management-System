@@ -100,3 +100,9 @@ const CertificateModal = ({ cert, onClose }) => (
     </div>
   </div>
 );
+/* ── Main Page ──────────────────────────────────────── */
+const StudentCertificates = () => {
+  const { user } = useAuth();
+  const [viewing, setViewing] = useState(null);
+  const [certificates, setCertificates] = useState([]);
+  const [loading, setLoading] = useState(true);
