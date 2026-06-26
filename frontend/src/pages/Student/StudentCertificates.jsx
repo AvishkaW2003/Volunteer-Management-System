@@ -137,3 +137,12 @@ const StudentCertificates = () => {
       </div>
     );
   }
+  return (
+    <div className="space-y-6 text-[#1E293B]">
+      {/* Header */}
+      <div>
+        <h1 className="flex items-center gap-2 text-3xl font-extrabold text-gray-800">
+          <Award className="w-8 h-8 text-purple-500" /> My Certificates
+        </h1>
+        <p className="mt-1 text-slate-500 font-medium">Download or view your official event participation certificates.</p>
+      </div>
