@@ -146,3 +146,30 @@ const StudentCertificates = () => {
         </h1>
         <p className="mt-1 text-slate-500 font-medium">Download or view your official event participation certificates.</p>
       </div>
+      {/* Certificate List Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {certificates.map(cert => (
+          <div
+            key={cert.id}
+            className="overflow-hidden bg-white border border-slate-100 shadow-sm rounded-2xl hover:shadow-md hover:border-purple-100 transition-all duration-200 flex flex-col justify-between"
+          >
+            {/* Header info */}
+            <div className="p-6 flex items-start gap-4">
+              <div className="flex items-center justify-center flex-shrink-0 w-12 h-12 rounded-xl bg-purple-50 border border-purple-100 text-purple-500">
+                <CheckCircle className="w-6 h-6 text-emerald-500" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex justify-between items-center gap-2">
+                  <h3 className="text-base font-bold text-gray-850 truncate" title={cert.event}>{cert.event}</h3>
+                  <span className="text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-100 px-2 py-0.5 rounded-full uppercase">
+                    Verified
+                  </span>
+                </div>
+                <p className="text-xs font-medium text-slate-400 mt-1 flex items-center gap-1">
+                  Issued: <span className="text-slate-600 font-bold">{cert.completedOn}</span>
+                </p>
+                <p className="text-xs font-semibold text-slate-400 mt-1">
+                  Hours Volunteered: <span className="text-indigo-600 font-bold">{cert.hours} hrs</span>
+                </p>
+              </div>
+            </div>
