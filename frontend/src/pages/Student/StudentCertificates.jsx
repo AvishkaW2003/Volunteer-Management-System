@@ -66,3 +66,37 @@ const CertificateModal = ({ cert, onClose }) => (
             <p className="text-sm text-gray-400 mb-7">
               Organized by <span className="font-semibold text-gray-600">{cert.organizer}</span>
             </p>
+            {/* Stats strip */}
+            <div className="grid grid-cols-3 gap-3 mb-8">
+              {[
+                { icon: Clock,    value: `${cert.hours}h`, label: 'Volunteer Hours'    },
+                { icon: Award,    value: cert.reputationPoints, label: 'Reputation Points' },
+                { icon: Calendar, value: cert.completedOn, label: 'Completed On' },
+              ].map(({ icon: Icon, value, label }) => (
+                <div key={label} className="px-2 py-3 bg-purple-50 rounded-xl">
+                  <Icon className="w-4 h-4 mx-auto mb-1 text-purple-400" />
+                  <p className="text-lg font-extrabold text-purple-600">{value}</p>
+                  <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-400 mt-0.5">{label}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Footer */}
+            <div className="flex items-end justify-between pt-5 border-t border-gray-100">
+              <div className="text-center">
+                <div className="w-32 border-t border-gray-300 pt-1.5 mx-auto">
+                  <p className="text-[10px] text-gray-400 uppercase tracking-wide">Authorized Signature</p>
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="w-40 border-t border-gray-300 pt-1.5 mx-auto">
+                  <p className="text-[10px] text-gray-400 uppercase tracking-wide">VolunteerHub Administration</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
