@@ -193,3 +193,12 @@ const StudentCertificates = () => {
             </div>
         ))}
       </div>
+      {/* Certificate Preview Modal */}
+      {viewing && (
+        <CertificateModal cert={viewing} onClose={() => setViewing(null)} />
+      )}
+    </div>
+  );
+};
+
+export default StudentCertificates;
