@@ -39,3 +39,32 @@ const formatTime = (dateStr) => {
 const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
+  const loadNotifications = async () => {
+    try {
+      setLoading(true);
+      const data = await getNotifications();
+      const normalized = data.map((n) => {
+        let type = 'Reminder';
+        if (n.title.toLowerCase().includes('points')) type = 'Points';
+        else if (n.title.toLowerCase().includes('certificate')) type = 'Certificate';
+        else if (n.title.toLowerCase().includes('attendance')) type = 'Attendance';
+        else if (n.title.toLowerCase().includes('approved') || n.message.toLowerCase().includes('approved')) type = 'Approved';
+        else if (n.title.toLowerCase().includes('rejected') || n.message.toLowerCase().includes('rejected')) type = 'Rejected';
+        else if (n.title.toLowerCase().includes('submitted') || n.message.toLowerCase().includes('submitted')) type = 'Submitted';
+
+        return {
+          id: n.id,
+          title: n.title,
+          message: n.message,
+          read: n.isRead,
+          time: formatTime(n.createdAt),
+          type
+        };
+      });
+      setNotifications(normalized);
+    } catch (err) {
+      console.error("Error loading notifications:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
