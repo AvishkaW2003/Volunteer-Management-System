@@ -124,3 +124,37 @@ const Notifications = () => {
           <p className="text-base font-semibold">No notifications found</p>
         </div>
       ) : (
+        <div className="space-y-3">
+          {notifications.map((n) => {
+            const { Icon, color } = getIconAndStyle(n.type);
+            return (
+              <div
+                key={n.id}
+                onClick={() => handleMarkRead(n.id)}
+                className={`bg-white rounded-2xl border shadow-sm p-4 flex items-start gap-4 cursor-pointer transition-all hover:shadow-md ${n.read ? 'border-gray-100' : 'border-cyan-200'}`}
+              >
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${color}`}>
+                  <Icon className="w-5 h-5" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className={`text-base font-semibold ${n.read ? 'text-gray-700' : 'text-gray-900'}`}>
+                      {n.title}
+                    </p>
+                    <span className="text-sm text-gray-400 flex-shrink-0">{n.time}</span>
+                  </div>
+                  <p className="text-base text-gray-500 mt-0.5">{n.message}</p>
+                </div>
+                {!n.read && (
+                  <div className="w-2.5 h-2.5 bg-cyan-500 rounded-full flex-shrink-0 mt-1" />
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Notifications;
