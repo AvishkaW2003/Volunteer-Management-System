@@ -73,3 +73,12 @@ const Notifications = () => {
   }, []);
 
   const unread = notifications.filter((n) => !n.read).length;
+  const handleMarkAllRead = async () => {
+    try {
+      await markAllAsRead();
+      setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+      window.dispatchEvent(new Event('voms_notifications_updated'));
+    } catch (err) {
+      console.error("Failed to mark all read:", err);
+    }
+  };
