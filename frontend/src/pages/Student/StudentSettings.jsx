@@ -96,3 +96,21 @@ const Notifications = () => {
       }
     }
   };
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-800">Notifications</h1>
+          <p className="text-gray-500 text-base mt-0.5">
+            {unread > 0 ? `${unread} unread notifications` : 'All caught up!'}
+          </p>
+        </div>
+        {unread > 0 && (
+          <button
+            onClick={handleMarkAllRead}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-purple-600 border border-cyan-200 hover:bg-purple-50 transition-colors"
+          >
+            <CheckCheck className="w-4 h-4" /> Mark all read
+          </button>
+        )}
+      </div>
