@@ -1,237 +1,160 @@
-import { useState } from 'react';
-import { User, BookOpen, Star, Bell, Lock, Check } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Bell, CheckCheck, Star, Award, UserCheck, Clock, CheckCircle2, XCircle, ClipboardList } from 'lucide-react';
+import { getNotifications, markAsRead, markAllAsRead } from '../../services/notificationService';
+const getIconAndStyle = (type) => {
+  switch (type) {
+    case 'Points':
+      return { Icon: Star, color: 'bg-yellow-100 text-yellow-600 border-yellow-200' };
+    case 'Certificate':
+      return { Icon: Award, color: 'bg-purple-100 text-purple-600 border-purple-200' };
+    case 'Attendance':
+      return { Icon: UserCheck, color: 'bg-teal-100 text-teal-600 border-teal-200' };
+      case 'Reminder':
+      return { Icon: Clock, color: 'bg-indigo-100 text-indigo-600 border-indigo-200' };
+    case 'Approved':
+      return { Icon: CheckCircle2, color: 'bg-green-100 text-green-600 border-green-200' };
+    case 'Rejected':
+      return { Icon: XCircle, color: 'bg-red-100 text-red-600 border-red-200' };
+    case 'Submitted':
+      return { Icon: ClipboardList, color: 'bg-blue-100 text-blue-600 border-blue-200' };
+    default:
+      return { Icon: Bell, color: 'bg-blue-100 text-blue-600 border-blue-200' };
+  }
+};
+const formatTime = (dateStr) => {
+  if (!dateStr) return '';
+  const date = new Date(dateStr);
+  const now = new Date();
+  const diffMs = now - date;
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHrs = Math.floor(diffMins / 60);
+  const diffDays = Math.floor(diffHrs / 24);
 
-const inputCls =
-  'w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-700 ' +
-  'focus:outline-none focus:ring-2 focus:ring-purple-300 focus:border-purple-400 ' +
-  'placeholder-gray-400 transition bg-white';
+  if (diffMins < 1) return 'Just now';
+  if (diffMins < 60) return `${diffMins} min ago`;
+  if (diffHrs < 24) return `${diffHrs} ${diffHrs === 1 ? 'hr' : 'hrs'} ago`;
+  if (diffDays === 1) return 'Yesterday';
+  return date.toLocaleDateString();
+};
+const Notifications = () => {
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const loadNotifications = async () => {
+    try {
+      setLoading(true);
+      const data = await getNotifications();
+      const normalized = data.map((n) => {
+        let type = 'Reminder';
+        if (n.title.toLowerCase().includes('points')) type = 'Points';
+        else if (n.title.toLowerCase().includes('certificate')) type = 'Certificate';
+        else if (n.title.toLowerCase().includes('attendance')) type = 'Attendance';
+        else if (n.title.toLowerCase().includes('approved') || n.message.toLowerCase().includes('approved')) type = 'Approved';
+        else if (n.title.toLowerCase().includes('rejected') || n.message.toLowerCase().includes('rejected')) type = 'Rejected';
+        else if (n.title.toLowerCase().includes('submitted') || n.message.toLowerCase().includes('submitted')) type = 'Submitted';
 
-const labelCls = 'block text-sm font-semibold text-gray-700 mb-1.5';
-
-const SectionCard = ({ icon: Icon, title, children }) => (
-  <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-    <div className="h-1.5 bg-gradient-to-r from-blue-400 to-purple-500" />
-    <div className="p-6">
-      <div className="flex items-center gap-2.5 mb-5">
-        <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-400 to-purple-500
-          flex items-center justify-center flex-shrink-0">
-          <Icon className="w-4 h-4 text-white" />
-        </div>
-        <h2 className="text-lg font-bold text-gray-800">{title}</h2>
-      </div>
-      {children}
-    </div>
-  </div>
-);
-
-const GradientCheckbox = ({ checked, onChange, label }) => (
-  <label className="flex items-center gap-3 cursor-pointer group">
-    <div className="relative flex-shrink-0" onClick={onChange}>
-      <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all
-        ${checked
-          ? 'bg-gradient-to-br from-blue-400 to-purple-500 border-transparent'
-          : 'border-gray-300 bg-white group-hover:border-purple-300'}`}
-      >
-        {checked && (
-          <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor" strokeWidth={3}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-          </svg>
-        )}
-      </div>
-    </div>
-    <span className="text-sm text-gray-600">{label}</span>
-  </label>
-);
-
-const StudentSettings = () => {
-  const [saved, setSaved] = useState(false);
-
-  const [account, setAccount] = useState({
-    name: 'Alex Johnson',
-    email: 'alex.johnson@university.edu',
-    bio: '',
-  });
-
-  const [academic, setAcademic] = useState({
-    studentId: 'STU-2024-001',
-    department: 'Computer Science',
-    year: '3rd Year',
-    university: 'State University',
-  });
-
-  const [skills, setSkills] = useState({
-    teamwork: true, communication: true, teaching: false,
-    firstAid: false, physical: true, organisation: false,
-  });
-
-  const [notifications, setNotifications] = useState({
-    newEvents: true, applicationUpdates: true,
-    certificates: true, leaderboard: false, newsletter: false,
-  });
-
-  const [passwords, setPasswords] = useState({
-    current: '', newPass: '', confirm: '',
-  });
-
-  const handleSave = () => {
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
+        return {
+          id: n.id,
+          title: n.title,
+          message: n.message,
+          read: n.isRead,
+          time: formatTime(n.createdAt),
+          type
+        };
+      });
+      setNotifications(normalized);
+    } catch (err) {
+      console.error("Error loading notifications:", err);
+    } finally {
+      setLoading(false);
+    }
   };
+  useEffect(() => {
+    loadNotifications();
+  }, []);
 
-  const toggleSkill = key => setSkills(p => ({ ...p, [key]: !p[key] }));
-  const toggleNotif = key => setNotifications(p => ({ ...p, [key]: !p[key] }));
-
+  const unread = notifications.filter((n) => !n.read).length;
+  const handleMarkAllRead = async () => {
+    try {
+      await markAllAsRead();
+      setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+      window.dispatchEvent(new Event('voms_notifications_updated'));
+    } catch (err) {
+      console.error("Failed to mark all read:", err);
+    }
+  };
+  const handleMarkRead = async (id) => {
+    const notif = notifications.find(n => n.id === id);
+    if (notif && !notif.read) {
+      try {
+        await markAsRead(id);
+        setNotifications((prev) =>
+          prev.map((n) => (n.id === id ? { ...n, read: true } : n))
+        );
+        window.dispatchEvent(new Event('voms_notifications_updated'));
+      } catch (err) {
+        console.error("Failed to mark read:", err);
+      }
+    }
+  };
   return (
-    <div className="space-y-6">
-
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-800">Settings</h1>
-        <p className="mt-1 text-gray-500">Manage your profile and preferences</p>
-      </div>
-
-      {/* Account Settings */}
-      <SectionCard icon={User} title="Account Settings">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="sm:col-span-2">
-            <label className={labelCls}>Full Name</label>
-            <input type="text" className={inputCls} value={account.name}
-              onChange={e => setAccount(p => ({ ...p, name: e.target.value }))} />
-          </div>
-          <div className="sm:col-span-2">
-            <label className={labelCls}>Email Address</label>
-            <input type="email" className={inputCls} value={account.email}
-              onChange={e => setAccount(p => ({ ...p, email: e.target.value }))} />
-          </div>
-          <div className="sm:col-span-2">
-            <label className={labelCls}>Bio <span className="text-gray-400 font-normal">(optional)</span></label>
-            <textarea rows={3} className={`${inputCls} resize-none`}
-              placeholder="Tell others a little about yourself..."
-              value={account.bio}
-              onChange={e => setAccount(p => ({ ...p, bio: e.target.value }))} />
-          </div>
+    <div>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-800">Notifications</h1>
+          <p className="text-gray-500 text-base mt-0.5">
+            {unread > 0 ? `${unread} unread notifications` : 'All caught up!'}
+          </p>
         </div>
-      </SectionCard>
-
-      {/* Academic Information */}
-      <SectionCard icon={BookOpen} title="Academic Information">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className={labelCls}>Student ID</label>
-            <input type="text" className={inputCls} value={academic.studentId}
-              onChange={e => setAcademic(p => ({ ...p, studentId: e.target.value }))} />
-          </div>
-          <div>
-            <label className={labelCls}>Year of Study</label>
-            <select className={inputCls} value={academic.year}
-              onChange={e => setAcademic(p => ({ ...p, year: e.target.value }))}>
-              {['1st Year', '2nd Year', '3rd Year', '4th Year', 'Postgraduate'].map(y => (
-                <option key={y}>{y}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className={labelCls}>Department</label>
-            <input type="text" className={inputCls} value={academic.department}
-              onChange={e => setAcademic(p => ({ ...p, department: e.target.value }))} />
-          </div>
-          <div>
-            <label className={labelCls}>University / Institution</label>
-            <input type="text" className={inputCls} value={academic.university}
-              onChange={e => setAcademic(p => ({ ...p, university: e.target.value }))} />
-          </div>
-        </div>
-      </SectionCard>
-
-      {/* Skills & Interests */}
-      <SectionCard icon={Star} title="Skills & Interests">
-        <p className="text-sm text-gray-500 mb-4">Select skills that match your capabilities</p>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          {Object.entries({
-            teamwork:      'Teamwork',
-            communication: 'Communication',
-            teaching:      'Teaching',
-            firstAid:      'First Aid',
-            physical:      'Physical Work',
-            organisation:  'Organisation',
-          }).map(([key, label]) => (
-            <GradientCheckbox
-              key={key}
-              checked={skills[key]}
-              onChange={() => toggleSkill(key)}
-              label={label}
-            />
-          ))}
-        </div>
-      </SectionCard>
-
-      {/* Notification Preferences */}
-      <SectionCard icon={Bell} title="Notification Preferences">
-        <div className="space-y-3">
-          {Object.entries({
-            newEvents:          'Notify me about new events',
-            applicationUpdates: 'Application status updates',
-            certificates:       'Certificate issued notifications',
-            leaderboard:        'Leaderboard rank changes',
-            newsletter:         'Monthly volunteer newsletter',
-          }).map(([key, label]) => (
-            <GradientCheckbox
-              key={key}
-              checked={notifications[key]}
-              onChange={() => toggleNotif(key)}
-              label={label}
-            />
-          ))}
-        </div>
-      </SectionCard>
-
-      {/* Change Password */}
-      <SectionCard icon={Lock} title="Change Password">
-        <div className="space-y-4 max-w-md">
-          <div>
-            <label className={labelCls}>Current Password</label>
-            <input type="password" className={inputCls} placeholder="Enter current password"
-              value={passwords.current}
-              onChange={e => setPasswords(p => ({ ...p, current: e.target.value }))} />
-          </div>
-          <div>
-            <label className={labelCls}>New Password</label>
-            <input type="password" className={inputCls} placeholder="Enter new password"
-              value={passwords.newPass}
-              onChange={e => setPasswords(p => ({ ...p, newPass: e.target.value }))} />
-          </div>
-          <div>
-            <label className={labelCls}>Confirm New Password</label>
-            <input type="password" className={inputCls} placeholder="Re-enter new password"
-              value={passwords.confirm}
-              onChange={e => setPasswords(p => ({ ...p, confirm: e.target.value }))} />
-          </div>
-        </div>
-      </SectionCard>
-
-      {/* Save Button */}
-      <div className="flex items-center gap-4 pb-4">
-        <button
-          onClick={handleSave}
-          className="px-8 py-3 rounded-xl font-semibold text-sm text-white
-            bg-gradient-to-r from-blue-400 to-purple-500
-            hover:from-blue-500 hover:to-purple-600
-            transition-all shadow-sm hover:shadow-md"
-        >
-          Save Changes
-        </button>
-
-        {saved && (
-          <div className="flex items-center gap-2 text-sm font-semibold text-green-600">
-            <Check className="w-4 h-4" />
-            Changes saved!
-          </div>
+        {unread > 0 && (
+          <button
+            onClick={handleMarkAllRead}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-purple-600 border border-cyan-200 hover:bg-purple-50 transition-colors"
+          >
+            <CheckCheck className="w-4 h-4" /> Mark all read
+          </button>
         )}
       </div>
-
+      {loading ? (
+        <div className="bg-white rounded-2xl border border-gray-100 p-8 text-center shadow-sm">
+          <p className="text-gray-500 font-semibold animate-pulse text-base">Loading notifications...</p>
+        </div>
+      ) : notifications.length === 0 ? (
+        <div className="bg-white rounded-2xl border border-gray-100 p-8 text-center shadow-sm text-gray-400">
+          <Bell className="w-8 h-8 mx-auto mb-2 text-gray-300" />
+          <p className="text-base font-semibold">No notifications found</p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {notifications.map((n) => {
+            const { Icon, color } = getIconAndStyle(n.type);
+            return (
+              <div
+                key={n.id}
+                onClick={() => handleMarkRead(n.id)}
+                className={`bg-white rounded-2xl border shadow-sm p-4 flex items-start gap-4 cursor-pointer transition-all hover:shadow-md ${n.read ? 'border-gray-100' : 'border-cyan-200'}`}
+              >
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${color}`}>
+                  <Icon className="w-5 h-5" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className={`text-base font-semibold ${n.read ? 'text-gray-700' : 'text-gray-900'}`}>
+                      {n.title}
+                    </p>
+                    <span className="text-sm text-gray-400 flex-shrink-0">{n.time}</span>
+                  </div>
+                  <p className="text-base text-gray-500 mt-0.5">{n.message}</p>
+                </div>
+                {!n.read && (
+                  <div className="w-2.5 h-2.5 bg-cyan-500 rounded-full flex-shrink-0 mt-1" />
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };
 
-export default StudentSettings;
+export default Notifications;
