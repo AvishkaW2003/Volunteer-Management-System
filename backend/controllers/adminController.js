@@ -6,7 +6,7 @@ import AuditLog from "../models/auditLogModel.js";
 import StudentProfile from "../models/studentProfileModel.js";
 import OrganizerProfile from "../models/organizerProfileModel.js";
 import bcrypt from "bcryptjs";
-import sequelize from "../config/db.js";
+import sequelize from "../config/database.js";
 
 export const dashboard = async (
 req,
