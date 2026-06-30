@@ -7,22 +7,14 @@ const History = () => {
   const { user } = useAuth();
   const [historyList, setHistoryList] = useState([]);
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     if (!user) return;
 
     const fetchHistory = async () => {
       setLoading(true);
       try {
-        // API call here
-      } catch (err) {
-        console.error("Error loading volunteer history:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchHistory();
-  }, [user]);
-  const data = await getMyAttendance();
+        const data = await getMyAttendance();
         const presentRecords = data.filter(rec => rec.status === 'Present');
         const normalized = presentRecords.map(rec => ({
           id: rec.id,
@@ -34,7 +26,16 @@ const History = () => {
           status: 'Issued'
         }));
         setHistoryList(normalized);
-        const totalHours = historyList.reduce((sum, h) => sum + (h.hours || 0), 0);
+      } catch (err) {
+        console.error("Error loading volunteer history:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchHistory();
+  }, [user]);
+
+  const totalHours = historyList.reduce((sum, h) => sum + (h.hours || 0), 0);
   const totalPoints = historyList.reduce((sum, h) => sum + (h.reputationPoints || 0), 0);
   const totalEvents = historyList.length;
 
@@ -43,8 +44,10 @@ const History = () => {
     { value: totalHours, suffix: 'h', label: 'Total Hours' },
     { value: totalPoints, suffix: '', label: 'Points Earned' },
   ];
+
   return (
     <div className="space-y-6">
+
       {/* Header */}
       <div>
         <h1 className="flex items-center gap-2 text-3xl font-bold text-gray-800">
@@ -52,6 +55,7 @@ const History = () => {
         </h1>
         <p className="mt-1 text-gray-500">Your completed volunteer activities</p>
       </div>
+
       {/* 3 Dynamic Summary Cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         {stats.map(({ value, suffix, label }) => (
@@ -64,6 +68,7 @@ const History = () => {
           </div>
         ))}
       </div>
+
       {/* History Table */}
       <div className="overflow-hidden bg-white border border-gray-100 shadow-sm rounded-2xl">
         <div className="overflow-x-auto">
@@ -80,13 +85,13 @@ const History = () => {
             <tbody className="divide-y divide-gray-50">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="py-12 text-sm text-center text-gray-400">
+                  <td colSpan={6} className="text-center py-12 text-gray-400 text-sm">
                     Loading history...
                   </td>
                 </tr>
               ) : historyList.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-12 text-sm text-center text-gray-400">
+                  <td colSpan={6} className="text-center py-12 text-gray-400 text-sm">
                     No completed volunteer activities found.
                   </td>
                 </tr>
@@ -105,7 +110,8 @@ const History = () => {
                       <span className="font-bold text-purple-600">{h.reputationPoints || 0}</span>
                     </td>
                     <td className="px-5 py-3.5">
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-50 text-green-700 border border-green-150">
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full
+                        text-xs font-semibold bg-green-50 text-green-700 border border-green-150">
                         <CheckCircle className="w-3 h-3 text-green-600" /> {h.status || 'Issued'}
                       </span>
                     </td>
@@ -116,6 +122,7 @@ const History = () => {
           </table>
         </div>
       </div>
+
     </div>
   );
 };
