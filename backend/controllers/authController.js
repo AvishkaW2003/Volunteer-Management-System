@@ -1,177 +1,104 @@
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import sequelize from "../config/db.js";
-import User from "../models/userModel.js";
-import StudentProfile from "../models/studentProfileModel.js";
-import OrganizerProfile from "../models/organizerProfileModel.js";
+import * as authService from "../services/authService.js";
 
-export const register = async (req, res) => {
-  const transaction = await sequelize.transaction();
+export const registerStudent = async (req, res, next) => {
   try {
-    const { role, name, email, password, phone, clubName, contactNumber, studentId, faculty, skills, department } = req.body;
-
-    // Check existing user
-    const existingUser = await User.findOne({
-      where: { email },
-    });
-
-    if (existingUser) {
-      await transaction.rollback();
-      return res.status(400).json({
-        message: "User already exists",
-      });
-    }
-
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Resolve name and phone based on role/payload structure
-    let finalName = name;
-    let finalPhone = phone;
-
-    if (role === "student") {
-      finalName = name || req.body.fullName;
-    } else if (role === "organizer") {
-      finalName = clubName || req.body.organizationName || name;
-      finalPhone = phone || contactNumber;
-    }
-
-    // Create User within transaction
-    const user = await User.create({
-      name: finalName,
-      email,
-      password: hashedPassword,
-      phone: finalPhone,
-      role,
-      department,
-    }, { transaction });
-
-    let profile = null;
-
-    if (role === "student") {
-      profile = await StudentProfile.create({
-        userId: user.id,
-        studentId,
-        faculty,
-        skills,
-      }, { transaction });
-    } else if (role === "organizer") {
-      profile = await OrganizerProfile.create({
-        userId: user.id,
-        organizationName: finalName,
-      }, { transaction });
-    }
-
-    await transaction.commit();
-
-    // Prepare response user object
-    const userJson = user.toJSON();
-    delete userJson.password;
-
+    const student = await authService.registerStudent(req.body);
     res.status(201).json({
-      message: "User registered successfully",
-      user: {
-        ...userJson,
-        studentProfile: role === "student" ? profile : null,
-        organizerProfile: role === "organizer" ? profile : null,
-      },
+      success: true,
+      message: "Student registered successfully",
+      user: student
     });
   } catch (error) {
-    if (!transaction.finished) {
-      await transaction.rollback();
-    }
-    res.status(500).json({
-      message: error.message,
-    });
+    next(error);
   }
 };
 
-export const login = async (req, res) => {
+export const registerOrganizer = async (req, res, next) => {
+  try {
+    const organizer = await authService.registerOrganizer(req.body);
+    res.status(201).json({
+      success: true,
+      message: "Organizer registered successfully",
+      user: organizer
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-
-    // Find user including profiles
-    const user = await User.findOne({
-      where: { email },
-      include: [
-        { model: StudentProfile, as: "studentProfile" },
-        { model: OrganizerProfile, as: "organizerProfile" },
-      ],
-    });
-
-    if (!user) {
-      return res.status(400).json({
-        message: "Invalid email or password",
-      });
-    }
-    
-    if (user.status === "suspended") {
-      return res.status(403).json({
-        message: "Your account has been suspended. Please contact administration.",
-      });
+    if (!email || !password) {
+      return res.status(400).json({ success: false, message: "Email and password are required" });
     }
 
-    // Check password
-    const isMatch = await bcrypt.compare(password, user.password);
-
-    if (!isMatch) {
-      return res.status(400).json({
-        message: "Invalid email or password",
-      });
-    }
-
-    // Generate JWT token
-    const token = jwt.sign(
-      { id: user.id, email: user.email, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
-    );
-
+    const data = await authService.loginUser({ email, password });
     res.status(200).json({
+      success: true,
       message: "Login successful",
-      token,
+      token: data.token,
       user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-        role: user.role,
-        studentProfile: user.studentProfile,
-        organizerProfile: user.organizerProfile,
-      },
+        id: data.user.id,
+        name: data.user.name,
+        email: data.user.email,
+        role: data.user.role,
+        studentProfile: data.user.studentProfile,
+        organizerProfile: data.user.organizerProfile
+      }
     });
   } catch (error) {
-    res.status(500).json({
-      message: error.message,
-    });
+    // If invalid credentials, make sure status is 400
+    if (error.message === "Invalid email or password") {
+      error.statusCode = 400;
+    }
+    next(error);
   }
 };
 
-export const getProfile = async (req, res) => {
+export const getMe = async (req, res, next) => {
   try {
-    // Find logged user including profiles
-    const user = await User.findByPk(req.user.id, {
-      attributes: {
-        exclude: ["password"],
-      },
-      include: [
-        { model: StudentProfile, as: "studentProfile" },
-        { model: OrganizerProfile, as: "organizerProfile" },
-      ],
-    });
-
-    // Check user exists
-    if (!user) {
-      return res.status(404).json({
-        message: "User not found",
-      });
-    }
-
-    // Return user
+    // req.user is populated by authMiddleware.js
+    const userId = req.user.id;
+    const user = await authService.getUserIdentity(userId);
     res.status(200).json(user);
   } catch (error) {
-    res.status(500).json({
-      message: error.message,
+    next(error);
+  }
+};
+
+export const forgotPassword = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ success: false, message: "Email is required" });
+    }
+
+    const resetToken = await authService.forgotPassword(email);
+    res.status(200).json({
+      success: true,
+      message: "If an account exists, a password reset email has been sent.",
+      token: resetToken // Returning token for test/verification convenience
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const resetPassword = async (req, res, next) => {
+  try {
+    const { token } = req.params;
+    const { newPassword } = req.body;
+    if (!token || !newPassword) {
+      return res.status(400).json({ success: false, message: "Token and newPassword are required" });
+    }
+
+    await authService.resetPassword({ token, newPassword });
+    res.status(200).json({
+      success: true,
+      message: "Password has been reset successfully"
+    });
+  } catch (error) {
+    next(error);
   }
 };
