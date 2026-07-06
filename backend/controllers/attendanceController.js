@@ -1,75 +1,88 @@
-import Attendance from "../models/attendanceModel.js";
-import Event from "../models/eventModel.js";
-import User from "../models/userModel.js";
-import VolunteerRegistration from "../models/volunteerRegistration.js";
+import * as attendanceService from "../services/attendanceService.js";
 
-// Get attendance records for one event
-// Returns approved volunteers with their current Present/Absent status
-export const getAttendanceByEvent = async (req, res) => {
+/**
+ * Organizer gets all approved attendees with current attendance status.
+ */
+export const getAttendeesForEvent = async (req, res, next) => {
   try {
-    const { eventId } = req.params;
-
-    const event = await Event.findByPk(eventId);
-    if (!event) return res.status(404).json({ message: "Event not found" });
-
-    // Only the event owner can view attendance
-    if (event.UserId !== req.user.id) {
-      return res.status(403).json({ message: "Not authorized" });
-    }
-
-    // Get all approved volunteers for this event
-    const registrations = await VolunteerRegistration.findAll({
-      where: { EventId: eventId, status: "Approved" },
-      include: [{ model: User, as: "volunteer", attributes: ["id", "name", "email"] }],
-    });
-
-    // Get any existing attendance records already saved
-    const existingRecords = await Attendance.findAll({ where: { EventId: eventId } });
-    const attendanceMap = {};
-    existingRecords.forEach((r) => {
-      attendanceMap[r.UserId] = r.status;
-    });
-
-    // Merge: each volunteer gets their saved status, or 'Absent' if not yet recorded
-    const result = registrations.map((reg) => ({
-      userId: reg.volunteer.id,
-      name: reg.volunteer.name,
-      email: reg.volunteer.email,
-      status: attendanceMap[reg.volunteer.id] || "Absent",
-    }));
-
-    res.status(200).json(result);
+    const eventId = req.params.eventId || req.params.id;
+    const attendees = await attendanceService.getAttendeesForEvent(eventId, req.user.id);
+    res.status(200).json(attendees);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
 
-// Save (or update) attendance for a whole event in one request
-// Body: { eventId, records: [{ userId, status }] }
-// Upsert means: create the row if it doesn't exist, update it if it does
-export const saveAttendance = async (req, res) => {
+/**
+ * Organizer marks attendance for a single volunteer.
+ */
+export const markAttendance = async (req, res, next) => {
   try {
-    const { eventId, records } = req.body;
-
-    if (!eventId || !Array.isArray(records)) {
-      return res.status(400).json({ message: "eventId and records array are required" });
-    }
-
-    const event = await Event.findByPk(eventId);
-    if (!event) return res.status(404).json({ message: "Event not found" });
-
-    if (event.UserId !== req.user.id) {
-      return res.status(403).json({ message: "Not authorized" });
-    }
-
-    // Process each volunteer record — upsert so re-saving is always safe
-    const operations = records.map(({ userId, status }) =>
-      Attendance.upsert({ UserId: userId, EventId: eventId, status })
-    );
-    await Promise.all(operations);
-
-    res.status(200).json({ message: "Attendance saved successfully" });
+    const { eventId, userId, status } = req.body;
+    const record = await attendanceService.markAttendance(eventId, userId, status, req.user.id);
+    res.status(200).json({
+      success: true,
+      message: "Attendance marked successfully",
+      record
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
+
+/**
+ * Organizer bulk marks attendance for multiple volunteers.
+ */
+export const bulkMarkAttendance = async (req, res, next) => {
+  try {
+    const { eventId } = req.body;
+    const attendeesList = req.body.attendees || req.body.records;
+    const result = await attendanceService.bulkMarkAttendance(eventId, attendeesList, req.user.id);
+    res.status(200).json({
+      success: true,
+      ...result
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Student retrieves their own attendance records.
+ */
+export const getMyAttendance = async (req, res, next) => {
+  try {
+    const records = await attendanceService.getStudentAttendance(req.user.id);
+    res.status(200).json(records);
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Retrieves attendance detail record by ID.
+ */
+export const getAttendanceById = async (req, res, next) => {
+  try {
+    const record = await attendanceService.getAttendanceById(req.params.id, req.user.id, req.user.role);
+    res.status(200).json(record);
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Organizer retrieves statistics.
+ */
+export const getAttendanceStats = async (req, res, next) => {
+  try {
+    const stats = await attendanceService.getAttendanceStats(req.user.id);
+    res.status(200).json(stats);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Backwards Compatibility Aliases
+export const getAttendanceByEvent = getAttendeesForEvent;
+export const saveAttendance = bulkMarkAttendance;
