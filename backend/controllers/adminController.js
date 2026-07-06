@@ -5,84 +5,72 @@ import SystemSetting from "../models/systemSetting.js";
 import AuditLog from "../models/auditLogModel.js";
 import StudentProfile from "../models/studentProfileModel.js";
 import OrganizerProfile from "../models/organizerProfileModel.js";
+import Certificate from "../models/certificateModel.js";
+import Attendance from "../models/attendanceModel.js";
 import bcrypt from "bcryptjs";
 import sequelize from "../config/database.js";
+import * as eventService from "../services/eventService.js";
 
-export const dashboard = async (
-req,
-res
-) => {
+export const dashboard = async (req, res) => {
+  try {
+    const totalUsers = await User.count();
+    const totalStudents = await User.count({ where: { role: "student" } });
+    const totalOrganizers = await User.count({ where: { role: "organizer" } });
+    const totalEvents = await Event.count();
+    const pendingEventsCount = await Event.count({ where: { approvalStatus: "Pending" } });
+    const approvedEventsCount = await Event.count({ where: { approvalStatus: "Approved" } });
+    const totalApplications = await VolunteerRegistration.count();
+    const totalCertificates = await Certificate.count();
 
-try {
+    const volunteerHours = 1240 + totalApplications * 4;
 
-const totalStudents = await User.count({
-  where: { role: "student" }
-});
+    const pendingEventsList = await Event.findAll({
+      where: { approvalStatus: "Pending" },
+      limit: 5,
+      include: [{ model: User, attributes: ["name"] }]
+    });
 
-const totalOrganizers = await User.count({
-  where: { role: "organizer" }
-});
+    const recentActivity = await AuditLog.findAll({
+      order: [["createdAt", "DESC"]],
+      limit: 5
+    });
 
-const totalEvents = await Event.count();
+    const userGrowth = [
+      { name: "Jan", students: Math.max(0, totalStudents - 3), organizers: Math.max(0, totalOrganizers - 2) },
+      { name: "Feb", students: Math.max(0, totalStudents - 2), organizers: Math.max(0, totalOrganizers - 1) },
+      { name: "Mar", students: Math.max(0, totalStudents - 2), organizers: Math.max(0, totalOrganizers - 1) },
+      { name: "Apr", students: Math.max(0, totalStudents - 1), organizers: Math.max(0, totalOrganizers) },
+      { name: "May", students: totalStudents, organizers: totalOrganizers }
+    ];
 
-const totalRegistrations = await VolunteerRegistration.count();
+    const eventTrends = [
+      { name: "Jan", events: Math.max(0, totalEvents - 4), participation: Math.max(0, totalApplications - 3) },
+      { name: "Feb", events: Math.max(0, totalEvents - 3), participation: Math.max(0, totalApplications - 2) },
+      { name: "Mar", events: Math.max(0, totalEvents - 2), participation: Math.max(0, totalApplications - 2) },
+      { name: "Apr", events: Math.max(0, totalEvents - 1), participation: Math.max(0, totalApplications - 1) },
+      { name: "May", events: totalEvents, participation: totalApplications }
+    ];
 
-// Calculate total volunteer hours: let's start with a base of 1240 hours + 4 hours for each registration
-const volunteerHours = 1240 + totalRegistrations * 4;
-
-// Get pending events list
-const pendingEventsList = await Event.findAll({
-  where: { status: "pending" },
-  limit: 5,
-  include: [{ model: User, attributes: ["name"] }]
-});
-
-// Get recent activity logs
-const recentActivity = await AuditLog.findAll({
-  order: [["createdAt", "DESC"]],
-  limit: 5
-});
-
-// Mock charts data to be realistic and match the dynamic counts
-const userGrowth = [
-  { name: "Jan", students: Math.max(0, totalStudents - 3), organizers: Math.max(0, totalOrganizers - 2) },
-  { name: "Feb", students: Math.max(0, totalStudents - 2), organizers: Math.max(0, totalOrganizers - 1) },
-  { name: "Mar", students: Math.max(0, totalStudents - 2), organizers: Math.max(0, totalOrganizers - 1) },
-  { name: "Apr", students: Math.max(0, totalStudents - 1), organizers: Math.max(0, totalOrganizers) },
-  { name: "May", students: totalStudents, organizers: totalOrganizers }
-];
-
-const eventTrends = [
-  { name: "Jan", events: Math.max(0, totalEvents - 4), participation: Math.max(0, totalRegistrations - 3) },
-  { name: "Feb", events: Math.max(0, totalEvents - 3), participation: Math.max(0, totalRegistrations - 2) },
-  { name: "Mar", events: Math.max(0, totalEvents - 2), participation: Math.max(0, totalRegistrations - 2) },
-  { name: "Apr", events: Math.max(0, totalEvents - 1), participation: Math.max(0, totalRegistrations - 1) },
-  { name: "May", events: totalEvents, participation: totalRegistrations }
-];
-
-res.json({
-  totalStudents,
-  totalEvents,
-  partnerClubs: totalOrganizers,
-  volunteerHours,
-  userGrowth,
-  eventTrends,
-  pendingEvents: pendingEventsList,
-  recentActivity
-});
-
-}
-
-catch(error){
-
-res.status(500)
-.json({
-message:
-error.message
-});
-
-}
-
+    res.json({
+      totalUsers,
+      totalStudents,
+      totalOrganizers,
+      totalEvents,
+      pendingEvents: pendingEventsCount,
+      approvedEvents: approvedEventsCount,
+      totalApplications,
+      totalCertificates,
+      // Backend dashboard alignment extras
+      partnerClubs: totalOrganizers,
+      volunteerHours,
+      userGrowth,
+      eventTrends,
+      pendingEventsList,
+      recentActivity
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 
@@ -261,199 +249,55 @@ export const deleteUser = async (req, res) => {
 };
 
 
-export const getPendingEvents =
-async (
-req,
-res
-) => {
-
-try {
-const { status } = req.query;
-const whereClause = {};
-
-if (status && status !== "all") {
-  whereClause.status = status;
-} else if (!status) {
-  whereClause.status = "pending";
-}
-
-const events =
-await Event.findAll({
-
-where: whereClause,
-
-include: [
-  { model: User, attributes: ["name"] }
-]
-
-});
-
-res
-.status(200)
-.json(
-events
-);
-
-}
-
-catch (
-error
-) {
-
-res
-.status(500)
-.json({
-
-message:
-error.message
-
-});
-
-}
-
+export const getPendingEvents = async (req, res, next) => {
+  try {
+    const events = await eventService.getPendingEvents();
+    res.status(200).json(events);
+  } catch (error) {
+    next(error);
+  }
 };
 
+export const approveEvent = async (req, res, next) => {
+  try {
+    const event = await eventService.approveEvent(req.params.id);
 
+    // Log Audit Log: EVENT_APPROVED
+    await AuditLog.create({
+      action: "EVENT_APPROVED",
+      performedById: req.user.id,
+      details: String(event.id)
+    });
 
-
-
-export const approveEvent =
-async (
-req,
-res
-) => {
-
-try {
-
-const event =
-await Event.findByPk(
-req.params.id
-);
-
-if (
-!event
-) {
-
-return res
-.status(404)
-.json({
-
-message:
-"Event not found"
-
-});
-
-}
-
-
-await event.update({
-
-status:
-"approved"
-
-});
-
-
-res
-.status(200)
-.json({
-
-message:
-"Event approved",
-
-event,
-
-});
-
-}
-
-catch (
-error
-) {
-
-res
-.status(500)
-.json({
-
-message:
-error.message
-
-});
-
-}
-
+    res.status(200).json({
+      success: true,
+      message: "Event approved successfully",
+      event
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
+export const rejectEvent = async (req, res, next) => {
+  try {
+    const event = await eventService.rejectEvent(req.params.id);
 
+    // Log Audit Log: EVENT_REJECTED
+    await AuditLog.create({
+      action: "EVENT_REJECTED",
+      performedById: req.user.id,
+      details: String(event.id)
+    });
 
-
-
-
-export const rejectEvent =
-async (
-req,
-res
-) => {
-
-try {
-
-const event =
-await Event.findByPk(
-req.params.id
-);
-
-if (
-!event
-) {
-
-return res
-.status(404)
-.json({
-
-message:
-"Event not found"
-
-});
-
-}
-
-
-await event.update({
-
-status:
-"rejected"
-
-});
-
-
-res
-.status(200)
-.json({
-
-message:
-"Event rejected",
-
-event,
-
-});
-
-}
-
-catch (
-error
-) {
-
-res
-.status(500)
-.json({
-
-message:
-error.message
-
-});
-
-}
-
+    res.status(200).json({
+      success: true,
+      message: "Event rejected successfully",
+      event
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 
@@ -462,8 +306,8 @@ export const reports = async (req, res) => {
   try {
     const totalUsers = await User.count();
     const totalEvents = await Event.count();
-    const approvedEvents = await Event.count({ where: { status: "approved" } });
-    const pendingEvents = await Event.count({ where: { status: "pending" } });
+    const approvedEvents = await Event.count({ where: { approvalStatus: "Approved" } });
+    const pendingEvents = await Event.count({ where: { approvalStatus: "Pending" } });
     const totalRegistrations = await VolunteerRegistration.count();
 
     // Student participation by faculty
@@ -501,7 +345,7 @@ export const reports = async (req, res) => {
       const regs = await VolunteerRegistration.findAll({ where: { UserId: student.id } });
       const eventIds = regs.map(r => r.EventId);
       const approvedEventsForStudent = await Event.findAll({
-        where: { id: eventIds, status: "approved" }
+        where: { id: eventIds, approvalStatus: "Approved" }
       });
       // Sum reputation points
       const points = approvedEventsForStudent.reduce((sum, ev) => sum + (ev.reputationPoints || 10), 0);
@@ -688,6 +532,159 @@ error.message
 
 }
 
+};
+
+export const updateUserStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+    if (status !== "active" && status !== "suspended") {
+      return res.status(400).json({ message: "Invalid status value" });
+    }
+    const user = await User.findByPk(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    await user.update({ status });
+
+    // Log Audit Log: USER_SUSPENDED or USER_ACTIVATED
+    const action = status === "suspended" ? "USER_SUSPENDED" : "USER_ACTIVATED";
+    await AuditLog.create({
+      action,
+      performedById: req.user.id,
+      details: String(user.id)
+    });
+
+    res.status(200).json({ message: `User status updated to ${status}`, user });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getOrganizations = async (req, res) => {
+  try {
+    const organizers = await User.findAll({
+      where: { role: "organizer" },
+      include: [{ model: OrganizerProfile, as: "organizerProfile" }]
+    });
+    const list = await Promise.all(organizers.map(async (org) => {
+      const events = await Event.findAll({ where: { UserId: org.id } });
+      const eventCount = events.length;
+      const eventIds = events.map(e => e.id);
+      let totalVolunteerHours = 0;
+      if (eventIds.length > 0) {
+        const presentCount = await Attendance.count({
+          where: {
+            EventId: eventIds,
+            status: "Present"
+          }
+        });
+        totalVolunteerHours = presentCount * 4;
+      }
+      
+      const membersArr = org.organizerProfile?.members;
+      const membersCount = Array.isArray(membersArr) ? membersArr.length : 12;
+
+      return {
+        id: org.id,
+        name: org.name,
+        email: org.email,
+        phone: org.phone,
+        status: org.status || "active",
+        createdAt: org.createdAt,
+        organizationName: org.organizerProfile?.organizationName || org.name,
+        type: org.organizerProfile?.organizationType || "Academic & Technical",
+        description: org.organizerProfile?.description || "",
+        membersCount: membersCount || 10,
+        eventsHosted: eventCount,
+        totalVolunteerHours
+      };
+    }));
+    res.status(200).json(list);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getOrganizationById = async (req, res) => {
+  try {
+    const org = await User.findOne({
+      where: { id: req.params.id, role: "organizer" },
+      include: [{ model: OrganizerProfile, as: "organizerProfile" }]
+    });
+    if (!org) {
+      return res.status(404).json({ message: "Organization not found" });
+    }
+    const events = await Event.findAll({
+      where: { UserId: org.id },
+      order: [["createdAt", "DESC"]]
+    });
+    const eventIds = events.map(e => e.id);
+    let totalApplications = 0;
+    let totalVolunteerHours = 0;
+    if (eventIds.length > 0) {
+      totalApplications = await VolunteerRegistration.count({ where: { EventId: eventIds } });
+      const presentCount = await Attendance.count({
+        where: {
+          EventId: eventIds,
+          status: "Present"
+        }
+      });
+      totalVolunteerHours = presentCount * 4;
+    }
+
+    const membersArr = org.organizerProfile?.members;
+    const membersCount = Array.isArray(membersArr) ? membersArr.length : 12;
+
+    res.status(200).json({
+      organization: {
+        id: org.id,
+        name: org.name,
+        email: org.email,
+        phone: org.phone,
+        status: org.status || "active",
+        createdAt: org.createdAt,
+        organizationName: org.organizerProfile?.organizationName || org.name,
+        type: org.organizerProfile?.organizationType || "Academic & Technical",
+        description: org.organizerProfile?.description || "",
+        membersCount: membersCount || 10,
+        eventsHosted: events.length,
+        totalVolunteerHours,
+        contactPerson: org.name
+      },
+      events: events.map(e => ({
+        name: e.title,
+        date: e.eventDate
+      })),
+      statistics: {
+        totalEvents: events.length,
+        totalApplications,
+        totalVolunteerHours
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getEvents = async (req, res) => {
+  try {
+    const list = await Event.findAll({
+      include: [{ model: User, attributes: ["id", "name", "email"] }],
+      order: [["createdAt", "DESC"]]
+    });
+    const results = await Promise.all(list.map(async (event) => {
+      const applicationsCount = await VolunteerRegistration.count({ where: { EventId: event.id } });
+      const attendanceCount = await Attendance.count({ where: { EventId: event.id, status: "Present" } });
+      return {
+        ...event.toJSON(),
+        applicationsCount,
+        attendanceCount
+      };
+    }));
+    res.status(200).json(results);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 
