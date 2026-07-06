@@ -16,8 +16,8 @@ export const updateSettings = async (req, res) => {
     
     // Log the update action to the AuditLog table
     await AuditLog.create({
-      action: "Settings Updated",
-      performedBy: req.user.id,
+      action: "SETTINGS_CHANGED",
+      performedById: req.user.id,
       details: `Updated settings fields: ${Object.keys(req.body).join(", ")}`,
     });
 
