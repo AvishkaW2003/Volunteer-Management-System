@@ -15,6 +15,7 @@ const EventDetailsPage = () => {
   const [showApplyModal, setShowApplyModal] = useState(false);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     const fetchEventDetails = async () => {
       setLoading(true);
       try {
