@@ -48,7 +48,7 @@ const OrganizerLogin = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col
-                    items-center justify-center px-4 py-10">
+                    items-center justify-center px-4 pt-28 pb-10">
 
       {/* Logo */}
       <div className="flex items-center gap-2 mb-6">
