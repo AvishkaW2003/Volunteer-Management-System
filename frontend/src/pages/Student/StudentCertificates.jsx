@@ -15,9 +15,9 @@ const downloadCertificate = async (cert) => {
   }
 };
 /* ── Certificate Preview Modal ──────────────────────── */
-const CertificateModal = ({ cert, onClose }) => (
+export const CertificateModal = ({ cert, onClose }) => (
   <div
-    className="fixed inset-0 z-50 flex items-start justify-center p-4 py-8 overflow-y-auto bg-black/50 backdrop-blur-sm"
+    className="fixed inset-0 z-[2000] flex items-start justify-center p-4 py-8 overflow-y-auto bg-black/50 backdrop-blur-sm"
     onClick={e => e.target === e.currentTarget && onClose()}
   >
     <div className="w-full max-w-2xl overflow-hidden bg-white shadow-2xl rounded-2xl animate-scaleUp">

@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Calendar, Trophy, Award, Clock, MapPin, Download, Eye, X } from 'lucide-react';
 import { getStudentDashboard } from '../../services/userService';
 import { downloadCertificatePdf } from '../../services/certificateService';
+import { CertificateModal } from './StudentCertificates';
 
 const downloadCertificate = async (cert) => {
   try {
@@ -75,7 +76,7 @@ const Dashboard = () => {
         {stats.map(({ label, value, icon: Icon }) => (
           <div
             key={label}
-            className="bg-gradient-to-br from-blue-400 to-purple-500 rounded-2xl p-5 shadow-sm flex flex-col justify-between min-h-[110px]"
+            className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-5 shadow-sm flex flex-col justify-between min-h-[110px]"
           >
             <div className="flex items-start justify-between">
               <div className="flex items-center justify-center flex-shrink-0 rounded-full w-11 h-11 bg-white/20">
@@ -164,13 +165,13 @@ const Dashboard = () => {
                 <div className="flex gap-2 mt-4">
                   <button 
                     onClick={() => setViewingCert(cert)}
-                    className="flex-1 py-1.5 rounded-lg text-xs font-bold bg-purple-50 text-purple-600 hover:bg-purple-100 transition-colors flex items-center justify-center gap-1 border-none cursor-pointer"
+                    className="flex-1 py-1.5 rounded-lg text-xs font-bold bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors flex items-center justify-center gap-1 border-none cursor-pointer"
                   >
                     <Eye className="w-3 h-3" /> View Certificate
                   </button>
                   <button 
                     onClick={() => downloadCertificate(cert)}
-                    className="flex-1 py-1.5 rounded-lg text-xs font-bold bg-gradient-to-r from-blue-400 to-purple-500 text-white hover:opacity-90 transition-opacity flex items-center justify-center gap-1 border-none cursor-pointer"
+                    className="flex-1 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white hover:bg-blue-700 transition-colors flex items-center justify-center gap-1 border-none cursor-pointer"
                   >
                     <Download className="w-3 h-3" /> Download Certificate
                   </button>

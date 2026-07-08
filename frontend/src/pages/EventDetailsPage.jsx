@@ -217,7 +217,7 @@ const EventDetailsPage = () => {
               className={`w-full sm:w-auto px-8 py-3 rounded-2xl font-bold text-sm transition-all shadow-sm
                 ${isFull
                   ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                  : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white hover:shadow-md'
+                  : 'bg-blue-600 hover:bg-blue-700 text-white hover:shadow-md'
                 }`}
             >
               {isFull ? 'Registration Full' : 'Register & Apply Now'}
