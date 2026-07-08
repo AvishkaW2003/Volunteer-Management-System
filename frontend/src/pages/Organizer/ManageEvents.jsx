@@ -8,7 +8,7 @@ const STATUSES = ['Draft', 'Upcoming', 'Active', 'Completed', 'Archived'];
 
 const fieldClass =
   'w-full border border-gray-200 rounded-xl px-3 py-2.5 text-base text-gray-700 bg-gray-50 ' +
-  'outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100 transition-all';
+  'outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all';
 
 const statusStyle = {
   Draft: 'bg-slate-100 text-slate-700',
@@ -125,8 +125,7 @@ const ManageEvents = () => {
         <button
           onClick={() => navigate('/organizer/create-event')}
           className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold
-              text-white bg-gradient-to-r from-cyan-400 to-blue-500
-              hover:from-cyan-500 hover:to-blue-600 transition-all self-start sm:self-auto"
+              text-white bg-blue-600 hover:bg-blue-700 transition-all self-start sm:self-auto border-none cursor-pointer"
         >
           <Plus className="w-4 h-4" /> New Event
         </button>
@@ -136,7 +135,7 @@ const ManageEvents = () => {
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mb-5">
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="flex items-center gap-2 flex-1 border border-gray-200 rounded-xl px-3 py-2
-              focus-within:border-cyan-400 focus-within:ring-2 focus-within:ring-cyan-100 transition-all bg-gray-50">
+              focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100 transition-all bg-gray-50">
             <Search className="w-4 h-4 text-gray-400 flex-shrink-0" />
             <input
               value={search} onChange={(e) => setSearch(e.target.value)}
@@ -148,9 +147,9 @@ const ManageEvents = () => {
             {['All', 'Draft', 'Upcoming', 'Active', 'Completed', 'Archived'].map((s) => (
               <button
                 key={s} onClick={() => setFilter(s)}
-                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${filter === s
-                    ? 'bg-cyan-500 text-white'
-                    : 'bg-gray-100 text-gray-600 hover:bg-cyan-50 hover:text-cyan-700'
+                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all border-none cursor-pointer ${filter === s
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-100 text-gray-600 hover:bg-blue-50 hover:text-blue-700'
                   }`}
               >
                 {s}
@@ -223,13 +222,13 @@ const ManageEvents = () => {
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => openEdit(event)}
-                        className="p-1.5 rounded-lg hover:bg-cyan-50 text-gray-400 hover:text-cyan-600 transition-colors"
+                        className="p-1.5 rounded-lg hover:bg-blue-50 text-gray-400 hover:text-blue-600 transition-colors border-none bg-transparent cursor-pointer"
                       >
                         <Pencil className="w-3.5 h-3.5" />
                       </button>
                       <button
                         onClick={() => handleDelete(event.id)}
-                        className="p-1.5 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"
+                        className="p-1.5 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors border-none bg-transparent cursor-pointer"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -300,16 +299,15 @@ const ManageEvents = () => {
                 <button
                   type="submit"
                   className="flex-1 py-2.5 rounded-xl text-white font-semibold text-sm
-                            bg-gradient-to-r from-cyan-400 to-blue-500
-                            hover:from-cyan-500 hover:to-blue-600 transition-all"
+                            bg-blue-600 hover:bg-blue-700 transition-all border-none cursor-pointer"
                 >
                   Save Changes
                 </button>
                 <button
                   type="button"
                   onClick={closeEdit}
-                  className="px-5 py-2.5 rounded-xl text-cyan-600 font-semibold text-sm
-                            border border-cyan-200 hover:bg-cyan-50 transition-all"
+                  className="px-5 py-2.5 rounded-xl text-blue-600 font-semibold text-sm
+                            border border-blue-200 hover:bg-blue-50 transition-all cursor-pointer bg-transparent"
                 >
                   Cancel
                 </button>
