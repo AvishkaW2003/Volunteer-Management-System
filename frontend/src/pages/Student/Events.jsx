@@ -242,7 +242,7 @@ const Events = () => {
                     className={`w-full py-2.5 rounded-xl font-semibold text-sm transition-all shadow-sm
                       ${isFull
                         ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                        : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white hover:shadow-md'
+                        : 'bg-blue-600 hover:bg-blue-700 text-white hover:shadow-md'
                       }`}
                   >
                     {isFull ? 'No Spots Available' : 'Apply Now'}
