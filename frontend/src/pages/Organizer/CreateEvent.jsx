@@ -46,10 +46,10 @@ const Field = ({ label, required, children }) => (
 );
 
 const inputClass =
-  'w-full border border-gray-200 rounded-xl px-3 py-2.5 text-base text-gray-700 placeholder-gray-400 outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100 transition-all bg-gray-50';
+  'w-full border border-gray-200 rounded-xl px-3 py-2.5 text-base text-gray-700 placeholder-gray-400 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all bg-gray-50';
 
 const iconInput = (icon, input) => (
-  <div className="flex items-center border border-gray-200 rounded-xl px-3 py-2.5 gap-2 bg-gray-50 focus-within:border-cyan-400 focus-within:ring-2 focus-within:ring-cyan-100 transition-all">
+  <div className="flex items-center border border-gray-200 rounded-xl px-3 py-2.5 gap-2 bg-gray-50 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100 transition-all">
     <span className="text-gray-400 flex-shrink-0">{icon}</span>
     {input}
   </div>
@@ -153,12 +153,12 @@ const CreateEvent = () => {
 
 
   return (
-    <div>
+    <div className="max-w-3xl mx-auto space-y-6">
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <button
           onClick={() => navigate('/organizer/dashboard')}
-          className="p-2 rounded-xl hover:bg-purple-50 text-gray-500 hover:text-cyan-600 transition-colors"
+          className="p-2 rounded-xl hover:bg-blue-50 text-gray-500 hover:text-blue-600 transition-colors border-none cursor-pointer bg-transparent"
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
@@ -174,7 +174,7 @@ const CreateEvent = () => {
         </div>
       )}
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 max-w-3xl">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
         <form onSubmit={handleSubmit} className="space-y-5">
 
           {/* Title + Category */}
@@ -203,7 +203,7 @@ const CreateEvent = () => {
 
           {/* Description */}
           <Field label="Description" required>
-            <div className="flex items-start border border-gray-200 rounded-xl px-3 py-2.5 gap-2 bg-gray-50 focus-within:border-cyan-400 focus-within:ring-2 focus-within:ring-cyan-100 transition-all">
+            <div className="flex items-start border border-gray-200 rounded-xl px-3 py-2.5 gap-2 bg-gray-50 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100 transition-all">
               <AlignLeft className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
               <textarea
                 name="description" value={form.description} onChange={handleChange} required
@@ -276,7 +276,7 @@ const CreateEvent = () => {
             <div className="space-y-4">
               {/* Custom Upload Box */}
               <div className="flex flex-col sm:flex-row gap-4 items-center">
-                <div className="w-full sm:w-1/2 h-36 border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center p-3 text-center bg-gray-50 hover:border-cyan-400 transition-colors relative overflow-hidden group">
+                <div className="w-full sm:w-1/2 h-36 border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center p-3 text-center bg-gray-50 hover:border-blue-500 transition-colors relative overflow-hidden group">
                   {form.image ? (
                     <>
                       <img src={form.image} alt="Preview" className="absolute inset-0 w-full h-full object-cover" />
@@ -326,16 +326,16 @@ const CreateEvent = () => {
                         key={preset.title}
                         type="button"
                         onClick={() => selectPresetImage(preset.url)}
-                        className={`group relative h-20 rounded-xl overflow-hidden text-left border transition-all ${isSelected ? 'border-cyan-500 ring-2 ring-cyan-100 shadow-sm' : 'border-gray-100 hover:border-cyan-300'
+                        className={`group relative h-20 rounded-xl overflow-hidden text-left border transition-all cursor-pointer ${isSelected ? 'border-blue-600 ring-2 ring-blue-100 shadow-sm' : 'border-gray-100 hover:border-blue-300'
                           }`}
                       >
                         <img src={preset.url} alt={preset.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-200" />
-                        <div className={`absolute inset-0 transition-opacity flex flex-col justify-end p-2 ${isSelected ? 'bg-gradient-to-t from-cyan-900/90 via-cyan-900/50 to-transparent' : 'bg-gradient-to-t from-black/80 via-black/30 to-transparent'
+                        <div className={`absolute inset-0 transition-opacity flex flex-col justify-end p-2 ${isSelected ? 'bg-gradient-to-t from-blue-900/90 via-blue-900/50 to-transparent' : 'bg-gradient-to-t from-black/80 via-black/30 to-transparent'
                           }`}>
                           <span className="text-[10px] font-bold text-white leading-tight line-clamp-1">{preset.title}</span>
                         </div>
                         {isSelected && (
-                          <div className="absolute top-1.5 right-1.5 w-4.5 h-4.5 bg-cyan-500 text-white rounded-full flex items-center justify-center shadow">
+                          <div className="absolute top-1.5 right-1.5 w-4.5 h-4.5 bg-blue-600 text-white rounded-full flex items-center justify-center shadow">
                             <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}>
                               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                             </svg>
@@ -355,17 +355,15 @@ const CreateEvent = () => {
               type="submit"
               disabled={loading}
               className="flex-1 py-3 rounded-xl text-white font-semibold text-sm
-                          bg-gradient-to-r from-cyan-400 to-blue-500
-                          hover:from-cyan-500 hover:to-blue-600
-                          transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
+                          bg-blue-600 hover:bg-blue-700 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed border-none cursor-pointer"
             >
               {loading ? 'Publishing…' : 'Publish Event'}
             </button>
             <button
               type="button"
               onClick={() => navigate('/organizer/events')}
-              className="px-6 py-3 rounded-xl text-cyan-600 font-semibold text-sm
-                          border border-cyan-200 hover:bg-cyan-50 transition-all duration-200"
+              className="px-6 py-3 rounded-xl text-blue-600 font-semibold text-sm
+                          border border-blue-200 hover:bg-blue-50 transition-all duration-200 cursor-pointer"
             >
               Cancel
             </button>

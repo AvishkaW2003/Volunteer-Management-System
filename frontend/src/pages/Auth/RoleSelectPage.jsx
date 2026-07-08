@@ -41,7 +41,7 @@ const RoleSelectPage = ({ mode = 'register' }) => {
   const isLogin = mode === 'login';
 
   return (
-    <div className="min-h-screen relative flex flex-col items-center justify-start pt-16 px-4 pb-8 overflow-hidden">
+    <div className="min-h-screen relative flex flex-col items-center justify-start pt-28 px-4 pb-8 overflow-hidden">
 
       {/* Background image */}
       <img

@@ -86,9 +86,9 @@ const Applications = () => {
         {Object.entries(counts).map(([key, val]) => (
           <button
             key={key} onClick={() => setFilter(key)}
-            className={`rounded-xl px-4 py-3 text-left transition-all border ${filter === key
-                ? 'bg-gradient-to-r from-cyan-400 to-blue-500 text-white border-cyan-500 shadow-sm'
-                : 'bg-white text-gray-700 border-gray-100 hover:border-purple-200'
+            className={`rounded-xl px-4 py-3 text-left transition-all border border-solid cursor-pointer ${filter === key
+                ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
+                : 'bg-white text-gray-700 border-gray-100 hover:border-blue-200'
               }`}
           >
             <div className="text-2xl font-bold">{val}</div>
@@ -100,7 +100,7 @@ const Applications = () => {
       {/* Search */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mb-5">
         <div className="flex items-center gap-2 border border-gray-200 rounded-xl px-3 py-2
-                focus-within:border-cyan-400 focus-within:ring-2 focus-within:ring-cyan-100 transition-all bg-gray-50">
+                focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100 transition-all bg-gray-50">
           <Search className="w-4 h-4 text-gray-400 flex-shrink-0" />
           <input
             value={search} onChange={(e) => setSearch(e.target.value)}
@@ -140,8 +140,8 @@ const Applications = () => {
                 <tr key={app.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-5 py-3.5">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-full bg-cyan-100 flex items-center justify-center flex-shrink-0">
-                        <span className="text-cyan-600 text-xs font-bold">{(app.name || '').charAt(0)}</span>
+                      <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0">
+                        <span className="text-blue-600 text-xs font-bold">{(app.name || '').charAt(0)}</span>
                       </div>
                       <span className="text-sm font-semibold text-gray-800">{app.name}</span>
                     </div>
