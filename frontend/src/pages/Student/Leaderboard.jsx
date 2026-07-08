@@ -76,7 +76,7 @@ const Leaderboard = () => {
                 key={v.rank}
                 className={`rounded-2xl p-5 flex flex-col items-center gap-3 text-center
                   ${isFirst
-                    ? 'bg-gradient-to-br from-blue-400 to-purple-500 shadow-lg shadow-purple-200'
+                    ? 'bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg shadow-blue-200'
                     : 'bg-white border border-gray-100 shadow-sm'}`}
               >
                 {/* Rank icon — top-left */}
@@ -89,7 +89,7 @@ const Leaderboard = () => {
                 {/* Avatar */}
                 <div
                   className={`w-16 h-16 rounded-full flex items-center justify-center text-lg font-bold
-                    ${isFirst ? 'bg-white/20 text-white' : 'bg-purple-100 text-purple-600'}`}
+                    ${isFirst ? 'bg-white/20 text-white' : 'bg-blue-100 text-blue-600'}`}
                 >
                   {initials(v.name)}
                 </div>
@@ -144,7 +144,7 @@ const Leaderboard = () => {
               </tr>
             ) : (
               leaderboardList.map(v => (
-                <tr key={v.rank} className="transition-colors hover:bg-purple-50/40">
+                <tr key={v.rank} className="transition-colors hover:bg-blue-50/40">
 
                   {/* Rank */}
                   <td className="px-5 py-4">
@@ -154,7 +154,7 @@ const Leaderboard = () => {
                   {/* Volunteer */}
                   <td className="px-5 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="flex items-center justify-center flex-shrink-0 w-8 h-8 text-xs font-bold text-purple-600 bg-purple-100 rounded-full">
+                      <div className="flex items-center justify-center flex-shrink-0 w-8 h-8 text-xs font-bold text-blue-600 bg-blue-100 rounded-full">
                         {initials(v.name)}
                       </div>
                       <span className="font-medium text-gray-800">{v.name}</span>
@@ -163,7 +163,7 @@ const Leaderboard = () => {
 
                   {/* Score */}
                   <td className="px-5 py-4">
-                    <span className="text-base font-bold text-purple-600">{v.score}</span>
+                    <span className="text-base font-bold text-blue-600">{v.score}</span>
                   </td>
 
                   {/* Events */}

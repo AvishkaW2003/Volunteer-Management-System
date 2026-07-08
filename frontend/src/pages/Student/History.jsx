@@ -60,7 +60,7 @@ const History = () => {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         {stats.map(({ value, suffix, label }) => (
           <div key={label}
-            className="p-6 shadow-sm bg-gradient-to-br from-blue-400 to-purple-500 rounded-2xl shadow-purple-200">
+            className="p-6 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-blue-200">
             <p className="text-3xl font-extrabold text-white">
               {value}{suffix}
             </p>
@@ -97,7 +97,7 @@ const History = () => {
                 </tr>
               ) : (
                 historyList.map(h => (
-                  <tr key={h.id} className="transition-colors hover:bg-purple-50/30">
+                  <tr key={h.id} className="transition-colors hover:bg-blue-50/30">
                     <td className="px-5 py-3.5 font-semibold text-gray-800">{h.event}</td>
                     <td className="px-5 py-3.5 text-gray-500">{h.organizer}</td>
                     <td className="px-5 py-3.5 text-gray-500">
@@ -107,7 +107,7 @@ const History = () => {
                     </td>
                     <td className="px-5 py-3.5 font-semibold text-gray-700">{h.hours || 0} hrs</td>
                     <td className="px-5 py-3.5">
-                      <span className="font-bold text-purple-600">{h.reputationPoints || 0}</span>
+                      <span className="font-bold text-blue-600">{h.reputationPoints || 0}</span>
                     </td>
                     <td className="px-5 py-3.5">
                       <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full
