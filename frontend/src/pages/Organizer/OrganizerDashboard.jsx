@@ -147,7 +147,7 @@ const OrganizerDashboard = () => {
         </div>
         <Link
           to="/organizer/create-event"
-          className="px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl text-sm font-bold shadow-md hover:shadow-cyan-200/50 hover:scale-[1.02] active:scale-[0.98] transition-all text-center self-start md:self-auto"
+          className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-bold shadow-md hover:shadow-blue-200/50 hover:scale-[1.02] active:scale-[0.98] transition-all text-center self-start md:self-auto"
         >
           + Create New Event
         </Link>
@@ -284,27 +284,27 @@ const OrganizerDashboard = () => {
                     {String(event.id).startsWith('mock') ? (
                       <button
                         onClick={() => alert(`Visualizing details for mock event: ${event.title}`)}
-                        className="px-2.5 py-2 text-xs font-bold text-center border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-cyan-600 transition-colors flex items-center justify-center gap-1"
+                        className="px-2.5 py-2 text-xs font-bold text-center border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-colors flex items-center justify-center gap-1"
                       >
                         <Eye className="w-3.5 h-3.5" /> View Details
                       </button>
                     ) : (
                       <Link
                         to={`/events/${event.id}`}
-                        className="px-2.5 py-2 text-xs font-bold text-center border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-cyan-600 transition-colors flex items-center justify-center gap-1"
+                        className="px-2.5 py-2 text-xs font-bold text-center border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-colors flex items-center justify-center gap-1"
                       >
                         <Eye className="w-3.5 h-3.5" /> View Details
                       </Link>
                     )}
                     <Link
                       to="/organizer/events"
-                      className="px-2.5 py-2 text-xs font-bold text-center border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-cyan-600 transition-colors flex items-center justify-center gap-1"
+                      className="px-2.5 py-2 text-xs font-bold text-center border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-colors flex items-center justify-center gap-1"
                     >
                       <Edit className="w-3.5 h-3.5" /> Edit Event
                     </Link>
                     <Link
                       to="/organizer/applications"
-                      className="px-2.5 py-2 text-xs font-bold text-center bg-cyan-50 text-cyan-600 rounded-lg hover:bg-cyan-100 transition-colors flex items-center justify-center gap-1 col-span-1"
+                      className="px-2.5 py-2 text-xs font-bold text-center bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors flex items-center justify-center gap-1 col-span-1"
                     >
                       Manage Applications
                     </Link>
@@ -471,7 +471,7 @@ const OrganizerDashboard = () => {
                           className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
                             vol.attendanceStatus === 'Present'
                               ? 'bg-amber-50 text-amber-600 hover:bg-amber-100 border-amber-200'
-                              : 'bg-cyan-50 text-cyan-600 hover:bg-cyan-100 border-cyan-200'
+                              : 'bg-blue-50 text-blue-600 hover:bg-blue-100 border-blue-200'
                           }`}
                         >
                           Mark Attendance
