@@ -103,7 +103,7 @@ const MainLayout = () => {
    * Helper to check if a navigation link is active
    */
   const isActive = (path) => location.pathname === path;
-  const isDashboardRoute = location.pathname.startsWith('/student') || location.pathname.startsWith('/organizer');
+  const isDashboardRoute = location.pathname.startsWith('/student') || location.pathname.startsWith('/organizer') || location.pathname.startsWith('/admin');
 
   return (
     <div className="vh-wrapper">
@@ -113,11 +113,16 @@ const MainLayout = () => {
         <div className="vh-nav-container">
           
           {/* Main Logo & Branding */}
-          <Link to="/" className="vh-logo">
+          <Link to="/" className="vh-logo flex items-center">
             <div className="vh-logo-icon">
               <HandHelping className="w-5 h-5" />
             </div>
             <span>VolunteerHub</span>
+            {user?.role === 'admin' && (
+              <span className="ml-2.5 bg-teal-50 text-teal-600 border border-teal-200/60 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
+                ADMIN PORTAL
+              </span>
+            )}
           </Link>
 
           {/* Center Navigation Links (Visible on Desktop) */}
@@ -132,7 +137,7 @@ const MainLayout = () => {
           <div className="vh-nav-auth">
             {isAuthenticated ? (
               <div className="vh-nav-user-info relative" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <span className="vh-user-greeting">Hi, {user?.role === 'admin' ? 'Admin' : (user?.name?.split(' ')[0] || "Volunteer")}</span>
+                <span className="vh-user-greeting">Hi, {user?.name?.split(' ')[0] || (user?.role === 'admin' ? 'Admin' : 'Volunteer')}</span>
                 
                 {/* Notifications Bell Button */}
                 <div className="relative">
