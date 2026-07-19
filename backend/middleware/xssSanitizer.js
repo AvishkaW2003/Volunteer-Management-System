@@ -1,45 +1,51 @@
-const sanitize = (val) => {
-  if (typeof val === "string") {
-    // Strip HTML tags to prevent XSS without corrupting normal text
-    return val.replace(/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi, "");
+const sanitizeString = (str) => {
+  if (typeof str !== "string") return str;
+
+  // Recursively remove scripts and inline handlers to prevent executable execution
+  return str
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
+    .replace(/on\w+\s*=\s*"(?:[^"]*)"/gi, "")
+    .replace(/on\w+\s*=\s*'(?:[^']*)'/gi, "")
+    .replace(/on\w+\s*=\s*(?:[^\s'">]+)/gi, "")
+    .replace(/href\s*=\s*"(?:javascript:[^"]*)"/gi, "")
+    .replace(/href\s*=\s*'(?:javascript:[^']*)'/gi, "");
+};
+
+const sanitizeObject = (obj) => {
+  if (Array.isArray(obj)) {
+    return obj.map(sanitizeObject);
   }
-  if (Array.isArray(val)) {
-    return val.map(sanitize);
-  }
-  if (val !== null && typeof val === "object") {
+  if (obj !== null && typeof obj === "object") {
     const sanitized = {};
-    for (const key in val) {
-      if (Object.prototype.hasOwnProperty.call(val, key)) {
-        // Skip sanitizing password fields to avoid altering user credentials
-        if (key.toLowerCase().includes("password")) {
-          sanitized[key] = val[key];
-        } else {
-          sanitized[key] = sanitize(val[key]);
-        }
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        sanitized[key] = sanitizeObject(obj[key]);
       }
     }
     return sanitized;
   }
-  return val;
+  return typeof obj === "string" ? sanitizeString(obj) : obj;
 };
 
-const xssSanitizer = (req, res, next) => {
+const sanitizeInPlace = (obj) => {
+  if (obj && typeof obj === "object") {
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        obj[key] = sanitizeObject(obj[key]);
+      }
+    }
+  }
+};
+
+export const xssSanitizer = (req, res, next) => {
   if (req.body) {
-    req.body = sanitize(req.body);
+    sanitizeInPlace(req.body);
   }
   if (req.query) {
-    for (const key in req.query) {
-      if (Object.prototype.hasOwnProperty.call(req.query, key)) {
-        req.query[key] = sanitize(req.query[key]);
-      }
-    }
+    sanitizeInPlace(req.query);
   }
   if (req.params) {
-    for (const key in req.params) {
-      if (Object.prototype.hasOwnProperty.call(req.params, key)) {
-        req.params[key] = sanitize(req.params[key]);
-      }
-    }
+    sanitizeInPlace(req.params);
   }
   next();
 };
