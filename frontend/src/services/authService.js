@@ -36,7 +36,12 @@ export const resetPassword = async (token, newPassword) => {
   return response.data;
 };
 
-export const googleLogin = async (idToken) => {
-  const response = await axios.post(`${API_URL}/google-login`, { idToken });
+export const googleLogin = async (idToken, targetRole = "student") => {
+  const response = await axios.post(`${API_URL}/google-login`, { idToken, targetRole });
+  return response.data;
+};
+
+export const googleRegisterOrganizer = async (idToken, organizationName, phone) => {
+  const response = await axios.post(`${API_URL}/google-register/organizer`, { idToken, organizationName, phone });
   return response.data;
 };

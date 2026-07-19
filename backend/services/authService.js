@@ -281,7 +281,7 @@ export const resetPassword = async ({ token, newPassword }) => {
   return true;
 };
 
-export const googleLoginUser = async (idToken) => {
+export const googleLoginUser = async (idToken, targetRole = "student") => {
   const parts = idToken.split('.');
   if (parts.length !== 3) {
     const err = new Error("Invalid Google ID Token");
@@ -321,14 +321,15 @@ export const googleLoginUser = async (idToken) => {
     let user = await User.findOne({
       where: { email },
       include: [
-        { model: StudentProfile, as: "studentProfile" }
+        { model: StudentProfile, as: "studentProfile" },
+        { model: OrganizerProfile, as: "organizerProfile" }
       ],
       transaction
     });
 
     if (user) {
-      if (user.role !== "student") {
-        const err = new Error("Access denied. This email is registered under a non-student account.");
+      if (user.role !== targetRole) {
+        const err = new Error(`Access denied. This email is registered under a non-${targetRole} account.`);
         err.statusCode = 403;
         throw err;
       }
@@ -338,6 +339,17 @@ export const googleLoginUser = async (idToken) => {
         throw err;
       }
     } else {
+      // If user does not exist and targetRole is organizer, return onboarding required
+      if (targetRole === "organizer") {
+        await transaction.commit();
+        return {
+          onboardingRequired: true,
+          email,
+          name: name || email.split('@')[0],
+          idToken
+        };
+      }
+
       // Create new student user
       const randomPassword = crypto.randomBytes(16).toString("hex");
       const hashedPassword = await bcrypt.hash(randomPassword, 10);
@@ -375,6 +387,100 @@ export const googleLoginUser = async (idToken) => {
     );
 
     const userJson = user.toJSON();
+    delete userJson.password;
+
+    return {
+      token,
+      user: userJson
+    };
+  } catch (error) {
+    if (!transaction.finished) {
+      await transaction.rollback();
+    }
+    throw error;
+  }
+};
+
+export const googleRegisterOrganizer = async (idToken, { organizationName, phone }) => {
+  const parts = idToken.split('.');
+  if (parts.length !== 3) {
+    const err = new Error("Invalid Google ID Token");
+    err.statusCode = 400;
+    throw err;
+  }
+  
+  let payload;
+  try {
+    const decodedPayload = Buffer.from(parts[1], 'base64').toString('utf-8');
+    payload = JSON.parse(decodedPayload);
+  } catch (e) {
+    const err = new Error("Failed to parse Google ID Token");
+    err.statusCode = 400;
+    throw err;
+  }
+
+  const { email } = payload;
+  if (!email) {
+    const err = new Error("Email not present in Google token");
+    err.statusCode = 400;
+    throw err;
+  }
+
+  // Verify audience if configured and this is a real token
+  const googleClientId = process.env.GOOGLE_CLIENT_ID;
+  if (googleClientId && payload.aud && parts[2] !== 'mock-signature') {
+    if (payload.aud !== googleClientId) {
+      const err = new Error("Invalid token audience");
+      err.statusCode = 400;
+      throw err;
+    }
+  }
+
+  const transaction = await sequelize.transaction();
+  try {
+    // Check duplicate email
+    const duplicate = await User.findOne({ where: { email }, transaction });
+    if (duplicate) {
+      const err = new Error("Email already registered");
+      err.statusCode = 400;
+      throw err;
+    }
+
+    // Hash a random password for OAuth user
+    const randomPassword = crypto.randomBytes(16).toString("hex");
+    const hashedPassword = await bcrypt.hash(randomPassword, 10);
+
+    // Create Base User
+    const user = await User.create({
+      name: organizationName,
+      email,
+      password: hashedPassword,
+      phone: phone || "",
+      role: "organizer",
+      status: "active"
+    }, { transaction });
+
+    // Create Organizer Profile
+    const organizerProfile = await OrganizerProfile.create({
+      userId: user.id,
+      organizationName
+    }, { transaction });
+
+    await transaction.commit();
+
+    // Fetch user with association
+    const completeUser = await User.findByPk(user.id, {
+      include: [{ model: OrganizerProfile, as: "organizerProfile" }]
+    });
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { id: completeUser.id, email: completeUser.email, role: completeUser.role },
+      jwtConfig.secret,
+      { expiresIn: jwtConfig.expiresIn }
+    );
+
+    const userJson = completeUser.toJSON();
     delete userJson.password;
 
     return {

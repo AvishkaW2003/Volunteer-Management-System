@@ -11,7 +11,8 @@ import {
   getMe, 
   forgotPassword, 
   resetPassword,
-  googleLogin
+  googleLogin,
+  googleRegisterOrganizer
 } from "../controllers/authController.js";
 import { authRateLimiter, resetRateLimiter } from "../middleware/rateLimiter.js";
 
@@ -21,6 +22,7 @@ router.post("/register/student", authRateLimiter, validateStudentRegistration, r
 router.post("/register/organizer", authRateLimiter, validateOrganizerRegistration, registerOrganizer);
 router.post("/login", authRateLimiter, login);
 router.post("/google-login", authRateLimiter, googleLogin);
+router.post("/google-register/organizer", authRateLimiter, googleRegisterOrganizer);
 router.get("/me", authMiddleware, getMe);
 router.post("/forgot-password", resetRateLimiter, forgotPassword);
 router.post("/reset-password/:token", resetRateLimiter, resetPassword);

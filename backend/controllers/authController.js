@@ -105,12 +105,23 @@ export const resetPassword = async (req, res, next) => {
 
 export const googleLogin = async (req, res, next) => {
   try {
-    const { idToken } = req.body;
+    const { idToken, targetRole } = req.body;
     if (!idToken) {
       return res.status(400).json({ success: false, message: "ID Token is required" });
     }
 
-    const data = await authService.googleLoginUser(idToken);
+    const data = await authService.googleLoginUser(idToken, targetRole || "student");
+
+    if (data.onboardingRequired) {
+      return res.status(200).json({
+        success: true,
+        status: "needs_onboarding",
+        email: data.email,
+        name: data.name,
+        idToken: data.idToken
+      });
+    }
+
     res.status(200).json({
       success: true,
       message: "Google login successful",
@@ -120,7 +131,33 @@ export const googleLogin = async (req, res, next) => {
         name: data.user.name,
         email: data.user.email,
         role: data.user.role,
-        studentProfile: data.user.studentProfile
+        studentProfile: data.user.studentProfile,
+        organizerProfile: data.user.organizerProfile
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const googleRegisterOrganizer = async (req, res, next) => {
+  try {
+    const { idToken, organizationName, phone } = req.body;
+    if (!idToken || !organizationName) {
+      return res.status(400).json({ success: false, message: "ID Token and Organization Name are required" });
+    }
+
+    const data = await authService.googleRegisterOrganizer(idToken, { organizationName, phone });
+    res.status(201).json({
+      success: true,
+      message: "Google organizer registration successful",
+      token: data.token,
+      user: {
+        id: data.user.id,
+        name: data.user.name,
+        email: data.user.email,
+        role: data.user.role,
+        organizerProfile: data.user.organizerProfile
       }
     });
   } catch (error) {
