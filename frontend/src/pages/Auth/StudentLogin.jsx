@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { loginUser } from '../../services/authService';
+import { loginUser, googleLogin } from '../../services/authService';
 import { useAuth } from '../../context/AuthContext';
 import { User, Eye, EyeOff } from 'lucide-react';
 
@@ -16,6 +16,41 @@ const StudentLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const handleGoogleCredentialResponse = async (response) => {
+    setLoading(true);
+    setError('');
+    try {
+      const res = await googleLogin(response.credential);
+      login(res.user, res.token);
+      navigate('/');
+    } catch (err) {
+      if (!err.response) {
+        setError('Could not connect to backend server. Please ensure the backend is running on port 5000.');
+      } else {
+        setError(err.response?.data?.message || 'Google authentication failed. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com";
+    if (window.google) {
+      try {
+        window.google.accounts.id.initialize({
+          client_id: clientId,
+          callback: handleGoogleCredentialResponse,
+        });
+        window.google.accounts.id.renderButton(
+          document.getElementById("google-signin-btn"),
+          { theme: "outline", size: "large", width: 384 }
+        );
+      } catch (err) {
+        console.error("Google Sign-In initialization failed:", err);
+      }
+    }
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -184,6 +219,11 @@ const StudentLogin = () => {
           </button>
 
         </form>
+
+        {/* Google OAuth Login Button */}
+        <div className="mt-4 flex justify-center">
+          <div id="google-signin-btn" className="w-full flex justify-center"></div>
+        </div>
 
         {/* Divider */}
         <div className="flex items-center gap-3 my-5">

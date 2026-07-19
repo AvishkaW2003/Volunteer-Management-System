@@ -35,3 +35,8 @@ export const resetPassword = async (token, newPassword) => {
   const response = await axios.post(`${API_URL}/reset-password/${token}`, { newPassword });
   return response.data;
 };
+
+export const googleLogin = async (idToken) => {
+  const response = await axios.post(`${API_URL}/google-login`, { idToken });
+  return response.data;
+};

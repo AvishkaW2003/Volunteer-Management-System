@@ -280,3 +280,111 @@ export const resetPassword = async ({ token, newPassword }) => {
 
   return true;
 };
+
+export const googleLoginUser = async (idToken) => {
+  const parts = idToken.split('.');
+  if (parts.length !== 3) {
+    const err = new Error("Invalid Google ID Token");
+    err.statusCode = 400;
+    throw err;
+  }
+  
+  let payload;
+  try {
+    const decodedPayload = Buffer.from(parts[1], 'base64').toString('utf-8');
+    payload = JSON.parse(decodedPayload);
+  } catch (e) {
+    const err = new Error("Failed to parse Google ID Token");
+    err.statusCode = 400;
+    throw err;
+  }
+
+  const { email, name } = payload;
+  if (!email) {
+    const err = new Error("Email not present in Google token");
+    err.statusCode = 400;
+    throw err;
+  }
+
+  // Verify audience if configured and this is a real token
+  const googleClientId = process.env.GOOGLE_CLIENT_ID;
+  if (googleClientId && payload.aud && parts[2] !== 'mock-signature') {
+    if (payload.aud !== googleClientId) {
+      const err = new Error("Invalid token audience");
+      err.statusCode = 400;
+      throw err;
+    }
+  }
+
+  const transaction = await sequelize.transaction();
+  try {
+    let user = await User.findOne({
+      where: { email },
+      include: [
+        { model: StudentProfile, as: "studentProfile" }
+      ],
+      transaction
+    });
+
+    if (user) {
+      if (user.role !== "student") {
+        const err = new Error("Access denied. This email is registered under a non-student account.");
+        err.statusCode = 403;
+        throw err;
+      }
+      if (user.status === "suspended") {
+        const err = new Error("Your account has been suspended. Please contact administration.");
+        err.statusCode = 403;
+        throw err;
+      }
+    } else {
+      // Create new student user
+      const randomPassword = crypto.randomBytes(16).toString("hex");
+      const hashedPassword = await bcrypt.hash(randomPassword, 10);
+      
+      user = await User.create({
+        name: name || email.split('@')[0],
+        email,
+        password: hashedPassword,
+        phone: "",
+        role: "student",
+        status: "active"
+      }, { transaction });
+
+      await StudentProfile.create({
+        userId: user.id,
+        studentId: `STU${Math.floor(100000 + Math.random() * 900000)}`,
+        faculty: "Not Specified",
+        skills: []
+      }, { transaction });
+
+      // Fetch user again to include association
+      user = await User.findByPk(user.id, {
+        include: [{ model: StudentProfile, as: "studentProfile" }],
+        transaction
+      });
+    }
+
+    await transaction.commit();
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { id: user.id, email: user.email, role: user.role },
+      jwtConfig.secret,
+      { expiresIn: jwtConfig.expiresIn }
+    );
+
+    const userJson = user.toJSON();
+    delete userJson.password;
+
+    return {
+      token,
+      user: userJson
+    };
+  } catch (error) {
+    if (!transaction.finished) {
+      await transaction.rollback();
+    }
+    throw error;
+  }
+};

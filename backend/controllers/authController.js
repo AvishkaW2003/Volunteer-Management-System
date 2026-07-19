@@ -102,3 +102,28 @@ export const resetPassword = async (req, res, next) => {
     next(error);
   }
 };
+
+export const googleLogin = async (req, res, next) => {
+  try {
+    const { idToken } = req.body;
+    if (!idToken) {
+      return res.status(400).json({ success: false, message: "ID Token is required" });
+    }
+
+    const data = await authService.googleLoginUser(idToken);
+    res.status(200).json({
+      success: true,
+      message: "Google login successful",
+      token: data.token,
+      user: {
+        id: data.user.id,
+        name: data.user.name,
+        email: data.user.email,
+        role: data.user.role,
+        studentProfile: data.user.studentProfile
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};

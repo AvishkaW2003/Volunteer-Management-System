@@ -10,7 +10,8 @@ import {
   login, 
   getMe, 
   forgotPassword, 
-  resetPassword 
+  resetPassword,
+  googleLogin
 } from "../controllers/authController.js";
 import { authRateLimiter, resetRateLimiter } from "../middleware/rateLimiter.js";
 
@@ -19,6 +20,7 @@ const router = express.Router();
 router.post("/register/student", authRateLimiter, validateStudentRegistration, registerStudent);
 router.post("/register/organizer", authRateLimiter, validateOrganizerRegistration, registerOrganizer);
 router.post("/login", authRateLimiter, login);
+router.post("/google-login", authRateLimiter, googleLogin);
 router.get("/me", authMiddleware, getMe);
 router.post("/forgot-password", resetRateLimiter, forgotPassword);
 router.post("/reset-password/:token", resetRateLimiter, resetPassword);
