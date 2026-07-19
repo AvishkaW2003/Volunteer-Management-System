@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { registerOrganizer } from '../../services/authService';
+import { Eye, EyeOff } from 'lucide-react';
 
 const OrganizerRegister = () => {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ const OrganizerRegister = () => {
     password: '',
   });
 
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -227,7 +229,7 @@ const OrganizerRegister = () => {
                      -10V7a4 4 0 00-8 0v4h8z" />
               </svg>
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 name="password"
                 placeholder="Create a strong password"
                 value={formData.password}
@@ -237,6 +239,13 @@ const OrganizerRegister = () => {
                            text-gray-700 placeholder-gray-400
                            bg-transparent w-full"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="text-gray-400 hover:text-blue-500 transition-colors focus:outline-none"
+              >
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
             </div>
           </div>
 
