@@ -1,26 +1,22 @@
 import jwt from "jsonwebtoken";
 import { getSettings } from "../services/settingsService.js";
+import jwtConfig from "../config/jwt.js";
 
 const authMiddleware = async (req, res, next) => {
   try {
-   
     const authHeader = req.headers.authorization;
-    
-    // Check token exists
     if (!authHeader) {
       return res.status(401).json({
         message: "Access denied. No token provided",
       });
     }
 
-    // Extract token
     const token = authHeader.split(" ")[1];
-
-    // Verify token
     const decoded = jwt.verify(
       token,
-      process.env.JWT_SECRET
+      jwtConfig.secret
     );
+
 
     // Store user data
     req.user = decoded;
