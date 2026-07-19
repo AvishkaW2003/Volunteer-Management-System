@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../../services/authService';
 import { useAuth } from '../../context/AuthContext';
+import { Eye, EyeOff } from 'lucide-react';
 
 const OrganizerLogin = () => {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ const OrganizerLogin = () => {
     password: '',
   });
 
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -156,7 +158,7 @@ const OrganizerLogin = () => {
                      -10V7a4 4 0 00-8 0v4h8z" />
               </svg>
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 name="password"
                 placeholder="Enter your password"
                 value={formData.password}
@@ -166,6 +168,13 @@ const OrganizerLogin = () => {
                            text-gray-700 placeholder-gray-400
                            bg-transparent w-full"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="text-gray-400 hover:text-cyan-500 transition-colors focus:outline-none"
+              >
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
             </div>
 
             {/* Forgot Password */}
