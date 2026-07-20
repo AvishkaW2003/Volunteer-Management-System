@@ -104,12 +104,25 @@ const MainLayout = () => {
    */
   const isActive = (path) => location.pathname === path;
   const isDashboardRoute = location.pathname.startsWith('/student') || location.pathname.startsWith('/organizer') || location.pathname.startsWith('/admin');
+  const isAuthPage = 
+    location.pathname === '/register' || 
+    location.pathname === '/get-started' || 
+    location.pathname === '/signin' || 
+    location.pathname === '/login' || 
+    location.pathname === '/login/student' || 
+    location.pathname === '/login/organizer' || 
+    location.pathname === '/register/student' || 
+    location.pathname === '/register/organizer' || 
+    location.pathname === '/forgot-password' || 
+    location.pathname.startsWith('/reset-password');
+  const showNavbar = !isAuthPage;
 
   return (
     <div className="vh-wrapper">
       
       {/* ── HEADER & NAVIGATION ─────────────────────────── */}
-      <header className="vh-navbar">
+      {showNavbar && (
+        <header className="vh-navbar">
         <div className="vh-nav-container">
           
           {/* Main Logo & Branding */}
@@ -408,14 +421,15 @@ const MainLayout = () => {
           </div>
         </nav>
       </header>
+      )}
 
       {/* ── ACTIVE PAGE CONTENT ────────────────────────── */}
-      <main style={isDashboardRoute ? { height: "100vh", overflow: "hidden", paddingTop: "var(--navbar-height)", boxSizing: "border-box" } : { minHeight: "calc(100vh - var(--navbar-height) - 300px)" }}>
+      <main style={isDashboardRoute ? { height: "100vh", overflow: "hidden", paddingTop: "var(--navbar-height)", boxSizing: "border-box" } : (isAuthPage ? { minHeight: "100vh" } : { minHeight: "calc(100vh - var(--navbar-height) - 300px)" })}>
         <Outlet />
       </main>
 
       {/* ── FOOTER ───────────────────────────────────────── */}
-      {!isDashboardRoute && (
+      {!isDashboardRoute && !isAuthPage && (
         <footer className="vh-footer">
           <div className="vh-footer-container">
             <div className="vh-footer-grid">
