@@ -135,12 +135,15 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
             client_id: clientId,
             callback: handleGoogleCredentialResponse,
           });
+          const parentWidth = btn.parentElement ? btn.parentElement.clientWidth : 400;
+          const targetWidth = Math.min(Math.max(parentWidth, 240), 500);
+
           window.google.accounts.id.renderButton(
             btn,
             { 
               theme: "outline", 
               size: "large", 
-              width: 380,
+              width: targetWidth,
               text: activeTab === 'login' ? 'signin_with' : 'signup_with',
               shape: "rectangular"
             }
@@ -303,7 +306,7 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
       <div className="absolute inset-0" onClick={onClose} />
 
       {/* Modal Container */}
-      <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden border border-gray-100 p-7 md:p-8 relative z-10 max-h-[90vh] overflow-y-auto transition-transform duration-300 transform scale-100">
+      <div className="bg-white w-full max-w-xl md:max-w-2xl rounded-3xl shadow-2xl overflow-hidden border border-gray-100 p-6 md:p-8 relative z-10 max-h-[92vh] overflow-y-auto transition-all duration-300 transform scale-100">
           
           {/* Header/Logo (Visible on Mobile only) */}
           <div className="flex items-center gap-2 mb-6 md:hidden">
@@ -313,12 +316,24 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
             <span className="font-extrabold text-gray-800 text-lg">VolunteerHub</span>
           </div>
 
-          <div className="mb-5 text-left">
-            <h3 className="text-2xl md:text-3xl font-extrabold text-gray-900 tracking-tight leading-tight mb-1.5">
-              {showOnboarding ? 'Complete Sign-In' : 'Welcome to VolunteerHub'}
+          <div className="mb-6 text-left">
+            <h3 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight leading-tight mb-2">
+              {showOnboarding 
+                ? 'Complete Sign-In' 
+                : (activeTab === 'login' 
+                    ? (activeRole === 'student' ? 'Welcome Back, Student!' : 'Welcome Back, Organizer!') 
+                    : (activeRole === 'student' ? 'Join VolunteerHub' : 'Register Organization'))}
             </h3>
-            <p className="text-gray-500 text-xs md:text-sm font-medium leading-relaxed">
-              Please fill in your details below to proceed.
+            <p className="text-slate-500 text-xs md:text-sm font-medium leading-relaxed">
+              {showOnboarding 
+                ? 'Please complete your organization profile to proceed.'
+                : (activeTab === 'login' 
+                    ? (activeRole === 'student'
+                        ? 'Sign in to discover university volunteer events, track hours, and earn certificates.'
+                        : 'Sign in to host campus events, manage volunteer attendance, and issue certificates.')
+                    : (activeRole === 'student'
+                        ? 'Create your free student account to start building your campus volunteer reputation.'
+                        : 'Register your student club or organization to publish events and recruit volunteers.'))}
             </p>
           </div>
 
@@ -441,19 +456,6 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
               {activeTab === 'login' ? (
                 // ── LOGIN FORM ─────────────────────────────
                 <form onSubmit={handleLoginSubmit} className="space-y-4">
-                  {/* Top Google OAuth Button Container */}
-                  <div className="mb-3 flex flex-col items-center justify-center">
-                    <div 
-                      id="google-signin-btn-modal" 
-                      className="w-full flex justify-center items-center min-h-[44px]"
-                    />
-                    <div className="w-full flex items-center gap-3 mt-4 mb-1">
-                      <div className="flex-1 h-px bg-gray-200"></div>
-                      <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">Or Sign In With Email</span>
-                      <div className="flex-1 h-px bg-gray-200"></div>
-                    </div>
-                  </div>
-
                   <div>
                     <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
                       Email Address
@@ -510,54 +512,69 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
                   >
                     {loading ? 'Signing In...' : 'Sign In'}
                   </button>
-                </form>
-              ) : (
-                // ── REGISTRATION FORM ──────────────────────
-                <form onSubmit={handleRegisterSubmit} className="space-y-4">
-                  {/* Top Google OAuth Button Container */}
-                  <div className="mb-3 flex flex-col items-center justify-center">
-                    <div 
-                      id="google-signin-btn-modal" 
-                      className="w-full flex justify-center items-center min-h-[44px]"
-                    />
-                    <div className="w-full flex items-center gap-3 mt-4 mb-1">
+
+                  {/* Bottom Google OAuth Button Container (Identical Full-Width Size to Sign In Button) */}
+                  <div className="mt-4 flex flex-col items-center justify-center w-full">
+                    <div className="w-full flex items-center gap-3 mb-3">
                       <div className="flex-1 h-px bg-gray-200"></div>
-                      <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">Or Register With Details</span>
+                      <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">Or Sign In With Google</span>
                       <div className="flex-1 h-px bg-gray-200"></div>
                     </div>
+
+                    <div className="relative w-full overflow-hidden rounded-xl h-[46px]">
+                      {/* Styled full-width button matching primary button height & width */}
+                      <div className="w-full h-full rounded-xl border border-slate-300 bg-white hover:bg-slate-50 flex items-center justify-center gap-3 text-slate-700 font-extrabold text-sm shadow-sm transition-all pointer-events-none">
+                        <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="none">
+                          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
+                          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/>
+                        </svg>
+                        <span>Sign in with Google</span>
+                      </div>
+
+                      {/* Stretched GIS Overlay */}
+                      <div 
+                        id="google-signin-btn-modal" 
+                        className="absolute inset-0 opacity-0 cursor-pointer flex justify-center items-center scale-x-[1.7] scale-y-[1.3]"
+                      />
+                    </div>
                   </div>
+                </form>
+              ) : (
+                // ── REGISTRATION FORM (COMPACT 2-COLUMN GRID) ──────────────
+                <form onSubmit={handleRegisterSubmit} className="space-y-3.5">
                   {activeRole === 'student' ? (
-                    // Student fields
-                    <>
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
-                            Full Name
-                          </label>
-                          <input
-                            type="text"
-                            name="fullName"
-                            required
-                            placeholder="John Doe"
-                            value={studentRegisterData.fullName}
-                            onChange={handleStudentRegisterChange}
-                            className="w-full border border-gray-300 rounded-xl px-3.5 py-2.5 text-sm text-gray-700 placeholder-gray-400 outline-none focus:border-blue-500 transition-colors"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
-                            Student ID
-                          </label>
-                          <input
-                            type="text"
-                            name="studentId"
-                            required
-                            placeholder="STU123456"
-                            value={studentRegisterData.studentId}
-                            onChange={handleStudentRegisterChange}
-                            className="w-full border border-gray-300 rounded-xl px-3.5 py-2.5 text-sm text-gray-700 placeholder-gray-400 outline-none focus:border-blue-500 transition-colors"
-                          />
-                        </div>
+                    /* Student 2-Column Grid */
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                          Full Name
+                        </label>
+                        <input
+                          type="text"
+                          name="fullName"
+                          required
+                          placeholder="John Doe"
+                          value={studentRegisterData.fullName}
+                          onChange={handleStudentRegisterChange}
+                          className="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm text-gray-700 placeholder-gray-400 outline-none focus:border-blue-500 transition-colors"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                          Student ID
+                        </label>
+                        <input
+                          type="text"
+                          name="studentId"
+                          required
+                          placeholder="STU123456"
+                          value={studentRegisterData.studentId}
+                          onChange={handleStudentRegisterChange}
+                          className="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm text-gray-700 placeholder-gray-400 outline-none focus:border-blue-500 transition-colors"
+                        />
                       </div>
 
                       <div>
@@ -568,30 +585,69 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
                           type="text"
                           name="faculty"
                           required
-                          placeholder="e.g. Faculty of Engineering"
+                          placeholder="Faculty of Engineering"
                           value={studentRegisterData.faculty}
                           onChange={handleStudentRegisterChange}
-                          className="w-full border border-gray-300 rounded-xl px-3.5 py-2.5 text-sm text-gray-700 placeholder-gray-400 outline-none focus:border-blue-500 transition-colors"
+                          className="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm text-gray-700 placeholder-gray-400 outline-none focus:border-blue-500 transition-colors"
                         />
                       </div>
 
                       <div>
                         <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
-                          Skills <span className="text-gray-400 font-normal lowercase">(comma separated)</span>
+                          Skills <span className="text-gray-400 font-normal lowercase">(optional)</span>
                         </label>
                         <input
                           type="text"
                           name="skills"
-                          placeholder="e.g. Leadership, Writing"
+                          placeholder="Leadership, Writing"
                           value={studentRegisterData.skills}
                           onChange={handleStudentRegisterChange}
-                          className="w-full border border-gray-300 rounded-xl px-3.5 py-2.5 text-sm text-gray-700 placeholder-gray-400 outline-none focus:border-blue-500 transition-colors"
+                          className="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm text-gray-700 placeholder-gray-400 outline-none focus:border-blue-500 transition-colors"
                         />
                       </div>
-                    </>
+
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                          Email Address
+                        </label>
+                        <input
+                          type="email"
+                          name="email"
+                          required
+                          placeholder="student@university.edu"
+                          value={studentRegisterData.email}
+                          onChange={handleStudentRegisterChange}
+                          className="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm text-gray-700 placeholder-gray-400 outline-none focus:border-blue-500 transition-colors"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                          Password
+                        </label>
+                        <div className="flex items-center border border-gray-300 rounded-xl px-3.5 py-2 gap-2 focus-within:border-blue-500 transition-colors">
+                          <input
+                            type={showPassword ? "text" : "password"}
+                            name="password"
+                            required
+                            placeholder="Choose password"
+                            value={studentRegisterData.password}
+                            onChange={handleStudentRegisterChange}
+                            className="flex-1 outline-none text-sm text-gray-700 placeholder-gray-400 bg-transparent w-full"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="text-gray-400 hover:text-blue-500 transition-colors focus:outline-none"
+                          >
+                            {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   ) : (
-                    // Organizer fields
-                    <>
+                    /* Organizer 2-Column Grid */
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
                         <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
                           Club / Organization Name
@@ -600,10 +656,10 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
                           type="text"
                           name="clubName"
                           required
-                          placeholder="e.g. Rotaract Club"
+                          placeholder="Rotaract Club"
                           value={organizerRegisterData.clubName}
                           onChange={handleOrganizerRegisterChange}
-                          className="w-full border border-gray-300 rounded-xl px-3.5 py-2.5 text-sm text-gray-700 placeholder-gray-400 outline-none focus:border-teal-500 transition-colors"
+                          className="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm text-gray-700 placeholder-gray-400 outline-none focus:border-teal-500 transition-colors"
                         />
                       </div>
 
@@ -615,66 +671,107 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
                           type="tel"
                           name="contactNumber"
                           required
-                          placeholder="e.g. +94771234567"
+                          placeholder="+94771234567"
                           value={organizerRegisterData.contactNumber}
                           onChange={handleOrganizerRegisterChange}
-                          className="w-full border border-gray-300 rounded-xl px-3.5 py-2.5 text-sm text-gray-700 placeholder-gray-400 outline-none focus:border-teal-500 transition-colors"
+                          className="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm text-gray-700 placeholder-gray-400 outline-none focus:border-teal-500 transition-colors"
                         />
                       </div>
-                    </>
-                  )}
 
-                  {/* Shared Registration fields (email, password) */}
-                  <div>
-                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
-                      Email Address
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      required
-                      placeholder="you@domain.com"
-                      value={activeRole === 'student' ? studentRegisterData.email : organizerRegisterData.email}
-                      onChange={activeRole === 'student' ? handleStudentRegisterChange : handleOrganizerRegisterChange}
-                      className="w-full border border-gray-300 rounded-xl px-3.5 py-2.5 text-sm text-gray-700 placeholder-gray-400 outline-none focus:border-blue-500 transition-colors"
-                    />
-                  </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                          Email Address
+                        </label>
+                        <input
+                          type="email"
+                          name="email"
+                          required
+                          placeholder="club@organization.com"
+                          value={organizerRegisterData.email}
+                          onChange={handleOrganizerRegisterChange}
+                          className="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm text-gray-700 placeholder-gray-400 outline-none focus:border-teal-500 transition-colors"
+                        />
+                      </div>
 
-                  <div>
-                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
-                      Password
-                    </label>
-                    <div className="flex items-center border border-gray-300 rounded-xl px-3.5 py-2.5 gap-2 focus-within:border-blue-500 transition-colors">
-                      <input
-                        type={showPassword ? "text" : "password"}
-                        name="password"
-                        required
-                        placeholder="Choose password"
-                        value={activeRole === 'student' ? studentRegisterData.password : organizerRegisterData.password}
-                        onChange={activeRole === 'student' ? handleStudentRegisterChange : handleOrganizerRegisterChange}
-                        className="flex-1 outline-none text-sm text-gray-700 placeholder-gray-400 bg-transparent w-full"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="text-gray-400 hover:text-blue-500 transition-colors focus:outline-none"
-                      >
-                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                      </button>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                          Password
+                        </label>
+                        <div className="flex items-center border border-gray-300 rounded-xl px-3.5 py-2 gap-2 focus-within:border-teal-500 transition-colors">
+                          <input
+                            type={showPassword ? "text" : "password"}
+                            name="password"
+                            required
+                            placeholder="Choose password"
+                            value={organizerRegisterData.password}
+                            onChange={handleOrganizerRegisterChange}
+                            className="flex-1 outline-none text-sm text-slate-800 placeholder-slate-400 bg-transparent w-full"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="text-gray-400 hover:text-blue-500 transition-colors focus:outline-none"
+                          >
+                            {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   <button
                     type="submit"
                     disabled={loading}
-                    className={`w-full py-3.5 rounded-xl text-white font-bold text-base shadow-sm transition-all duration-250 mt-2 disabled:opacity-60 cursor-pointer ${
-                      activeRole === 'student' ? 'bg-blue-600 hover:bg-blue-700 shadow-blue-500/20' : 'bg-teal-600 hover:bg-teal-700 shadow-teal-500/20'
+                    className={`w-full py-3 rounded-xl text-white font-extrabold text-base transition-all duration-250 mt-1 disabled:opacity-60 cursor-pointer shadow-lg ${
+                      activeRole === 'student' 
+                        ? 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-blue-600/25' 
+                        : 'bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 shadow-teal-600/25'
                     }`}
                   >
-                    {loading ? 'Creating Account...' : 'Create Account'}
+                    {loading ? 'Creating Account...' : `Create ${activeRole === 'student' ? 'Student Account' : 'Organizer Account'}`}
                   </button>
+
+                  {/* Bottom Google OAuth Button Container (Identical Full-Width Size to Sign In Button) */}
+                  <div className="mt-3 flex flex-col items-center justify-center w-full">
+                    <div className="w-full flex items-center gap-3 mb-2">
+                      <div className="flex-1 h-px bg-gray-200"></div>
+                      <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">Or Register With Google</span>
+                      <div className="flex-1 h-px bg-gray-200"></div>
+                    </div>
+
+                    <div className="relative w-full overflow-hidden rounded-xl h-[46px]">
+                      {/* Styled full-width button matching primary button height & width */}
+                      <div className="w-full h-full rounded-xl border border-slate-300 bg-white hover:bg-slate-50 flex items-center justify-center gap-3 text-slate-700 font-extrabold text-sm shadow-sm transition-all pointer-events-none">
+                        <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="none">
+                          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
+                          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/>
+                        </svg>
+                        <span>Sign up with Google</span>
+                      </div>
+
+                      {/* Stretched GIS Overlay */}
+                      <div 
+                        id="google-signin-btn-modal" 
+                        className="absolute inset-0 opacity-0 cursor-pointer flex justify-center items-center scale-x-[1.7] scale-y-[1.3]"
+                      />
+                    </div>
+                  </div>
                 </form>
               )}
+
+              {/* Role Features Preview Badge */}
+              <div className={`mt-5 pt-3 border-t border-slate-100 flex items-center justify-center gap-2 text-xs font-semibold ${
+                activeRole === 'student' ? 'text-blue-600' : 'text-teal-600'
+              }`}>
+                <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+                <span>
+                  {activeRole === 'student' 
+                    ? 'Student Perks: Earn Verified Certificates & Leaderboard Points' 
+                    : 'Organizer Perks: Automated Attendance & Volunteer Analytics'}
+                </span>
+              </div>
             </>
           )}
       </div>
