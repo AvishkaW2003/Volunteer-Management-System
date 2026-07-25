@@ -117,13 +117,13 @@ const AdminLayout = () => {
         <div className="flex flex-col h-full overflow-hidden">
           <div className="h-16 flex-shrink-0 flex items-center justify-between px-4 border-b border-slate-800/80">
             <div className="flex items-center gap-3 overflow-hidden cursor-pointer" onClick={() => navigate('/admin/dashboard')}>
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-teal-500 to-emerald-400 flex items-center justify-center text-slate-950 shadow-lg shadow-teal-500/20 flex-shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-sky-400 flex items-center justify-center text-white shadow-lg shadow-blue-500/20 flex-shrink-0">
                 <ShieldCheck className="w-6 h-6 stroke-[2.5]" />
               </div>
               {!collapsed && (
                 <div className="flex flex-col">
                   <span className="font-extrabold text-base tracking-tight text-white leading-tight">VolunteerHub</span>
-                  <span className="text-[10px] font-bold tracking-wider text-teal-400 uppercase">Admin Portal</span>
+                  <span className="text-[10px] font-bold tracking-wider text-blue-400 uppercase">Admin Portal</span>
                 </div>
               )}
             </div>
@@ -163,7 +163,7 @@ const AdminLayout = () => {
                   className={({ isActive }) => `
                     flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-sm transition-all relative group
                     ${isActive 
-                      ? 'bg-teal-500/15 text-teal-300 border border-teal-500/30 shadow-sm font-semibold' 
+                      ? 'bg-blue-600/20 text-blue-300 border border-blue-500/30 shadow-sm font-semibold' 
                       : 'text-slate-400 hover:text-slate-100 hover:bg-slate-900'
                     }
                     ${collapsed ? 'justify-center px-0' : ''}
@@ -172,7 +172,7 @@ const AdminLayout = () => {
                 >
                   {({ isActive }) => (
                     <>
-                      <Icon className={`w-5 h-5 flex-shrink-0 ${isActive ? 'text-teal-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
+                      <Icon className={`w-5 h-5 flex-shrink-0 ${isActive ? 'text-blue-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
                       
                       {!collapsed && (
                         <span className="flex-1 truncate">{item.label}</span>
@@ -180,7 +180,7 @@ const AdminLayout = () => {
 
                       {/* Badge */}
                       {item.badge && (
-                        <span className={`px-2 py-0.5 text-[10px] font-bold rounded-full ${item.badgeColor || 'bg-teal-500 text-slate-950'} ${collapsed ? 'absolute top-1 right-1 px-1.5 py-0 text-[9px]' : ''}`}>
+                        <span className={`px-2 py-0.5 text-[10px] font-bold rounded-full ${item.badgeColor || 'bg-blue-600 text-white'} ${collapsed ? 'absolute top-1 right-1 px-1.5 py-0 text-[9px]' : ''}`}>
                           {item.badge}
                         </span>
                       )}
@@ -199,16 +199,16 @@ const AdminLayout = () => {
             href="/"
             target="_blank"
             rel="noopener noreferrer"
-            className={`flex items-center gap-2 px-3 py-2 mb-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-teal-300 hover:bg-slate-900 transition-colors ${collapsed ? 'justify-center px-0' : ''}`}
+            className={`flex items-center gap-2 px-3 py-2 mb-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-blue-300 hover:bg-slate-900 transition-colors ${collapsed ? 'justify-center px-0' : ''}`}
             title="Open Public Website"
           >
-            <ExternalLink className="w-4 h-4 text-teal-400 flex-shrink-0" />
+            <ExternalLink className="w-4 h-4 text-blue-400 flex-shrink-0" />
             {!collapsed && <span>View Public Site</span>}
           </a>
 
           {/* Admin Profile & Logout Card */}
           <div className={`flex items-center gap-3 p-2 rounded-xl bg-slate-900 border border-slate-800/60 ${collapsed ? 'justify-center p-1.5' : ''}`}>
-            <div className="w-8 h-8 rounded-lg bg-teal-500/20 text-teal-400 flex items-center justify-center font-bold text-xs flex-shrink-0 border border-teal-500/30">
+            <div className="w-8 h-8 rounded-lg bg-blue-600/20 text-blue-400 flex items-center justify-center font-bold text-xs flex-shrink-0 border border-blue-500/30">
               AD
             </div>
             
@@ -249,14 +249,14 @@ const AdminLayout = () => {
             <div className="flex items-center gap-2 text-xs md:text-sm font-semibold">
               <span className="text-slate-400">Admin Portal</span>
               <span className="text-slate-600">/</span>
-              <span className="text-teal-400 font-bold">{currentNavItem.label}</span>
+              <span className="text-blue-400 font-bold">{currentNavItem.label}</span>
             </div>
           </div>
 
           {/* Right: Search, Notifications & User Badge */}
           <div className="flex items-center gap-3">
             {/* Quick Admin Search Bar */}
-            <div className="hidden md:flex items-center gap-2 bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-300 focus-within:border-teal-500/50 transition-colors w-64">
+            <div className="hidden md:flex items-center gap-2 bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-300 focus-within:border-blue-500/50 transition-colors w-64">
               <Search className="w-3.5 h-3.5 text-slate-500" />
               <input 
                 type="text" 
@@ -273,13 +273,13 @@ const AdminLayout = () => {
             >
               <Bell className="w-4 h-4" />
               {pendingApprovalsCount > 0 && (
-                <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-teal-400 animate-pulse" />
+                <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
               )}
             </button>
 
             {/* Status Pill */}
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[11px] font-bold">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[11px] font-bold">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-ping" />
               System Active
             </div>
           </div>
