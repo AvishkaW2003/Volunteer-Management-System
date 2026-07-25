@@ -71,6 +71,7 @@ const StudentLogin = () => {
         return;
       }
       login(data.user, data.token);
+      setFormData({ email: '', password: '' });
       navigate('/');
     } catch (err) {
       if (!err.response) {
