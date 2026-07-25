@@ -32,6 +32,7 @@ const AdminLogin = () => {
         return;
       }
       login(data.user, data.token);
+      setFormData({ email: '', password: '' });
       navigate('/admin/dashboard');
     } catch (err) {
       if (!err.response) {
