@@ -75,8 +75,8 @@ const AdminDashboard = () => {
 
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-extrabold text-[#1E293B]">VolunteerHub Admin Dashboard</h1>
-        <p className="text-[#64748B] mt-1 font-medium font-sans">Platform overview and activity summary (Frontend Mockup Mode)</p>
+        <h1 className="text-3xl font-extrabold text-white tracking-tight">Admin Executive Overview</h1>
+        <p className="text-slate-400 mt-1 font-medium text-sm">Real-time system statistics, volunteer participation, and platform metrics.</p>
       </div>
 
       {/* Top Stats Cards */}
