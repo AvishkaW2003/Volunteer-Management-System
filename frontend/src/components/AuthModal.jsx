@@ -53,6 +53,22 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
       setError('');
       setShowPassword(false);
       setShowOnboarding(false);
+      setStudentLoginData({ email: '', password: '' });
+      setOrganizerLoginData({ email: '', password: '' });
+      setStudentRegisterData({
+        fullName: '',
+        studentId: '',
+        faculty: '',
+        skills: '',
+        email: '',
+        password: '',
+      });
+      setOrganizerRegisterData({
+        clubName: '',
+        contactNumber: '',
+        email: '',
+        password: '',
+      });
     }
   }, [isOpen, initialTab, initialRole]);
 
@@ -177,6 +193,8 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
         return;
       }
       login(data.user, data.token);
+      setStudentLoginData({ email: '', password: '' });
+      setOrganizerLoginData({ email: '', password: '' });
       onClose();
       navigate(activeRole === 'student' ? '/student/dashboard' : '/organizer/dashboard');
     } catch (err) {
@@ -279,20 +297,7 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
       <div className="absolute inset-0" onClick={onClose} />
 
       {/* Modal Container */}
-      <div className="bg-white w-full max-w-3xl rounded-[2.5rem] shadow-2xl overflow-hidden border border-gray-100 flex flex-col md:flex-row relative z-10 max-h-[90vh] transition-transform duration-300 transform scale-100">
-        
-        {/* CLOSE BUTTON (placed in left column container so it's always on light background and static) */}
-        <button
-          type="button"
-          onClick={onClose}
-          className="absolute right-6 top-6 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-2 transition-all duration-200 z-30 focus:outline-none"
-          aria-label="Close modal"
-        >
-          <X className="w-5 h-5" />
-        </button>
-
-        {/* LEFT COLUMN: Form details and select options */}
-        <div className="w-full md:w-1/2 p-8 overflow-y-auto flex flex-col justify-start max-h-[90vh] md:max-h-none">
+      <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden border border-gray-100 p-8 relative z-10 max-h-[90vh] overflow-y-auto transition-transform duration-300 transform scale-100">
           
           {/* Header/Logo (Visible on Mobile only) */}
           <div className="flex items-center gap-2 mb-6 md:hidden">
@@ -659,78 +664,6 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
               )}
             </>
           )}
-
-        </div>
-
-        {/* RIGHT COLUMN: Interactive Branding & Features text */}
-        <div className={`hidden md:flex md:w-1/2 p-10 flex-col justify-between text-white transition-all duration-300 ${
-          activeRole === 'student' 
-            ? 'bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-700' 
-            : 'bg-gradient-to-br from-teal-600 via-emerald-600 to-cyan-700'
-        }`}>
-          {/* Logo */}
-          <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
-              <HandHelping className="w-5 h-5" />
-            </div>
-            <span className="font-black tracking-tight text-xl">VolunteerHub</span>
-          </div>
-
-          {/* Banner Copy dynamically changing based on active role */}
-          <div className="space-y-4 my-auto">
-            <h4 className="text-3xl font-extrabold leading-tight">
-              {activeRole === 'student' 
-                ? 'Make an Impact on Your Campus' 
-                : 'Empower Your Student Organization'}
-            </h4>
-            <p className="text-white/80 text-sm leading-relaxed">
-              {activeRole === 'student'
-                ? 'Join thousands of students discovering volunteering, gaining skills, tracking impact hours, and building credentials.'
-                : 'Streamline club event creation, coordinate volunteer signups, track attendance automatically, and award certificates.'}
-            </p>
-
-            {/* List of Features */}
-            <div className="space-y-2.5 pt-4">
-              {activeRole === 'student' ? (
-                <>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4.5 h-4.5 text-white flex-shrink-0" />
-                    <span className="text-xs font-semibold">Verified Volunteer Opportunities</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4.5 h-4.5 text-white flex-shrink-0" />
-                    <span className="text-xs font-semibold">Impact Hours Log & Analytics</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4.5 h-4.5 text-white flex-shrink-0" />
-                    <span className="text-xs font-semibold">Earn recognized digital certificates</span>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4.5 h-4.5 text-white flex-shrink-0" />
-                    <span className="text-xs font-semibold">Publish Club & Society Events</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4.5 h-4.5 text-white flex-shrink-0" />
-                    <span className="text-xs font-semibold">Approve Student Applications</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4.5 h-4.5 text-white flex-shrink-0" />
-                    <span className="text-xs font-semibold">Easy Attendance & Certificate tools</span>
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-
-          {/* Footer of the right side */}
-          <div className="text-[10px] text-white/50 font-medium">
-            © {new Date().getFullYear()} VolunteerHub. Powered by students.
-          </div>
-        </div>
-
       </div>
     </div>
   );
