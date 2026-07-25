@@ -2,6 +2,8 @@ import http from "http";
 import app from "./app.js";
 import sequelize from "./config/database.js";
 import User from "./models/userModel.js";
+import StudentProfile from "./models/studentProfileModel.js";
+import OrganizerProfile from "./models/organizerProfileModel.js";
 import Event from "./models/eventModel.js";
 import VolunteerRegistration from "./models/volunteerRegistration.js";
 import Attendance from "./models/attendanceModel.js";
@@ -10,6 +12,7 @@ import Notification from "./models/notificationModel.js";
 import AuditLog from "./models/auditLogModel.js";
 import SystemSetting from "./models/systemSetting.js";
 import bcrypt from "bcryptjs";
+import { Op } from "sequelize";
 
 const PORT = 6199;
 let server;
@@ -66,6 +69,24 @@ async function runE2ETests() {
     backend: []
   };
 
+  const suffix = Date.now();
+  const studentEmail = `student_e2e_${suffix}@uni.lk`;
+  const organizerEmail = `organizer_e2e_${suffix}@uni.lk`;
+  const adminEmail = `admin_e2e_${suffix}@uni.lk`;
+  
+  let studentToken = null;
+  let organizerToken = null;
+  let adminToken = null;
+
+  let studentUserId = null;
+  let organizerUserId = null;
+  let adminUserId = null;
+  let s2UserId = null;
+
+  let testEventId = null;
+  let testApplicationId = null;
+  let testCertificateId = null;
+
   try {
     console.log("==================================================");
     console.log("STARTING END-TO-END WORKFLOW INTEGRATION TESTS");
@@ -78,23 +99,6 @@ async function runE2ETests() {
     server = app.listen(PORT, () => {
       console.log(`✔ E2E Test server listening on port ${PORT}`);
     });
-
-    const suffix = Date.now();
-    const studentEmail = `student_e2e_${suffix}@uni.lk`;
-    const organizerEmail = `organizer_e2e_${suffix}@uni.lk`;
-    const adminEmail = `admin_e2e_${suffix}@uni.lk`;
-    
-    let studentToken = null;
-    let organizerToken = null;
-    let adminToken = null;
-
-    let studentUserId = null;
-    let organizerUserId = null;
-    let adminUserId = null;
-
-    let testEventId = null;
-    let testApplicationId = null;
-    let testCertificateId = null;
 
     // --- STEP 1: AUTHENTICATION TESTING ---
     console.log("\n--- Section 1: Authentication Testing ---");
@@ -454,7 +458,7 @@ async function runE2ETests() {
       });
       const loginS2 = await makeRequest("POST", "/api/auth/login", { email: stud2Email, password: "password123" });
       const s2Token = loginS2.body.token;
-      const s2UserId = loginS2.body.user.id;
+      s2UserId = loginS2.body.user.id;
 
       // Apply
       const appS2 = await makeRequest("POST", "/api/applications", {
@@ -541,6 +545,37 @@ async function runE2ETests() {
     if (server) {
       server.close();
       console.log("\n✔ E2E Test server closed.");
+    }
+
+    // Database Cleanup of E2E generated records for this run
+    try {
+      console.log("\nCleaning up E2E generated records for this test run...");
+      const e2eUserIds = [studentUserId, organizerUserId, adminUserId, s2UserId].filter(Boolean);
+
+      if (testEventId) {
+        await Certificate.destroy({ where: { eventId: testEventId } });
+        await Attendance.destroy({ where: { eventId: testEventId } });
+        await VolunteerRegistration.destroy({ where: { eventId: testEventId } });
+      }
+
+      if (e2eUserIds.length > 0) {
+        await Certificate.destroy({ where: { userId: { [Op.in]: e2eUserIds } } });
+        await Attendance.destroy({ where: { userId: { [Op.in]: e2eUserIds } } });
+        await VolunteerRegistration.destroy({ where: { userId: { [Op.in]: e2eUserIds } } });
+        await Notification.destroy({ where: { userId: { [Op.in]: e2eUserIds } } });
+        await AuditLog.destroy({ where: { performedById: { [Op.in]: e2eUserIds } } });
+        await StudentProfile.destroy({ where: { userId: { [Op.in]: e2eUserIds } } });
+        await OrganizerProfile.destroy({ where: { userId: { [Op.in]: e2eUserIds } } });
+        
+        if (testEventId) {
+          await Event.destroy({ where: { id: testEventId } });
+        }
+        
+        await User.destroy({ where: { id: { [Op.in]: e2eUserIds } } });
+      }
+      console.log("✔ Database cleanup completed.");
+    } catch (cleanupError) {
+      console.error("Error during E2E database cleanup:", cleanupError);
     }
     
     // --- OUTPUT FINAL QA REPORT ---
