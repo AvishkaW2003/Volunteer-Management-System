@@ -7,6 +7,7 @@ import {
 import { useAuth } from "../context/AuthContext";
 import { getNotifications, markAsRead, markAllAsRead, getAdminNotifications } from "../services/notificationService";
 import "../pages/HomePage.css";
+import AuthModal from "../components/AuthModal";
 
 /**
  * MainLayout Component
@@ -27,6 +28,17 @@ const MainLayout = () => {
   // State for notifications dropdown
   const [notifications, setNotifications] = useState([]);
   const [notiDropdownOpen, setNotiDropdownOpen] = useState(false);
+
+  // Auth Modal states
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authModalTab, setAuthModalTab] = useState("login");
+  const [authModalRole, setAuthModalRole] = useState("student");
+
+  const openAuthModal = (tab = "login", role = "student") => {
+    setAuthModalTab(tab);
+    setAuthModalRole(role);
+    setShowAuthModal(true);
+  };
 
   useEffect(() => {
     if (isAuthenticated && user) {
@@ -95,7 +107,7 @@ const MainLayout = () => {
       else if (user?.role === "organizer") navigate("/organizer/dashboard");
       else navigate("/admin/dashboard");
     } else {
-      navigate("/register");
+      openAuthModal("register", "student");
     }
   };
 
@@ -115,7 +127,7 @@ const MainLayout = () => {
     location.pathname === '/register/organizer' || 
     location.pathname === '/forgot-password' || 
     location.pathname.startsWith('/reset-password');
-  const showNavbar = !isAuthPage;
+  const showNavbar = !isAuthPage && !showAuthModal;
 
   return (
     <div className="vh-wrapper">
@@ -329,12 +341,20 @@ const MainLayout = () => {
               </div>
             ) : (
               <>
-                <Link to="/signin" className="vh-btn-signin">
+                <button 
+                  onClick={() => openAuthModal("login", "student")} 
+                  className="vh-btn-signin bg-transparent border-none cursor-pointer"
+                  style={{ display: 'inline-flex', alignItems: 'center' }}
+                >
                   Sign In
-                </Link>
-                <Link to="/register" className="vh-btn-create">
+                </button>
+                <button 
+                  onClick={() => openAuthModal("register", "student")} 
+                  className="vh-btn-create cursor-pointer"
+                  style={{ border: 'none' }}
+                >
                   Create Account
-                </Link>
+                </button>
               </>
             )}
           </div>
@@ -410,12 +430,20 @@ const MainLayout = () => {
               </div>
             ) : (
               <>
-                <Link to="/signin" onClick={() => setMobileMenuOpen(false)} className="vh-btn-signin" style={{ width: "100%", textAlign: "center" }}>
+                <button 
+                  onClick={() => { setMobileMenuOpen(false); openAuthModal("login", "student"); }} 
+                  className="vh-btn-signin text-center cursor-pointer" 
+                  style={{ width: "100%", display: 'block', border: 'none', background: 'transparent' }}
+                >
                   Sign In
-                </Link>
-                <Link to="/register" onClick={() => setMobileMenuOpen(false)} className="vh-btn-create" style={{ width: "100%", textAlign: "center" }}>
+                </button>
+                <button 
+                  onClick={() => { setMobileMenuOpen(false); openAuthModal("register", "student"); }} 
+                  className="vh-btn-create text-center cursor-pointer" 
+                  style={{ width: "100%", display: 'block', border: 'none' }}
+                >
                   Create Account
-                </Link>
+                </button>
               </>
             )}
           </div>
@@ -425,7 +453,7 @@ const MainLayout = () => {
 
       {/* ── ACTIVE PAGE CONTENT ────────────────────────── */}
       <main style={isDashboardRoute ? { height: "100vh", overflow: "hidden", paddingTop: "var(--navbar-height)", boxSizing: "border-box" } : (isAuthPage ? { minHeight: "100vh" } : { minHeight: "calc(100vh - var(--navbar-height) - 300px)" })}>
-        <Outlet />
+        <Outlet context={{ openAuthModal }} />
       </main>
 
       {/* ── FOOTER ───────────────────────────────────────── */}
@@ -499,7 +527,12 @@ const MainLayout = () => {
           </div>
         </footer>
       )}
-
+      <AuthModal 
+        isOpen={showAuthModal} 
+        onClose={() => setShowAuthModal(false)} 
+        initialTab={authModalTab} 
+        initialRole={authModalRole} 
+      />
     </div>
   );
 };
