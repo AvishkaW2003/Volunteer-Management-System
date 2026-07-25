@@ -13,11 +13,7 @@ import ContactPage from '../pages/ContactPage';
 import EventDetailsPage from '../pages/EventDetailsPage';
 
 // Auth Pages
-import RoleSelectPage    from '../pages/Auth/RoleSelectPage';
-import StudentRegister   from '../pages/Auth/StudentRegister';
-import OrganizerRegister from '../pages/Auth/OrganizerRegister';
-import StudentLogin      from '../pages/Auth/StudentLogin';
-import OrganizerLogin    from '../pages/Auth/OrganizerLogin';
+import UnifiedAuthPage   from '../pages/Auth/UnifiedAuthPage';
 import ForgotPassword     from '../pages/Auth/ForgotPassword';
 import ResetPassword      from '../pages/Auth/ResetPassword';
 
@@ -70,17 +66,17 @@ const AppRouter = () => {
         <Route path="/about"        element={<AboutPage />} />
         <Route path="/contact"      element={<ContactPage />} />
 
-        <Route path="/get-started"  element={<RoleSelectPage mode="register" />} />
-        <Route path="/register"     element={<RoleSelectPage mode="register" />} />
-        <Route path="/signin"       element={<StudentLogin />} />
-        <Route path="/login"        element={<StudentLogin />} />
+        <Route path="/get-started"  element={<UnifiedAuthPage initialTab="register" initialRole="student" />} />
+        <Route path="/register"     element={<UnifiedAuthPage initialTab="register" initialRole="student" />} />
+        <Route path="/signin"       element={<UnifiedAuthPage initialTab="login" initialRole="student" />} />
+        <Route path="/login"        element={<UnifiedAuthPage initialTab="login" initialRole="student" />} />
 
         {/* ── Auth ─────────────────────────────────────── */}
-        <Route path="/register/student"   element={<StudentRegister />} />
-        <Route path="/register/organizer" element={<OrganizerRegister />} />
+        <Route path="/register/student"   element={<UnifiedAuthPage initialTab="register" initialRole="student" />} />
+        <Route path="/register/organizer" element={<UnifiedAuthPage initialTab="register" initialRole="organizer" />} />
 
-        <Route path="/login/student"   element={<StudentLogin />} />
-        <Route path="/login/organizer" element={<OrganizerLogin />} />
+        <Route path="/login/student"   element={<UnifiedAuthPage initialTab="login" initialRole="student" />} />
+        <Route path="/login/organizer" element={<UnifiedAuthPage initialTab="login" initialRole="organizer" />} />
 
         <Route path="/forgot-password"    element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
