@@ -106,20 +106,20 @@ const AppRouter = () => {
           <Route path="notifications" element={<Notifications />} />
           <Route path="settings"      element={<OrganizerSettings />} />
         </Route>
+      </Route>
 
-        {/* ── Admin Panel (nested layout) ───────────────── */}
-        <Route path="/admin" element={<ProtectedRoute><RoleRoute allowedRoles={['admin']}><AdminLayout /></RoleRoute></ProtectedRoute>}>
-          <Route index element={<Navigate to="dashboard" replace />} />
-          <Route path="dashboard"      element={<AdminDashboard />} />
-          <Route path="users"          element={<ManageUsers />} />
-          <Route path="event-approval" element={<ApproveEvents />} />
-          <Route path="manage-events"  element={<AdminManageEvents />} />
-          <Route path="organizations"  element={<AdminOrganizations />} />
-          <Route path="certificates"   element={<AdminCertificates />} />
-          <Route path="reports"        element={<ReportsAnalytics />} />
-          <Route path="settings"       element={<SystemSettings />} />
-          <Route path="notifications"  element={<AdminNotifications />} />
-        </Route>
+      {/* ── Standalone Enterprise Admin Portal (Dedicated Layout, No Public Header/Footer) ── */}
+      <Route path="/admin" element={<ProtectedRoute><RoleRoute allowedRoles={['admin']}><AdminLayout /></RoleRoute></ProtectedRoute>}>
+        <Route index element={<Navigate to="dashboard" replace />} />
+        <Route path="dashboard"      element={<AdminDashboard />} />
+        <Route path="users"          element={<ManageUsers />} />
+        <Route path="event-approval" element={<ApproveEvents />} />
+        <Route path="manage-events"  element={<AdminManageEvents />} />
+        <Route path="organizations"  element={<AdminOrganizations />} />
+        <Route path="certificates"   element={<AdminCertificates />} />
+        <Route path="reports"        element={<ReportsAnalytics />} />
+        <Route path="settings"       element={<SystemSettings />} />
+        <Route path="notifications"  element={<AdminNotifications />} />
       </Route>
 
     </Routes>
