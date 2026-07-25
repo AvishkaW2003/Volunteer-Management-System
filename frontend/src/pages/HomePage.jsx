@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useOutletContext } from "react-router-dom";
 import { ArrowRight, Star, Calendar, MapPin, Users, ChevronRight, ChevronLeft, Leaf, HeartPulse, Code, BookOpen, Heart, Award, Paintbrush, Trophy } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { getEvents } from "../services/eventService";
@@ -240,6 +240,7 @@ const Home = () => {
   // Authentication context for handling user sessions and navigation
   const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
+  const { openAuthModal } = useOutletContext() || {};
 
   const [events, setEvents] = useState([]);
   const [activeTab, setActiveTab] = useState("IEEE");
@@ -369,7 +370,11 @@ const Home = () => {
       else if (user?.role === "organizer") navigate("/organizer/dashboard");
       else navigate("/admin/dashboard");
     } else {
-      navigate("/register");
+      if (openAuthModal) {
+        openAuthModal("register", "student");
+      } else {
+        navigate("/register");
+      }
     }
   };
 

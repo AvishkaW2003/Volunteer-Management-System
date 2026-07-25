@@ -1,5 +1,6 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { LogOut } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 /**
  * Sidebar — generic reusable sidebar shell.
@@ -20,6 +21,13 @@ const Sidebar = ({
   onClose,
 }) => {
   const navigate = useNavigate();
+  const { logout } = useAuth();
+
+  const handleLogout = () => {
+    if (onClose) onClose();
+    logout();
+    navigate('/');
+  };
 
   return (
     <div className="flex flex-col h-full">
@@ -50,9 +58,9 @@ const Sidebar = ({
       {/* Logout */}
       <div className="px-3 py-4 border-t border-gray-100 flex-shrink-0">
         <button
-          onClick={() => navigate('/')}
+          onClick={handleLogout}
           className="flex items-center gap-3 px-3 py-2.5 w-full rounded-xl
-            text-sm font-medium text-gray-500 hover:bg-red-50 hover:text-red-500 transition-colors"
+            text-sm font-medium text-gray-500 hover:bg-red-50 hover:text-red-500 transition-colors cursor-pointer"
         >
           <LogOut className="w-4 h-4" />
           Logout

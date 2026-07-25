@@ -22,10 +22,7 @@ const ProtectedRoute = ({ children }) => {
   }
 
   if (!isAuthenticated) {
-    if (location.pathname.startsWith('/admin')) {
-      return <Navigate to="/admin/login" replace state={{ from: location }} />;
-    }
-    return <Navigate to="/signin" replace state={{ from: location }} />;
+    return <Navigate to="/" replace />;
   }
 
   return children;
