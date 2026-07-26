@@ -151,30 +151,13 @@ const OrganizerLogin = () => {
                       max-w-md px-8 py-8">
 
         {/* Card Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br
-                            from-cyan-400 to-blue-500
-                            rounded-lg flex items-center
-                            justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg"
-                className="w-4 h-4 text-white" fill="none"
-                viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round"
-                  strokeLinejoin="round" strokeWidth={2}
-                  d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0
-                     01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2
-                     a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2
-                     -2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2
-                     0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012
-                     -2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0
-                     01-2-2v-2z" />
-              </svg>
-            </div>
-            <h2 className="text-lg font-bold text-gray-800">
-              Organizer Login
-            </h2>
+        <div className="flex items-center gap-2.5 mb-6">
+          <div className="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-sm flex-shrink-0">
+            <Building className="w-4.5 h-4.5" />
           </div>
+          <h2 className="text-lg font-bold text-gray-800">
+            Organizer Login
+          </h2>
         </div>
 
         {/* Error Message */}
@@ -195,7 +178,7 @@ const OrganizerLogin = () => {
             </label>
             <div className="flex items-center border border-gray-300
                             rounded-lg px-3 py-2 gap-2
-                            focus-within:border-cyan-400
+                            focus-within:border-blue-400
                             transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg"
                 className="w-4 h-4 text-gray-400 flex-shrink-0"
@@ -229,7 +212,7 @@ const OrganizerLogin = () => {
             </label>
             <div className="flex items-center border border-gray-300
                             rounded-lg px-3 py-2 gap-2
-                            focus-within:border-cyan-400
+                            focus-within:border-blue-400
                             transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg"
                 className="w-4 h-4 text-gray-400 flex-shrink-0"
@@ -255,7 +238,7 @@ const OrganizerLogin = () => {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="text-gray-400 hover:text-cyan-500 transition-colors focus:outline-none"
+                className="text-gray-400 hover:text-blue-500 transition-colors focus:outline-none"
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
@@ -421,9 +404,9 @@ const OrganizerLogin = () => {
         {/* Register Link */}
         <button
           onClick={() => navigate('/register/organizer')}
-          className="w-full py-3 rounded-xl text-blue-600
-                     font-semibold text-base border border-blue-300
-                     hover:bg-blue-50 transition-all duration-200">
+          className="w-full py-3 rounded-xl text-white
+                     font-semibold text-base bg-blue-600
+                     hover:bg-blue-700 shadow-sm hover:shadow transition-all duration-200">
           Create Organizer Account
         </button>
 
