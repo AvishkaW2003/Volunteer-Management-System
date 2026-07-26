@@ -46,11 +46,11 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F0FDFB] flex flex-col items-center justify-center px-4 py-10">
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center px-4 py-10">
 
       {/* Logo */}
       <div className="flex items-center gap-2 mb-6">
-        <div className="w-9 h-9 bg-gradient-to-br from-[#14B8A6] to-[#6EE7D8] rounded-xl flex items-center justify-center shadow-sm">
+        <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center shadow-sm">
           <ShieldAlert className="w-5 h-5 text-white" />
         </div>
         <span className="text-lg font-bold text-gray-800 tracking-tight">VolunteerHub</span>
@@ -65,16 +65,16 @@ const AdminLogin = () => {
 
         {/* Card Header */}
         <div className="flex items-center gap-2 mb-6 border-b border-gray-50 pb-4">
-          <div className="w-8 h-8 bg-gradient-to-br from-[#14B8A6] to-[#6EE7D8] rounded-lg flex items-center justify-center flex-shrink-0">
+          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
             <Lock className="w-4.5 h-4.5 text-white" />
           </div>
           <h2 className="text-lg font-bold text-gray-800">Admin Login</h2>
         </div>
 
         {/* Admin Warning Notice */}
-        <div className="bg-teal-50 border border-teal-100 rounded-xl px-4 py-3 mb-5 flex gap-2.5 items-start">
-          <ShieldAlert className="w-5 h-5 text-teal-600 flex-shrink-0 mt-0.5" />
-          <p className="text-xs text-teal-800 leading-relaxed font-medium">
+        <div className="bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 mb-5 flex gap-2.5 items-start">
+          <ShieldAlert className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+          <p className="text-xs text-blue-800 leading-relaxed font-medium">
             This portal is restricted to authorized administrators only. Unauthorized access is strictly prohibited.
           </p>
         </div>
@@ -92,7 +92,7 @@ const AdminLogin = () => {
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-1.5">Admin Email</label>
             <div className="flex items-center border border-gray-200 rounded-xl px-3 py-2.5 gap-2 bg-gray-50
-                            focus-within:border-teal-400 focus-within:ring-2 focus-within:ring-teal-100 transition-all">
+                            focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100 transition-all">
               <Mail className="w-4.5 h-4.5 text-gray-400 flex-shrink-0" />
               <input
                 type="email"
@@ -110,7 +110,7 @@ const AdminLogin = () => {
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-1.5">Password</label>
             <div className="flex items-center border border-gray-200 rounded-xl px-3 py-2.5 gap-2 bg-gray-50
-                            focus-within:border-teal-400 focus-within:ring-2 focus-within:ring-teal-100 transition-all">
+                            focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100 transition-all">
               <Lock className="w-4.5 h-4.5 text-gray-400 flex-shrink-0" />
               <input
                 type={showPassword ? "text" : "password"}
@@ -124,7 +124,7 @@ const AdminLogin = () => {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="text-gray-400 hover:text-teal-500 transition-colors focus:outline-none"
+                className="text-gray-400 hover:text-blue-500 transition-colors focus:outline-none"
               >
                 {showPassword ? <EyeOff className="w-4.5 h-4.5" /> : <Eye className="w-4.5 h-4.5" />}
               </button>
@@ -135,9 +135,8 @@ const AdminLogin = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-xl text-white font-bold text-base
-                       bg-gradient-to-r from-[#14B8A6] to-[#6EE7D8]
-                       hover:from-teal-600 hover:to-teal-400
+            className="w-full py-3 rounded-xl text-white font-semibold text-base
+                       bg-blue-600 hover:bg-blue-700
                        transition-all duration-200 mt-4 shadow-sm hover:shadow
                        disabled:opacity-60 disabled:cursor-not-allowed">
             {loading ? 'Signing In...' : 'Admin Login'}
@@ -149,7 +148,7 @@ const AdminLogin = () => {
       {/* Back to Home Button */}
       <Link
         to="/"
-        className="mt-6 flex items-center gap-2 text-sm text-teal-600 hover:text-teal-700 font-bold transition-colors"
+        className="mt-6 flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 font-bold transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
         Back to Home
