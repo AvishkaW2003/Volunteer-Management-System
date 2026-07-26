@@ -356,7 +356,7 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
                 <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
                   Club / Organization Name
                 </label>
-                <div className="flex items-center border border-gray-300 rounded-xl px-3.5 py-2.5 gap-2 focus-within:border-teal-500 transition-colors">
+                <div className="flex items-center border border-gray-300 rounded-xl px-3.5 py-2.5 gap-2 focus-within:border-blue-500 transition-colors">
                   <Building className="w-4 h-4 text-gray-400 flex-shrink-0" />
                   <input
                     type="text"
@@ -374,7 +374,7 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
                 <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
                   Contact Number
                 </label>
-                <div className="flex items-center border border-gray-300 rounded-xl px-3.5 py-2.5 gap-2 focus-within:border-teal-500 transition-colors">
+                <div className="flex items-center border border-gray-300 rounded-xl px-3.5 py-2.5 gap-2 focus-within:border-blue-500 transition-colors">
                   <Phone className="w-4 h-4 text-gray-400 flex-shrink-0" />
                   <input
                     type="tel"
@@ -391,7 +391,7 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 rounded-xl text-white font-bold text-sm bg-teal-600 hover:bg-teal-700 transition-all duration-200 mt-2 disabled:opacity-60"
+                className="w-full py-3 rounded-xl text-white font-bold text-sm bg-blue-600 hover:bg-blue-700 transition-all duration-200 mt-2 disabled:opacity-60"
               >
                 {loading ? 'Completing...' : 'Finish Registration'}
               </button>
@@ -418,7 +418,7 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
                   onClick={() => { setActiveRole('organizer'); setError(''); }}
                   className={`flex-1 py-2 text-center text-xs font-bold rounded-xl transition-all duration-250 flex items-center justify-center gap-1 ${
                     activeRole === 'organizer'
-                      ? 'bg-teal-600 text-white shadow-sm'
+                      ? 'bg-blue-600 text-white shadow-sm'
                       : 'text-gray-500 hover:text-gray-800'
                   }`}
                 >
@@ -434,7 +434,7 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
                   onClick={() => { setActiveTab('login'); setError(''); }}
                   className={`text-sm font-bold pb-1.5 border-b-2 transition-colors duration-200 ${
                     activeTab === 'login'
-                      ? (activeRole === 'student' ? 'border-blue-600 text-blue-600' : 'border-teal-600 text-teal-600')
+                      ? 'border-blue-600 text-blue-600'
                       : 'border-transparent text-gray-400 hover:text-gray-600'
                   }`}
                 >
@@ -445,7 +445,7 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
                   onClick={() => { setActiveTab('register'); setError(''); }}
                   className={`text-sm font-bold pb-1.5 border-b-2 transition-colors duration-200 ${
                     activeTab === 'register'
-                      ? (activeRole === 'student' ? 'border-blue-600 text-blue-600' : 'border-teal-600 text-teal-600')
+                      ? 'border-blue-600 text-blue-600'
                       : 'border-transparent text-gray-400 hover:text-gray-600'
                   }`}
                 >
@@ -506,9 +506,7 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
                   <button
                     type="submit"
                     disabled={loading}
-                    className={`w-full py-3.5 rounded-xl text-white font-bold text-base shadow-sm transition-all duration-250 mt-2 disabled:opacity-60 cursor-pointer ${
-                      activeRole === 'student' ? 'bg-blue-600 hover:bg-blue-700 shadow-blue-500/20' : 'bg-teal-600 hover:bg-teal-700 shadow-teal-500/20'
-                    }`}
+                    className="w-full py-3.5 rounded-xl text-white font-bold text-base shadow-sm transition-all duration-250 mt-2 disabled:opacity-60 cursor-pointer bg-blue-600 hover:bg-blue-700 shadow-blue-500/20"
                   >
                     {loading ? 'Signing In...' : 'Sign In'}
                   </button>
@@ -659,7 +657,7 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
                           placeholder="Rotaract Club"
                           value={organizerRegisterData.clubName}
                           onChange={handleOrganizerRegisterChange}
-                          className="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm text-gray-700 placeholder-gray-400 outline-none focus:border-teal-500 transition-colors"
+                          className="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm text-gray-700 placeholder-gray-400 outline-none focus:border-blue-500 transition-colors"
                         />
                       </div>
 
@@ -674,7 +672,7 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
                           placeholder="+94771234567"
                           value={organizerRegisterData.contactNumber}
                           onChange={handleOrganizerRegisterChange}
-                          className="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm text-gray-700 placeholder-gray-400 outline-none focus:border-teal-500 transition-colors"
+                          className="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm text-gray-700 placeholder-gray-400 outline-none focus:border-blue-500 transition-colors"
                         />
                       </div>
 
@@ -689,7 +687,7 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
                           placeholder="club@organization.com"
                           value={organizerRegisterData.email}
                           onChange={handleOrganizerRegisterChange}
-                          className="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm text-gray-700 placeholder-gray-400 outline-none focus:border-teal-500 transition-colors"
+                          className="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm text-gray-700 placeholder-gray-400 outline-none focus:border-blue-500 transition-colors"
                         />
                       </div>
 
@@ -697,7 +695,7 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
                         <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
                           Password
                         </label>
-                        <div className="flex items-center border border-gray-300 rounded-xl px-3.5 py-2 gap-2 focus-within:border-teal-500 transition-colors">
+                        <div className="flex items-center border border-gray-300 rounded-xl px-3.5 py-2 gap-2 focus-within:border-blue-500 transition-colors">
                           <input
                             type={showPassword ? "text" : "password"}
                             name="password"
@@ -722,11 +720,7 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
                   <button
                     type="submit"
                     disabled={loading}
-                    className={`w-full py-3 rounded-xl text-white font-extrabold text-base transition-all duration-250 mt-1 disabled:opacity-60 cursor-pointer shadow-lg ${
-                      activeRole === 'student' 
-                        ? 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-blue-600/25' 
-                        : 'bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 shadow-teal-600/25'
-                    }`}
+                    className="w-full py-3 rounded-xl text-white font-extrabold text-base transition-all duration-250 mt-1 disabled:opacity-60 cursor-pointer shadow-lg bg-blue-600 hover:bg-blue-700 shadow-blue-600/25"
                   >
                     {loading ? 'Creating Account...' : `Create ${activeRole === 'student' ? 'Student Account' : 'Organizer Account'}`}
                   </button>
@@ -762,9 +756,7 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
               )}
 
               {/* Role Features Preview Badge */}
-              <div className={`mt-5 pt-3 border-t border-slate-100 flex items-center justify-center gap-2 text-xs font-semibold ${
-                activeRole === 'student' ? 'text-blue-600' : 'text-teal-600'
-              }`}>
+              <div className="mt-5 pt-3 border-t border-slate-100 flex items-center justify-center gap-2 text-xs font-semibold text-blue-600">
                 <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
                 <span>
                   {activeRole === 'student' 

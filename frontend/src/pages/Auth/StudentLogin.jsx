@@ -238,9 +238,9 @@ const StudentLogin = () => {
         {/* Register Link */}
         <button
           onClick={() => navigate('/register/student')}
-          className="w-full py-3 rounded-xl text-blue-600
-                     font-semibold text-base border border-blue-300
-                     hover:bg-blue-50 transition-all duration-200">
+          className="w-full py-3 rounded-xl text-white
+                     font-semibold text-base bg-blue-600
+                     hover:bg-blue-700 shadow-sm hover:shadow transition-all duration-200">
           Create Student Account
         </button>
 

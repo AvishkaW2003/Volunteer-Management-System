@@ -231,12 +231,8 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
       
       {/* Dynamic Ambient Background Glows */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden -z-10">
-        <div className={`absolute -top-32 -right-32 w-[550px] h-[550px] rounded-full blur-3xl transition-all duration-700 ${
-          activeRole === 'student' ? 'bg-blue-500/10' : 'bg-teal-500/10'
-        }`} />
-        <div className={`absolute -bottom-40 -left-20 w-[450px] h-[450px] rounded-full blur-3xl transition-all duration-700 ${
-          activeRole === 'student' ? 'bg-indigo-500/10' : 'bg-emerald-500/10'
-        }`} />
+        <div className="absolute -top-32 -right-32 w-[550px] h-[550px] rounded-full blur-3xl transition-all duration-700 bg-blue-500/10" />
+        <div className="absolute -bottom-40 -left-20 w-[450px] h-[450px] rounded-full blur-3xl transition-all duration-700 bg-indigo-500/10" />
       </div>
 
       {/* Top Brand Logo */}
@@ -298,7 +294,7 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
               onClick={() => handleRoleSwitch('organizer')}
               className={`flex-1 py-2 text-center text-xs font-extrabold rounded-xl transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer ${
                 activeRole === 'organizer' 
-                  ? 'bg-teal-600 text-white shadow-md shadow-teal-600/25' 
+                  ? 'bg-blue-600 text-white shadow-md shadow-blue-600/25' 
                   : 'text-slate-500 hover:text-slate-900'
               }`}
             >
@@ -314,7 +310,7 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
               onClick={() => handleTabSwitch('login')}
               className={`text-sm font-extrabold pb-2 transition-all cursor-pointer border-b-2 ${
                 activeTab === 'login'
-                  ? (activeRole === 'student' ? 'border-blue-600 text-blue-600' : 'border-teal-600 text-teal-600')
+                  ? 'border-blue-600 text-blue-600'
                   : 'border-transparent text-slate-400 hover:text-slate-600'
               }`}
             >
@@ -325,7 +321,7 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
               onClick={() => handleTabSwitch('register')}
               className={`text-sm font-extrabold pb-2 transition-all cursor-pointer border-b-2 ${
                 activeTab === 'register'
-                  ? (activeRole === 'student' ? 'border-blue-600 text-blue-600' : 'border-teal-600 text-teal-600')
+                  ? 'border-blue-600 text-blue-600'
                   : 'border-transparent text-slate-400 hover:text-slate-600'
               }`}
             >
@@ -352,9 +348,7 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
                       ? setStudentLoginData({ ...studentLoginData, email: e.target.value })
                       : setOrganizerLoginData({ ...organizerLoginData, email: e.target.value })
                   }
-                  className={`w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-400 outline-none transition-all ${
-                    activeRole === 'student' ? 'focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600' : 'focus:ring-4 focus:ring-teal-500/10 focus:border-teal-600'
-                  }`}
+                  className="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-400 outline-none transition-all focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600"
                 />
               </div>
 
@@ -365,16 +359,12 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
                   </label>
                   <span
                     onClick={() => navigate('/forgot-password')}
-                    className={`text-[11px] font-bold hover:underline cursor-pointer ${
-                      activeRole === 'student' ? 'text-blue-600' : 'text-teal-600'
-                    }`}
+                    className="text-[11px] font-bold hover:underline cursor-pointer text-blue-600"
                   >
                     Forgot password?
                   </span>
                 </div>
-                <div className={`flex items-center border border-slate-300 rounded-xl px-3.5 py-2.5 gap-2 transition-all ${
-                  activeRole === 'student' ? 'focus-within:ring-4 focus-within:ring-blue-500/10 focus-within:border-blue-600' : 'focus-within:ring-4 focus-within:ring-teal-500/10 focus-within:border-teal-600'
-                }`}>
+                <div className="flex items-center border border-slate-300 rounded-xl px-3.5 py-2.5 gap-2 transition-all focus-within:ring-4 focus-within:ring-blue-500/10 focus-within:border-blue-600">
                   <input
                     type={showPassword ? "text" : "password"}
                     name="password"
@@ -401,11 +391,7 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
               <button
                 type="submit"
                 disabled={loading}
-                className={`w-full py-3 rounded-xl text-white font-extrabold text-base transition-all duration-250 mt-2 disabled:opacity-60 cursor-pointer shadow-lg ${
-                  activeRole === 'student' 
-                    ? 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-blue-600/25' 
-                    : 'bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 shadow-teal-600/25'
-                }`}
+                className="w-full py-3 rounded-xl text-white font-extrabold text-base transition-all duration-250 mt-2 disabled:opacity-60 cursor-pointer shadow-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-blue-600/25"
               >
                 {loading ? 'Authenticating...' : `Sign In to ${activeRole === 'student' ? 'Student' : 'Organizer'} Portal`}
               </button>
@@ -556,7 +542,7 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
                       placeholder="Rotaract Club"
                       value={organizerRegisterData.clubName}
                       onChange={(e) => setOrganizerRegisterData({ ...organizerRegisterData, clubName: e.target.value })}
-                      className="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm text-slate-800 placeholder-slate-400 outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-600 transition-all"
+                      className="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm text-slate-800 placeholder-slate-400 outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 transition-all"
                     />
                   </div>
 
@@ -571,7 +557,7 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
                       placeholder="+94771234567"
                       value={organizerRegisterData.contactNumber}
                       onChange={(e) => setOrganizerRegisterData({ ...organizerRegisterData, contactNumber: e.target.value })}
-                      className="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm text-slate-800 placeholder-slate-400 outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-600 transition-all"
+                      className="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm text-slate-800 placeholder-slate-400 outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 transition-all"
                     />
                   </div>
 
@@ -586,7 +572,7 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
                       placeholder="club@organization.com"
                       value={organizerRegisterData.email}
                       onChange={(e) => setOrganizerRegisterData({ ...organizerRegisterData, email: e.target.value })}
-                      className="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm text-slate-800 placeholder-slate-400 outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-600 transition-all"
+                      className="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm text-slate-800 placeholder-slate-400 outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 transition-all"
                     />
                   </div>
 
@@ -594,7 +580,7 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
                     <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1">
                       Password
                     </label>
-                    <div className="flex items-center border border-slate-300 rounded-xl px-3.5 py-2 gap-2 focus-within:ring-4 focus-within:ring-teal-500/10 focus-within:border-teal-600 transition-all">
+                    <div className="flex items-center border border-slate-300 rounded-xl px-3.5 py-2 gap-2 focus-within:ring-4 focus-within:ring-blue-500/10 focus-within:border-blue-600 transition-all">
                       <input
                         type={showPassword ? "text" : "password"}
                         name="password"
@@ -619,11 +605,7 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
               <button
                 type="submit"
                 disabled={loading}
-                className={`w-full py-3 rounded-xl text-white font-extrabold text-base transition-all duration-250 mt-1 disabled:opacity-60 cursor-pointer shadow-lg ${
-                  activeRole === 'student' 
-                    ? 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-blue-600/25' 
-                    : 'bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 shadow-teal-600/25'
-                }`}
+                className="w-full py-3 rounded-xl text-white font-extrabold text-base transition-all duration-250 mt-1 disabled:opacity-60 cursor-pointer shadow-lg bg-blue-600 hover:bg-blue-700 shadow-blue-600/25"
               >
                 {loading ? 'Creating Account...' : `Create ${activeRole === 'student' ? 'Student Account' : 'Organizer Account'}`}
               </button>
@@ -659,9 +641,7 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
           )}
 
           {/* Role Features Preview Badge */}
-          <div className={`mt-6 pt-4 border-t border-slate-100 flex items-center justify-center gap-2 text-xs font-semibold ${
-            activeRole === 'student' ? 'text-blue-600' : 'text-teal-600'
-          }`}>
+          <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-center gap-2 text-xs font-semibold text-blue-600">
             <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
             <span>
               {activeRole === 'student' 
