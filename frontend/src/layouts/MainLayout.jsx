@@ -284,45 +284,41 @@ const MainLayout = () => {
                       style={{ right: 0 }}
                       onMouseLeave={() => setDropdownOpen(false)}
                     >
-                      <div className="px-4 py-2 bg-gray-50 border-b border-gray-100">
-                        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Navigation</p>
+                      {/* User Info Header */}
+                      <div className="px-4 py-3 bg-gray-50 border-b border-gray-100 flex flex-col">
+                        <p className="text-sm font-extrabold text-gray-900 truncate">{user?.name || 'User Profile'}</p>
+                        <p className="text-xs font-medium text-gray-500 truncate mt-0.5">{user?.email}</p>
+                        <span className="inline-block mt-2 w-max px-2.5 py-0.5 text-[10px] font-extrabold uppercase rounded-full bg-blue-100 text-blue-700">
+                          {user?.role || 'student'}
+                        </span>
                       </div>
                       
-                      {user?.role === "student" ? (
-                        <div className="py-1">
-                          <Link to="/student/dashboard" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors font-medium">Dashboard</Link>
-                          <Link to="/events" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors font-medium">Browse Events</Link>
-                          <Link to="/student/applications" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors font-medium">Applications</Link>
-                          <Link to="/student/history" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors font-medium">History</Link>
-                          <Link to="/student/leaderboard" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors font-medium">Leaderboard</Link>
-                          <Link to="/student/certificates" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors font-medium">Certificates</Link>
-                          <Link to="/student/notifications" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors font-medium">Notifications</Link>
-                          <Link to="/student/settings" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors font-medium">Settings</Link>
-                        </div>
-                      ) : user?.role === "organizer" ? (
-                        <div className="py-1">
-                          <Link to="/organizer/dashboard" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors font-medium">Dashboard</Link>
-                          <Link to="/organizer/create-event" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors font-medium">Create Event</Link>
-                          <Link to="/organizer/events" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors font-medium">Manage Events</Link>
-                          <Link to="/organizer/applications" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors font-medium">Applications</Link>
-                          <Link to="/organizer/attendance" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors font-medium">Attendance</Link>
-                          <Link to="/organizer/certificates" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors font-medium">Certificates</Link>
-                          <Link to="/organizer/notifications" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors font-medium">Notifications</Link>
-                          <Link to="/organizer/settings" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors font-medium">Settings</Link>
-                        </div>
-                      ) : user?.role === "admin" ? (
-                        <div className="py-1">
-                          <Link to="/admin/dashboard" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 hover:text-[#14B8A6] transition-colors font-medium">Dashboard</Link>
-                          <Link to="/admin/users" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 hover:text-[#14B8A6] transition-colors font-medium">User Management</Link>
-                          <Link to="/admin/event-approval" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 hover:text-[#14B8A6] transition-colors font-medium">Event Approvals</Link>
-                          <Link to="/admin/manage-events" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 hover:text-[#14B8A6] transition-colors font-medium">Manage Events</Link>
-                          <Link to="/admin/organizations" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 hover:text-[#14B8A6] transition-colors font-medium">Organizations</Link>
-                          <Link to="/admin/certificates" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 hover:text-[#14B8A6] transition-colors font-medium">Certificate Management</Link>
-                          <Link to="/admin/reports" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 hover:text-[#14B8A6] transition-colors font-medium">Reports & Analytics</Link>
-                          <Link to="/admin/notifications" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 hover:text-[#14B8A6] transition-colors font-medium">Notifications</Link>
-                          <Link to="/admin/settings" onClick={() => setDropdownOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 hover:text-[#14B8A6] transition-colors font-medium">System Settings</Link>
-                        </div>
-                      ) : null}
+                      {/* Quick Profile Actions */}
+                      <div className="py-1">
+                        <button
+                          onClick={() => {
+                            setDropdownOpen(false);
+                            if (user?.role === 'student') navigate('/student/dashboard');
+                            else if (user?.role === 'organizer') navigate('/organizer/dashboard');
+                            else if (user?.role === 'admin') navigate('/admin/dashboard');
+                            else navigate('/');
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors font-medium flex items-center gap-2 cursor-pointer"
+                        >
+                          Dashboard
+                        </button>
+                        <button
+                          onClick={() => {
+                            setDropdownOpen(false);
+                            if (user?.role === 'student') navigate('/student/settings');
+                            else if (user?.role === 'organizer') navigate('/organizer/settings');
+                            else if (user?.role === 'admin') navigate('/admin/settings');
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors font-medium flex items-center gap-2 cursor-pointer"
+                        >
+                          Settings
+                        </button>
+                      </div>
                       
                       <hr className="border-gray-100" />
                       <div className="py-1">
@@ -332,7 +328,7 @@ const MainLayout = () => {
                             logout();
                             navigate('/');
                           }}
-                          className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors font-medium flex items-center gap-2"
+                          className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors font-medium flex items-center gap-2 cursor-pointer"
                         >
                           Logout
                         </button>
