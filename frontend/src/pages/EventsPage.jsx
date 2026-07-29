@@ -329,7 +329,7 @@ const EventsPage = () => {
                             </>
                           ) : (
                             <>
-                              <Link to={`/events/${ev.id}`} className="vh-event-shelf-card-btn">
+                              <Link to={user?.role === 'student' ? `/student/events/${ev.id}` : `/events/${ev.id}`} className="vh-event-shelf-card-btn">
                                 View Details
                               </Link>
                               {(!isAuthenticated || user?.role === 'student') && (
@@ -457,7 +457,7 @@ const EventsPage = () => {
                               </>
                             ) : (
                               <>
-                                <Link to={`/events/${ev.id}`} className="vh-event-shelf-card-btn">
+                                <Link to={user?.role === 'student' ? `/student/events/${ev.id}` : `/events/${ev.id}`} className="vh-event-shelf-card-btn">
                                   View Details
                                 </Link>
                                 {(!isAuthenticated || user?.role === 'student') && (
