@@ -7,6 +7,7 @@ import { useAuth } from '../context/AuthContext';
  * Props:
  *   logo        — ReactNode (brand avatar / icon)
  *   brandName   — string
+ *   showBrand   — whether to render the logo/brand row (default: true; set false when a parent navbar already shows branding)
  *   navItems    — [{ to, icon: LucideComponent, label }]
  *   activeClass — Tailwind classes for active NavLink (default: cyan-blue gradient)
  *   hoverClass  — Tailwind classes for hover state
@@ -15,9 +16,10 @@ import { useAuth } from '../context/AuthContext';
 const Sidebar = ({
   logo,
   brandName  = 'VolunteerHub',
+  showBrand  = true,
   navItems   = [],
-  activeClass = 'bg-gradient-to-r from-cyan-400 to-blue-500 text-white shadow-sm',
-  hoverClass  = 'text-gray-600 hover:bg-cyan-50 hover:text-cyan-700',
+  activeClass = 'bg-[#2563EB] text-white shadow-sm',
+  hoverClass  = 'text-gray-600 hover:bg-[#EFF6FF] hover:text-[#2563EB]',
   onClose,
 }) => {
   const navigate = useNavigate();
@@ -32,10 +34,12 @@ const Sidebar = ({
   return (
     <div className="flex flex-col h-full">
       {/* Logo */}
-      <div className="flex items-center gap-3 px-4 py-4 border-b border-gray-100 flex-shrink-0">
-        {logo}
-        <span className="font-bold text-gray-800 text-sm">{brandName}</span>
-      </div>
+      {showBrand && (
+        <div className="flex items-center gap-3 px-4 py-4 border-b border-gray-100 flex-shrink-0">
+          {logo}
+          <span className="font-bold text-gray-800 text-sm">{brandName}</span>
+        </div>
+      )}
 
       {/* Navigation */}
       <nav className="flex-1 py-4 px-3 space-y-0.5 overflow-y-auto">
