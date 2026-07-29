@@ -46,7 +46,7 @@ const ViewDetailsModal = ({ app, onClose }) => {
     >
       <div className="w-full max-w-2xl overflow-hidden bg-white shadow-2xl rounded-2xl">
         {/* Modal header */}
-        <div className="h-1.5 bg-gradient-to-r from-blue-400 to-purple-500" />
+        <div className="h-1.5 bg-gradient-to-r from-blue-600 to-indigo-600" />
         <div className="flex items-start justify-between gap-4 px-6 pt-5 pb-4 border-b border-gray-100">
           <div className="flex-1 min-w-0">
             <h2 className="text-xl font-bold text-gray-800 truncate">{app.event}</h2>
@@ -108,7 +108,7 @@ const ViewDetailsModal = ({ app, onClose }) => {
         <div className="flex justify-end px-6 py-4 border-t border-gray-100 bg-gray-50">
           <button
             onClick={onClose}
-            className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-blue-400 to-purple-500 hover:from-blue-500 hover:to-purple-600 text-white text-sm font-semibold transition-all shadow-sm hover:shadow-md"
+            className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-extrabold transition-all shadow-md shadow-blue-500/20 cursor-pointer"
           >
             Close
           </button>
