@@ -84,7 +84,8 @@ const AppRouter = () => {
         <Route path="/student" element={<ProtectedRoute><RoleRoute allowedRoles={['student']}><StudentLayout /></RoleRoute></ProtectedRoute>}>
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard"    element={<Dashboard />} />
-          <Route path="events"       element={<Navigate to="/events" replace />} />
+          <Route path="events"       element={<EventsPage />} />
+          <Route path="events/:id"   element={<EventDetailsPage />} />
           <Route path="applications" element={<ApplyEvent />} />
           <Route path="history"      element={<History />} />
           <Route path="leaderboard"  element={<Leaderboard />} />
