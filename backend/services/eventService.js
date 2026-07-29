@@ -10,6 +10,9 @@ import { createNotification } from "./notificationService.js";
  * Service to handle core event business logic and lifecycles.
  */
 export const createEvent = async (eventData, organizerId) => {
+  const organizer = await User.findByPk(organizerId);
+  const orgName = organizer ? organizer.name : 'An Organizer';
+
   const event = await Event.create({
     ...eventData,
     UserId: organizerId,
@@ -20,8 +23,8 @@ export const createEvent = async (eventData, organizerId) => {
 
   await createNotification({
     userId: null,
-    title: "New Event Created",
-    message: "New event awaiting approval",
+    title: "New Event Submission",
+    message: `${orgName} submitted a new event "${event.title}" awaiting your approval.`,
     role: "admin"
   });
 
@@ -169,8 +172,8 @@ export const approveEvent = async (eventId) => {
 
   await createNotification({
     userId: event.UserId,
-    title: "Event Approved",
-    message: "Your event has been approved",
+    title: "Event Approved 🎉",
+    message: `Great news! Your event "${event.title}" has been approved by the Admin and is now live for volunteers to browse and apply.`,
     role: "organizer"
   });
 
@@ -189,8 +192,8 @@ export const rejectEvent = async (eventId) => {
 
   await createNotification({
     userId: event.UserId,
-    title: "Event Rejected",
-    message: "Your event has been rejected",
+    title: "Event Status Update",
+    message: `Your event "${event.title}" was not approved by the Admin. Please review and update your event details.`,
     role: "organizer"
   });
 
