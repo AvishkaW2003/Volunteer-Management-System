@@ -115,7 +115,7 @@ const MainLayout = () => {
    * Helper to check if a navigation link is active
    */
   const isActive = (path) => location.pathname === path;
-  const isDashboardRoute = location.pathname.startsWith('/student') || location.pathname.startsWith('/organizer') || location.pathname.startsWith('/admin');
+  const isDashboardRoute = location.pathname.startsWith('/student') || location.pathname.startsWith('/organizer') || (location.pathname.startsWith('/admin') && location.pathname !== '/admin/login');
   const isAuthPage = 
     location.pathname === '/register' || 
     location.pathname === '/get-started' || 
@@ -123,6 +123,8 @@ const MainLayout = () => {
     location.pathname === '/login' || 
     location.pathname === '/login/student' || 
     location.pathname === '/login/organizer' || 
+    location.pathname === '/login/admin' || 
+    location.pathname === '/admin/login' || 
     location.pathname === '/register/student' || 
     location.pathname === '/register/organizer' || 
     location.pathname === '/forgot-password' || 
