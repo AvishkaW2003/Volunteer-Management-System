@@ -105,11 +105,14 @@ export const generateCertificate = async (eventId, userId, hours, organizerId) =
       issueDate: new Date().toISOString().split("T")[0]
     }, { transaction });
 
+    const student = await User.findByPk(userId, { transaction });
+    const studentName = student ? student.name : 'Volunteer';
+
     // Create Notification
     await createNotification({
       userId,
-      title: "Your certificate has been issued",
-      message: "Your certificate is available",
+      title: "Certificate Issued! 🎓",
+      message: `Congratulations ${studentName}! Your official volunteer certificate for "${event?.title || 'the event'}" has been issued and is available for download.`,
       role: "student"
     }, { transaction });
 
