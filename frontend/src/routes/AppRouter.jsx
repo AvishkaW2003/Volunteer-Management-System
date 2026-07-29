@@ -55,9 +55,6 @@ const AppRouter = () => {
   return (
     <Routes>
 
-      {/* Standalone Admin Login */}
-      <Route path="/admin/login" element={<AdminLogin />} />
-
       {/* ── Public Site (nested inside MainLayout) ───── */}
       <Route element={<MainLayout />}>
         <Route path="/"             element={<HomePage />} />
@@ -77,6 +74,8 @@ const AppRouter = () => {
 
         <Route path="/login/student"   element={<UnifiedAuthPage initialTab="login" initialRole="student" />} />
         <Route path="/login/organizer" element={<UnifiedAuthPage initialTab="login" initialRole="organizer" />} />
+        <Route path="/login/admin"     element={<UnifiedAuthPage initialTab="login" initialRole="admin" />} />
+        <Route path="/admin/login"     element={<UnifiedAuthPage initialTab="login" initialRole="admin" />} />
 
         <Route path="/forgot-password"    element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
