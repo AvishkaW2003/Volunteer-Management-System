@@ -8,6 +8,33 @@
   min-height: 100vh;
 }
 
+/* Used when EventsPage is nested inside the student sidebar layout,
+   which already provides its own padding — avoid stacking a second
+   layer of top/side spacing on top of it. */
+.vh-events-page--embedded {
+  padding-top: 0;
+  min-height: auto;
+}
+
+.vh-events-page--embedded .vh-events-header-section {
+  padding: 0 0 1.5rem 0;
+  justify-content: flex-start;
+  border-bottom: none;
+}
+
+.vh-events-page--embedded .vh-events-filters-section,
+.vh-events-page--embedded .vh-events-display-section {
+  padding-left: 0;
+  padding-right: 0;
+  justify-content: flex-start;
+}
+
+.vh-events-page--embedded .vh-events-header-container,
+.vh-events-page--embedded .vh-events-filters-container,
+.vh-events-page--embedded .vh-events-display-container {
+  max-width: none;
+}
+
 /* Page Header */
 .vh-events-header-section {
   padding: 4rem 1.5rem 2rem 1.5rem;
