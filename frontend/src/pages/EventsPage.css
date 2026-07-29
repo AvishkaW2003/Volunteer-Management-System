@@ -3,14 +3,13 @@
    ────────────────────────────────────────────────────────────────────────── */
 
 .vh-events-page {
-  padding-top: var(--navbar-height);
   background-color: var(--bg-body);
   min-height: 100vh;
 }
 
 /* Page Header */
 .vh-events-header-section {
-  padding: 4rem 1.5rem 2rem 1.5rem;
+  padding: 2rem 1.5rem 1.5rem 1.5rem;
   background-color: var(--bg-white);
   border-bottom: 1px solid var(--border-color);
   display: flex;
