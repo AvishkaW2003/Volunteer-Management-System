@@ -426,7 +426,7 @@ const StudentSettings = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="max-w-7xl mx-auto">
       {/* Title */}
       <div className="mb-8 border-b border-gray-100 pb-5">
         <h1 className="text-3xl font-extrabold text-gray-800 tracking-tight">Profile Settings</h1>

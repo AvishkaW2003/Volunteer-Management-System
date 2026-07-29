@@ -248,15 +248,15 @@ const OrganizerDashboard = () => {
                 </div>
 
                                 {/* Content Details */}
-                <div className="p-4 flex-1 flex flex-col space-y-3">
+                <div className="p-5 flex-1 flex flex-col space-y-4">
                   <div>
                     <span className="text-xs font-bold text-cyan-600 uppercase tracking-wide bg-cyan-50 px-2 py-0.5 rounded">
                       {event.category}
                     </span>
-                    <h3 className="text-lg font-bold text-gray-800 mt-1.5 line-clamp-1">{event.title}</h3>
+                    <h3 className="text-lg font-bold text-gray-800 mt-2 line-clamp-1">{event.title}</h3>
                   </div>
 
-                  <div className="space-y-1.5 text-sm text-gray-500">
+                  <div className="space-y-2 text-sm text-gray-500">
                     <div className="flex items-center gap-2">
                       <Calendar className="w-4 h-4 text-gray-400" />
                       <span>{event.eventDate}</span>
@@ -268,7 +268,7 @@ const OrganizerDashboard = () => {
                   </div>
 
                                     {/* Summary Counters */}
-                  <div className="grid grid-cols-2 gap-3 bg-gray-50 rounded-xl p-3 text-center border border-gray-100/50">
+                  <div className="grid grid-cols-2 gap-3 bg-gray-50 rounded-xl p-4 text-center border border-gray-100/50">
                     <div>
                       <div className="text-lg font-bold text-gray-800">{event.applicationsCount}</div>
                       <div className="text-[11px] text-gray-500 uppercase tracking-wider">Applications</div>
@@ -280,7 +280,7 @@ const OrganizerDashboard = () => {
                   </div>
 
                   {/* Buttons Stack */}
-                  <div className="pt-2 mt-auto grid grid-cols-3 gap-2">
+                  <div className="pt-3 mt-auto grid grid-cols-3 gap-2.5">
                     {String(event.id).startsWith('mock') ? (
                       <button
                         onClick={() => alert(`Visualizing details for mock event: ${event.title}`)}
