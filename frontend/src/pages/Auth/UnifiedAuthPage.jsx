@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { User, Building, Eye, EyeOff, HandHelping, ArrowLeft, CheckCircle2, Phone } from 'lucide-react';
-import { loginUser, registerStudent, registerOrganizer, googleLogin, googleRegisterOrganizer } from '../../services/authService';
+import { User, Building, Eye, EyeOff, HandHelping, ArrowLeft, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { loginUser, registerStudent, registerOrganizer, googleLogin } from '../../services/authService';
 import { useAuth } from '../../context/AuthContext';
 
 const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
@@ -15,12 +15,11 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
   // Sync state if initial props or route changes
   useEffect(() => {
     setActiveTab(initialTab);
-    setActiveRole(initialRole);
+    setActiveRole(initialRole === 'admin' ? 'student' : initialRole);
   }, [initialTab, initialRole, location.pathname]);
 
   // Form states
-  const [studentLoginData, setStudentLoginData] = useState({ email: '', password: '' });
-  const [organizerLoginData, setOrganizerLoginData] = useState({ email: '', password: '' });
+  const [loginData, setLoginData] = useState({ email: '', password: '' });
 
   const [studentRegisterData, setStudentRegisterData] = useState({
     fullName: '',
@@ -46,9 +45,7 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
   // Google Onboarding State for Organizers
   const [onboardingData, setOnboardingData] = useState(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
-  const [onboardingForm, setOnboardingForm] = useState({ clubName: '', contactNumber: '' });
 
-  // Reset errors when switching tab or role
   const handleRoleSwitch = (role) => {
     setActiveRole(role);
     setError('');
@@ -66,14 +63,18 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
     setLoading(true);
     setError('');
     try {
-      const res = await googleLogin(response.credential, activeRole);
+      const targetRole = activeTab === 'register' ? activeRole : 'student';
+      const res = await googleLogin(response.credential, targetRole);
       if (res.status === "needs_onboarding") {
         setOnboardingData({ email: res.email, name: res.name, idToken: res.idToken });
-        setOnboardingForm({ clubName: res.name || '', contactNumber: '' });
         setShowOnboarding(true);
       } else {
         login(res.user, res.token);
-        navigate(res.user.role === 'student' ? '/student/dashboard' : '/organizer/dashboard');
+        const userRole = res.user?.role;
+        if (userRole === 'student') navigate('/student/dashboard');
+        else if (userRole === 'organizer') navigate('/organizer/dashboard');
+        else if (userRole === 'admin') navigate('/admin/dashboard');
+        else navigate('/');
       }
     } catch (err) {
       if (!err.response) {
@@ -120,25 +121,22 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
     return () => clearTimeout(timer);
   }, [activeTab, activeRole, showOnboarding]);
 
-  // Submit Login
+  // Submit Single Login for Student, Organizer & Admin
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
-    const credentials = activeRole === 'student' ? studentLoginData : organizerLoginData;
-
     try {
-      const data = await loginUser(credentials);
-      if (data.user.role !== activeRole) {
-        setError(`Access denied. Please switch to the ${data.user.role} portal tab.`);
-        setLoading(false);
-        return;
-      }
+      const data = await loginUser(loginData);
       login(data.user, data.token);
-      setStudentLoginData({ email: '', password: '' });
-      setOrganizerLoginData({ email: '', password: '' });
-      navigate(activeRole === 'student' ? '/student/dashboard' : '/organizer/dashboard');
+      setLoginData({ email: '', password: '' });
+
+      const userRole = data.user?.role;
+      if (userRole === 'student') navigate('/student/dashboard');
+      else if (userRole === 'organizer') navigate('/organizer/dashboard');
+      else if (userRole === 'admin') navigate('/admin/dashboard');
+      else navigate('/');
     } catch (err) {
       if (!err.response) {
         setError('Could not connect to backend server. Please ensure the backend is running on port 5000.');
@@ -150,7 +148,7 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
     }
   };
 
-  // Submit Register
+  // Submit Register (Student or Organizer)
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -175,7 +173,7 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
         await registerStudent(payload);
         setError('');
         setActiveTab('login');
-        setStudentLoginData({ email: studentRegisterData.email, password: '' });
+        setLoginData({ email: studentRegisterData.email, password: '' });
       } catch (err) {
         if (!err.response) {
           setError('Could not connect to backend server. Please check your network connection.');
@@ -190,7 +188,7 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
       } finally {
         setLoading(false);
       }
-    } else {
+    } else if (activeRole === 'organizer') {
       const phoneRegex = /^\+?[\d\s\-()]{7,20}$/;
       if (organizerRegisterData.contactNumber && !phoneRegex.test(organizerRegisterData.contactNumber)) {
         setError('Contact number must be a valid phone number (7 to 20 characters).');
@@ -208,7 +206,7 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
         await registerOrganizer(payload);
         setError('');
         setActiveTab('login');
-        setOrganizerLoginData({ email: organizerRegisterData.email, password: '' });
+        setLoginData({ email: organizerRegisterData.email, password: '' });
       } catch (err) {
         if (!err.response) {
           setError('Could not connect to backend server. Please check your network connection.');
@@ -246,21 +244,19 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
         </div>
       </div>
 
-      {/* Main Container Card (Spacious 2-Column Responsive Grid, Zero Scrolling Needed) */}
+      {/* Main Container Card */}
       <div className="bg-white w-full max-w-xl md:max-w-2xl rounded-[2rem] shadow-2xl shadow-slate-200/80 overflow-hidden border border-slate-200/80 p-6 md:p-8 flex flex-col justify-start relative z-10 transition-all duration-300">
           
           {/* Header Title & Dynamic Subtitle */}
           <div className="mb-5 text-left">
             <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight leading-tight mb-1.5">
               {activeTab === 'login' 
-                ? (activeRole === 'student' ? 'Welcome Back, Student!' : 'Welcome Back, Organizer!') 
+                ? 'Welcome Back!' 
                 : (activeRole === 'student' ? 'Join VolunteerHub' : 'Register Organization')}
             </h2>
             <p className="text-slate-500 text-xs md:text-sm font-medium leading-relaxed">
               {activeTab === 'login' 
-                ? (activeRole === 'student'
-                    ? 'Sign in to discover university volunteer events, track hours, and earn certificates.'
-                    : 'Sign in to host campus events, manage volunteer attendance, and issue certificates.')
+                ? 'Sign in to access your VolunteerHub account as a Student, Organizer, or Administrator.'
                 : (activeRole === 'student'
                     ? 'Create your free student account to start building your campus volunteer reputation.'
                     : 'Register your student club or organization to publish events and recruit volunteers.')}
@@ -274,34 +270,6 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
               <span>{error}</span>
             </div>
           )}
-
-          {/* Portal Selector (Student vs Organizer) */}
-          <div className="flex border border-slate-200/80 bg-slate-100/70 p-1.5 rounded-2xl mb-4 shadow-inner">
-            <button
-              type="button"
-              onClick={() => handleRoleSwitch('student')}
-              className={`flex-1 py-2 text-center text-xs font-extrabold rounded-xl transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer ${
-                activeRole === 'student' 
-                  ? 'bg-blue-600 text-white shadow-md shadow-blue-600/25' 
-                  : 'text-slate-500 hover:text-slate-900'
-              }`}
-            >
-              <User className="w-4 h-4" />
-              Student Portal
-            </button>
-            <button
-              type="button"
-              onClick={() => handleRoleSwitch('organizer')}
-              className={`flex-1 py-2 text-center text-xs font-extrabold rounded-xl transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer ${
-                activeRole === 'organizer' 
-                  ? 'bg-blue-600 text-white shadow-md shadow-blue-600/25' 
-                  : 'text-slate-500 hover:text-slate-900'
-              }`}
-            >
-              <Building className="w-4 h-4" />
-              Organizer Portal
-            </button>
-          </div>
 
           {/* Mode Selector (Sign In vs Create Account) */}
           <div className="flex justify-center gap-8 mb-5 border-b border-slate-100 pb-2.5">
@@ -329,9 +297,39 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
             </button>
           </div>
 
+          {/* Role Selector (ONLY SHOWN ON CREATE ACCOUNT TAB FOR STUDENT & ORGANIZER) */}
+          {activeTab === 'register' && (
+            <div className="flex border border-slate-200/80 bg-slate-100/70 p-1.5 rounded-2xl mb-5 shadow-inner gap-1">
+              <button
+                type="button"
+                onClick={() => handleRoleSwitch('student')}
+                className={`flex-1 py-2.5 text-center text-xs font-extrabold rounded-xl transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer ${
+                  activeRole === 'student' 
+                    ? 'bg-blue-600 text-white shadow-md shadow-blue-600/25' 
+                    : 'text-slate-500 hover:text-slate-900'
+                }`}
+              >
+                <User className="w-4 h-4" />
+                Student Account
+              </button>
+              <button
+                type="button"
+                onClick={() => handleRoleSwitch('organizer')}
+                className={`flex-1 py-2.5 text-center text-xs font-extrabold rounded-xl transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer ${
+                  activeRole === 'organizer' 
+                    ? 'bg-blue-600 text-white shadow-md shadow-blue-600/25' 
+                    : 'text-slate-500 hover:text-slate-900'
+                }`}
+              >
+                <Building className="w-4 h-4" />
+                Organizer Account
+              </button>
+            </div>
+          )}
+
           {/* Forms */}
           {activeTab === 'login' ? (
-            /* LOGIN FORM */
+            /* SINGLE UNIFIED LOGIN FORM (Student, Organizer & Admin) */
             <form onSubmit={handleLoginSubmit} className="space-y-4">
               <div>
                 <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1">
@@ -341,13 +339,9 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
                   type="email"
                   name="email"
                   required
-                  placeholder={activeRole === 'student' ? "student@university.edu" : "club@organization.com"}
-                  value={activeRole === 'student' ? studentLoginData.email : organizerLoginData.email}
-                  onChange={(e) => 
-                    activeRole === 'student' 
-                      ? setStudentLoginData({ ...studentLoginData, email: e.target.value })
-                      : setOrganizerLoginData({ ...organizerLoginData, email: e.target.value })
-                  }
+                  placeholder="you@university.edu"
+                  value={loginData.email}
+                  onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
                   className="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-400 outline-none transition-all focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600"
                 />
               </div>
@@ -369,13 +363,9 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
                     type={showPassword ? "text" : "password"}
                     name="password"
                     required
-                    placeholder="Enter password"
-                    value={activeRole === 'student' ? studentLoginData.password : organizerLoginData.password}
-                    onChange={(e) =>
-                      activeRole === 'student'
-                        ? setStudentLoginData({ ...studentLoginData, password: e.target.value })
-                        : setOrganizerLoginData({ ...organizerLoginData, password: e.target.value })
-                    }
+                    placeholder="Enter your password"
+                    value={loginData.password}
+                    onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
                     className="flex-1 outline-none text-sm text-slate-800 placeholder-slate-400 bg-transparent w-full"
                   />
                   <button
@@ -393,10 +383,10 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
                 disabled={loading}
                 className="w-full py-3 rounded-xl text-white font-extrabold text-base transition-all duration-250 mt-2 disabled:opacity-60 cursor-pointer shadow-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-blue-600/25"
               >
-                {loading ? 'Authenticating...' : `Sign In to ${activeRole === 'student' ? 'Student' : 'Organizer'} Portal`}
+                {loading ? 'Authenticating...' : 'Sign In'}
               </button>
 
-              {/* Bottom Google OAuth Button Container (Identical Full-Width Size to Sign In Button) */}
+              {/* Google OAuth Button Container */}
               <div className="mt-4 flex flex-col items-center justify-center w-full">
                 <div className="w-full flex items-center gap-3 mb-3">
                   <div className="flex-1 h-px bg-slate-200"></div>
@@ -405,7 +395,6 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
                 </div>
 
                 <div className="relative w-full overflow-hidden rounded-xl h-[46px]">
-                  {/* Styled full-width button matching primary button height & width */}
                   <div className="w-full h-full rounded-xl border border-slate-300 bg-white hover:bg-slate-50 flex items-center justify-center gap-3 text-slate-700 font-extrabold text-sm shadow-sm transition-all pointer-events-none">
                     <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="none">
                       <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -416,7 +405,6 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
                     <span>Sign in with Google</span>
                   </div>
 
-                  {/* Stretched GIS Overlay */}
                   <div 
                     id="google-signin-btn-page" 
                     className="absolute inset-0 opacity-0 cursor-pointer flex justify-center items-center scale-x-[1.7] scale-y-[1.3]"
@@ -425,7 +413,7 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
               </div>
             </form>
           ) : (
-            /* REGISTER FORM (COMPACT 2-COLUMN GRID) */
+            /* REGISTER FORM (COMPACT 2-COLUMN GRID FOR STUDENT OR ORGANIZER) */
             <form onSubmit={handleRegisterSubmit} className="space-y-3.5">
               {activeRole === 'student' ? (
                 /* Student 2-Column Grid */
@@ -610,7 +598,7 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
                 {loading ? 'Creating Account...' : `Create ${activeRole === 'student' ? 'Student Account' : 'Organizer Account'}`}
               </button>
 
-              {/* Bottom Google OAuth Button Container (Identical Full-Width Size to Sign In Button) */}
+              {/* Bottom Google OAuth Button Container */}
               <div className="mt-3 flex flex-col items-center justify-center w-full">
                 <div className="w-full flex items-center gap-3 mb-2">
                   <div className="flex-1 h-px bg-slate-200"></div>
@@ -619,7 +607,6 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
                 </div>
 
                 <div className="relative w-full overflow-hidden rounded-xl h-[46px]">
-                  {/* Styled full-width button matching primary button height & width */}
                   <div className="w-full h-full rounded-xl border border-slate-300 bg-white hover:bg-slate-50 flex items-center justify-center gap-3 text-slate-700 font-extrabold text-sm shadow-sm transition-all pointer-events-none">
                     <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="none">
                       <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -630,7 +617,6 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
                     <span>Sign up with Google</span>
                   </div>
 
-                  {/* Stretched GIS Overlay */}
                   <div 
                     id="google-signin-btn-page" 
                     className="absolute inset-0 opacity-0 cursor-pointer flex justify-center items-center scale-x-[1.7] scale-y-[1.3]"
@@ -640,11 +626,13 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
             </form>
           )}
 
-          {/* Role Features Preview Badge */}
+          {/* Features Preview Badge */}
           <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-center gap-2 text-xs font-semibold text-blue-600">
             <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
             <span>
-              {activeRole === 'student' 
+              {activeTab === 'login'
+                ? 'VolunteerHub: Connecting Students, Organizers & Administrators'
+                : activeRole === 'student' 
                 ? 'Student Perks: Earn Verified Certificates & Leaderboard Points' 
                 : 'Organizer Perks: Automated Attendance & Volunteer Analytics'}
             </span>
