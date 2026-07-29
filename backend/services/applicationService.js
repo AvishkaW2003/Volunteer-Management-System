@@ -47,11 +47,14 @@ export const applyToEvent = async (studentId, eventId, formData) => {
     status: "Pending"
   });
 
+  const student = await User.findByPk(studentId);
+  const studentName = student ? student.name : (formData?.name || "A volunteer");
+
   // Create Organizer Notification
   await createNotification({
     userId: event.UserId,
-    title: "New application received",
-    message: "New application received",
+    title: "New Volunteer Application",
+    message: `${studentName} has submitted an application for your event "${event.title}".`,
     role: "organizer"
   });
 
@@ -161,7 +164,10 @@ export const approveApplication = async (applicationId, organizerId) => {
   const transaction = await sequelize.transaction();
   try {
     const application = await VolunteerRegistration.findByPk(applicationId, {
-      include: [{ model: Event, as: "event" }],
+      include: [
+        { model: Event, as: "event", include: [{ model: User, attributes: ["id", "name"] }] },
+        { model: User, as: "volunteer", attributes: ["id", "name"] }
+      ],
       transaction
     });
 
@@ -189,11 +195,15 @@ export const approveApplication = async (applicationId, organizerId) => {
     const event = application.event;
     await event.update({ acceptedCount: event.acceptedCount + 1 }, { transaction });
 
+    const eventTitle = event ? event.title : "the event";
+    const studentName = application.volunteer?.name || (application.formData?.name || "Volunteer");
+    const orgName = event?.User?.name || "the event organizer";
+
     // Create Student Notification
     await createNotification({
       userId: application.UserId,
-      title: "Your application has been approved",
-      message: "Your application has been approved",
+      title: "Application Approved! 🎉",
+      message: `Congratulations ${studentName}! Your application for "${eventTitle}" has been approved by ${orgName}.`,
       role: "student"
     }, { transaction });
 
@@ -214,7 +224,10 @@ export const rejectApplication = async (applicationId, organizerId) => {
   const transaction = await sequelize.transaction();
   try {
     const application = await VolunteerRegistration.findByPk(applicationId, {
-      include: [{ model: Event, as: "event" }],
+      include: [
+        { model: Event, as: "event" },
+        { model: User, as: "volunteer", attributes: ["id", "name"] }
+      ],
       transaction
     });
 
@@ -239,11 +252,13 @@ export const rejectApplication = async (applicationId, organizerId) => {
       await event.update({ acceptedCount: Math.max(0, event.acceptedCount - 1) }, { transaction });
     }
 
+    const eventTitle = application.event?.title || "the event";
+
     // Create Student Notification
     await createNotification({
       userId: application.UserId,
-      title: "Your application has been rejected",
-      message: "Your application has been rejected",
+      title: "Application Status Update",
+      message: `Your application for "${eventTitle}" was not selected by the organizer at this time.`,
       role: "student"
     }, { transaction });
 
