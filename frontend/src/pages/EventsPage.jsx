@@ -6,7 +6,7 @@ import { useAuth } from "../context/AuthContext";
 import ApplyModal from "./Student/ApplyModel";
 import "./EventsPage.css";
 
-const EventsPage = () => {
+const EventsPage = ({ embedded = false }) => {
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
 
@@ -170,7 +170,7 @@ const EventsPage = () => {
   };
 
   return (
-    <div className="vh-events-page">
+    <div className={`vh-events-page ${embedded ? 'vh-events-page--embedded' : ''}`}>
       
       {/* ── HEADER SECTION ─────────────────────────────── */}
       <header className="vh-events-header-section">
