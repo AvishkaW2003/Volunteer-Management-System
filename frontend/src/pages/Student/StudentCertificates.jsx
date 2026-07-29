@@ -27,7 +27,7 @@ export const CertificateModal = ({ cert, onClose }) => (
         <div className="flex items-center gap-2">
           <button
             onClick={() => downloadCertificate(cert)}
-            className="flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-sm font-semibold bg-gradient-to-r from-blue-400 to-purple-500 text-white hover:from-blue-500 hover:to-purple-600 transition-all shadow-sm"
+            className="flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-sm font-bold bg-blue-600 hover:bg-blue-700 text-white transition-all shadow-md shadow-blue-500/20 cursor-pointer"
           >
             <Download className="w-3.5 h-3.5" /> Download
           </button>
@@ -184,7 +184,7 @@ const StudentCertificates = () => {
               </button>
               <button
                 onClick={() => downloadCertificate(cert)}
-                className="flex-1 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-bold transition-all shadow-md flex items-center justify-center gap-1.5"
+                className="flex-1 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-blue-500/20 flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <Download className="w-3.5 h-3.5 flex-shrink-0" />
                 <span>Download</span>

@@ -97,10 +97,10 @@ const EventDetailsPage = () => {
     <div className="max-w-4xl mx-auto py-10 px-4">
       {/* Back navigation */}
       <button 
-        onClick={() => navigate(-1)} 
-        className="inline-flex items-center gap-2 text-gray-500 hover:text-blue-600 font-semibold mb-6 transition-colors border-none bg-transparent cursor-pointer"
+        onClick={() => navigate(user?.role === 'student' ? '/student/events' : '/events')} 
+        className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold mb-6 transition-all border-none cursor-pointer"
       >
-        <ArrowLeft className="w-4 h-4" /> Back
+        <ArrowLeft className="w-4 h-4 text-blue-600" /> Back to Browse Events
       </button>
 
       {/* Main Card */}
@@ -211,17 +211,25 @@ const EventDetailsPage = () => {
               </div>
             </div>
 
-            <button
-              disabled={isFull}
-              onClick={handleApplyClick}
-              className={`w-full sm:w-auto px-8 py-3 rounded-2xl font-bold text-sm transition-all shadow-sm
-                ${isFull
-                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                  : 'bg-blue-600 hover:bg-blue-700 text-white hover:shadow-md'
-                }`}
-            >
-              {isFull ? 'Registration Full' : 'Register & Apply Now'}
-            </button>
+            <div className="flex items-center gap-2.5 w-full sm:w-auto">
+              <button 
+                onClick={() => navigate(user?.role === 'student' ? '/student/events' : '/events')} 
+                className="px-5 py-3 rounded-2xl font-bold text-sm bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all border-none cursor-pointer"
+              >
+                Back to Browse Events
+              </button>
+              <button
+                disabled={isFull}
+                onClick={handleApplyClick}
+                className={`flex-1 sm:flex-initial px-8 py-3 rounded-2xl font-bold text-sm transition-all shadow-sm cursor-pointer
+                  ${isFull
+                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                    : 'bg-blue-600 hover:bg-blue-700 text-white hover:shadow-md'
+                  }`}
+              >
+                {isFull ? 'Registration Full' : 'Register & Apply Now'}
+              </button>
+            </div>
           </div>
 
         </div>

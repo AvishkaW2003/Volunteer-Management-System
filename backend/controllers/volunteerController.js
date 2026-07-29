@@ -5,8 +5,7 @@ import Attendance from "../models/attendanceModel.js";
 import Certificate from "../models/certificateModel.js";
 import { getSettings } from "../services/settingsService.js";
 import StudentProfile from "../models/studentProfileModel.js";
-import bcrypt from "bcryptjs";
-import sequelize from "../config/database.js";
+import { createNotification } from "../services/notificationService.js";
 
 // Student applies for an event → creates a Pending row
 export const registerVolunteer = async (req, res) => {
@@ -92,7 +91,10 @@ export const updateApplicationStatus = async (req, res) => {
     }
 
     const application = await VolunteerRegistration.findByPk(id, {
-      include: [{ model: Event, as: "event", attributes: ["UserId"] }],
+      include: [
+        { model: Event, as: "event", attributes: ["title", "UserId"] },
+        { model: User, as: "volunteer", attributes: ["name"] }
+      ],
     });
 
     if (!application) {
@@ -105,6 +107,26 @@ export const updateApplicationStatus = async (req, res) => {
     }
 
     await application.update({ status });
+
+    const eventTitle = application.event?.title || "the event";
+    const studentName = application.volunteer?.name || "Volunteer";
+
+    if (status === "Approved") {
+      await createNotification({
+        userId: application.UserId,
+        title: "Application Approved! 🎉",
+        message: `Congratulations ${studentName}! Your application for "${eventTitle}" has been approved.`,
+        role: "student"
+      });
+    } else if (status === "Rejected") {
+      await createNotification({
+        userId: application.UserId,
+        title: "Application Status Update",
+        message: `Your application for "${eventTitle}" was not selected by the organizer at this time.`,
+        role: "student"
+      });
+    }
+
     res.status(200).json({ message: `Application ${status}`, application });
   } catch (error) {
     res.status(500).json({ message: error.message });
