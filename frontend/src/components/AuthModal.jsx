@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { X, Eye, EyeOff, User, Building, Phone, HandHelping, Calendar, Award, CheckCircle2 } from 'lucide-react';
+import { User, Building, Eye, EyeOff, HandHelping, Phone, CheckCircle2 } from 'lucide-react';
 import { loginUser, registerStudent, registerOrganizer, googleLogin, googleRegisterOrganizer } from '../services/authService';
 import { useAuth } from '../context/AuthContext';
 
@@ -8,13 +8,12 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  // Active portal (student or organizer) and mode (login or register)
-  const [activeRole, setActiveRole] = useState(initialRole);
+  // Mode (login or register) and registration active role (student or organizer)
+  const [activeRole, setActiveRole] = useState(initialRole === 'admin' ? 'student' : initialRole);
   const [activeTab, setActiveTab] = useState(initialTab);
 
   // Form states
-  const [studentLoginData, setStudentLoginData] = useState({ email: '', password: '' });
-  const [organizerLoginData, setOrganizerLoginData] = useState({ email: '', password: '' });
+  const [loginData, setLoginData] = useState({ email: '', password: '' });
 
   const [studentRegisterData, setStudentRegisterData] = useState({
     fullName: '',
@@ -49,12 +48,11 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
   useEffect(() => {
     if (isOpen) {
       setActiveTab(initialTab);
-      setActiveRole(initialRole);
+      setActiveRole(initialRole === 'admin' ? 'student' : initialRole);
       setError('');
       setShowPassword(false);
       setShowOnboarding(false);
-      setStudentLoginData({ email: '', password: '' });
-      setOrganizerLoginData({ email: '', password: '' });
+      setLoginData({ email: '', password: '' });
       setStudentRegisterData({
         fullName: '',
         studentId: '',
@@ -72,19 +70,18 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
     }
   }, [isOpen, initialTab, initialRole]);
 
-  // Handle inputs change
-  const handleStudentLoginChange = (e) => {
-    setStudentLoginData({ ...studentLoginData, [e.target.name]: e.target.value });
+  const handleTabSwitch = (tab) => {
+    setActiveTab(tab);
+    setError('');
+    setShowPassword(false);
   };
-  const handleOrganizerLoginChange = (e) => {
-    setOrganizerLoginData({ ...organizerLoginData, [e.target.name]: e.target.value });
+
+  const handleRoleSwitch = (role) => {
+    setActiveRole(role);
+    setError('');
+    setShowPassword(false);
   };
-  const handleStudentRegisterChange = (e) => {
-    setStudentRegisterData({ ...studentRegisterData, [e.target.name]: e.target.value });
-  };
-  const handleOrganizerRegisterChange = (e) => {
-    setOrganizerRegisterData({ ...organizerRegisterData, [e.target.name]: e.target.value });
-  };
+
   const handleOnboardingChange = (e) => {
     setOnboardingForm({ ...onboardingForm, [e.target.name]: e.target.value });
   };
@@ -94,7 +91,8 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
     setLoading(true);
     setError('');
     try {
-      const res = await googleLogin(response.credential, activeRole);
+      const targetRole = activeTab === 'register' ? activeRole : 'student';
+      const res = await googleLogin(response.credential, targetRole);
       if (res.status === "needs_onboarding") {
         setOnboardingData({
           email: res.email,
@@ -109,7 +107,11 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
       } else {
         login(res.user, res.token);
         onClose();
-        navigate(res.user.role === 'student' ? '/student/dashboard' : '/organizer/dashboard');
+        const userRole = res.user?.role;
+        if (userRole === 'student') navigate('/student/dashboard');
+        else if (userRole === 'organizer') navigate('/organizer/dashboard');
+        else if (userRole === 'admin') navigate('/admin/dashboard');
+        else navigate('/');
       }
     } catch (err) {
       if (!err.response) {
@@ -186,26 +188,23 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
     }
   };
 
-  // Handle Sign In Submit
+  // Single Login Submit for Student, Organizer & Admin
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
-    const credentials = activeRole === 'student' ? studentLoginData : organizerLoginData;
-
     try {
-      const data = await loginUser(credentials);
-      if (data.user.role !== activeRole) {
-        setError(`Access denied. Please switch to the ${data.user.role} portal.`);
-        setLoading(false);
-        return;
-      }
+      const data = await loginUser(loginData);
       login(data.user, data.token);
-      setStudentLoginData({ email: '', password: '' });
-      setOrganizerLoginData({ email: '', password: '' });
+      setLoginData({ email: '', password: '' });
       onClose();
-      navigate(activeRole === 'student' ? '/student/dashboard' : '/organizer/dashboard');
+
+      const userRole = data.user?.role;
+      if (userRole === 'student') navigate('/student/dashboard');
+      else if (userRole === 'organizer') navigate('/organizer/dashboard');
+      else if (userRole === 'admin') navigate('/admin/dashboard');
+      else navigate('/');
     } catch (err) {
       if (!err.response) {
         setError('Could not connect to backend server. Please ensure the backend is running on port 5000.');
@@ -217,14 +216,13 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
     }
   };
 
-  // Handle Register Submit
+  // Register Submit for Student or Organizer
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
     if (activeRole === 'student') {
-      // Client-side validation for Student ID
       if (studentRegisterData.studentId && !/^STU\d{6}$/.test(studentRegisterData.studentId)) {
         setError('Student ID must be in the format STU followed by exactly 6 digits (e.g., STU123456).');
         setLoading(false);
@@ -241,18 +239,16 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
           password: studentRegisterData.password,
         };
         await registerStudent(payload);
-        // Switch to login tab on success
         setError('');
         setActiveTab('login');
-        setStudentLoginData({ email: studentRegisterData.email, password: '' });
+        setLoginData({ email: studentRegisterData.email, password: '' });
       } catch (err) {
         if (!err.response) {
           setError('Could not connect to backend server. Please ensure the backend is running on port 5000.');
         } else {
           const data = err.response?.data;
           if (data && data.errors && Array.isArray(data.errors)) {
-            const fieldMsgs = data.errors.map(e => `${e.field}: ${e.message}`).join(', ');
-            setError(fieldMsgs);
+            setError(data.errors.map(e => `${e.field}: ${e.message}`).join(', '));
           } else {
             setError(data?.message || 'Registration failed. Please try again.');
           }
@@ -260,8 +256,7 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
       } finally {
         setLoading(false);
       }
-    } else {
-      // Client-side validation for phone number
+    } else if (activeRole === 'organizer') {
       const phoneRegex = /^\+?[\d\s\-()]{7,20}$/;
       if (organizerRegisterData.contactNumber && !phoneRegex.test(organizerRegisterData.contactNumber)) {
         setError('Contact number must be a valid phone number (7 to 20 characters).');
@@ -279,15 +274,14 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
         await registerOrganizer(payload);
         setError('');
         setActiveTab('login');
-        setOrganizerLoginData({ email: organizerRegisterData.email, password: '' });
+        setLoginData({ email: organizerRegisterData.email, password: '' });
       } catch (err) {
         if (!err.response) {
           setError('Could not connect to backend server. Please ensure the backend is running on port 5000.');
         } else {
           const data = err.response?.data;
           if (data && data.errors && Array.isArray(data.errors)) {
-            const fieldMsgs = data.errors.map(e => `${e.field}: ${e.message}`).join(', ');
-            setError(fieldMsgs);
+            setError(data.errors.map(e => `${e.field}: ${e.message}`).join(', '));
           } else {
             setError(data?.message || 'Registration failed. Please try again.');
           }
@@ -321,16 +315,14 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
               {showOnboarding 
                 ? 'Complete Sign-In' 
                 : (activeTab === 'login' 
-                    ? (activeRole === 'student' ? 'Welcome Back, Student!' : 'Welcome Back, Organizer!') 
+                    ? 'Welcome Back!' 
                     : (activeRole === 'student' ? 'Join VolunteerHub' : 'Register Organization'))}
             </h3>
             <p className="text-slate-500 text-xs md:text-sm font-medium leading-relaxed">
               {showOnboarding 
                 ? 'Please complete your organization profile to proceed.'
                 : (activeTab === 'login' 
-                    ? (activeRole === 'student'
-                        ? 'Sign in to discover university volunteer events, track hours, and earn certificates.'
-                        : 'Sign in to host campus events, manage volunteer attendance, and issue certificates.')
+                    ? 'Sign in to access your VolunteerHub account as a Student, Organizer, or Administrator.'
                     : (activeRole === 'student'
                         ? 'Create your free student account to start building your campus volunteer reputation.'
                         : 'Register your student club or organization to publish events and recruit volunteers.'))}
@@ -399,40 +391,12 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
           ) : (
             // Standard Forms
             <>
-              {/* PORTAL CHOOSE OPTION TABS (Left Side) */}
-              <div className="flex border border-gray-100 bg-gray-50/70 p-1 rounded-2xl mb-5">
-                <button
-                  type="button"
-                  onClick={() => { setActiveRole('student'); setError(''); }}
-                  className={`flex-1 py-2 text-center text-xs font-bold rounded-xl transition-all duration-250 flex items-center justify-center gap-1 ${
-                    activeRole === 'student'
-                      ? 'bg-blue-600 text-white shadow-sm'
-                      : 'text-gray-500 hover:text-gray-800'
-                  }`}
-                >
-                  <User className="w-3.5 h-3.5" />
-                  Student Portal
-                </button>
-                <button
-                  type="button"
-                  onClick={() => { setActiveRole('organizer'); setError(''); }}
-                  className={`flex-1 py-2 text-center text-xs font-bold rounded-xl transition-all duration-250 flex items-center justify-center gap-1 ${
-                    activeRole === 'organizer'
-                      ? 'bg-blue-600 text-white shadow-sm'
-                      : 'text-gray-500 hover:text-gray-800'
-                  }`}
-                >
-                  <Building className="w-3.5 h-3.5" />
-                  Organizer Portal
-                </button>
-              </div>
-
-              {/* ACTION CHOOSE OPTION TABS (Left Side) */}
+              {/* ACTION CHOOSE OPTION TABS (Sign In vs Create Account) */}
               <div className="flex justify-center gap-6 mb-5">
                 <button
                   type="button"
-                  onClick={() => { setActiveTab('login'); setError(''); }}
-                  className={`text-sm font-bold pb-1.5 border-b-2 transition-colors duration-200 ${
+                  onClick={() => handleTabSwitch('login')}
+                  className={`text-sm font-bold pb-1.5 border-b-2 transition-colors duration-200 cursor-pointer ${
                     activeTab === 'login'
                       ? 'border-blue-600 text-blue-600'
                       : 'border-transparent text-gray-400 hover:text-gray-600'
@@ -442,8 +406,8 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
                 </button>
                 <button
                   type="button"
-                  onClick={() => { setActiveTab('register'); setError(''); }}
-                  className={`text-sm font-bold pb-1.5 border-b-2 transition-colors duration-200 ${
+                  onClick={() => handleTabSwitch('register')}
+                  className={`text-sm font-bold pb-1.5 border-b-2 transition-colors duration-200 cursor-pointer ${
                     activeTab === 'register'
                       ? 'border-blue-600 text-blue-600'
                       : 'border-transparent text-gray-400 hover:text-gray-600'
@@ -453,8 +417,38 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
                 </button>
               </div>
 
+              {/* PORTAL CHOOSE OPTION TABS (ONLY SHOWN ON CREATE ACCOUNT TAB) */}
+              {activeTab === 'register' && (
+                <div className="flex border border-gray-100 bg-gray-50/70 p-1 rounded-2xl mb-5 gap-1">
+                  <button
+                    type="button"
+                    onClick={() => handleRoleSwitch('student')}
+                    className={`flex-1 py-2 text-center text-xs font-bold rounded-xl transition-all duration-250 flex items-center justify-center gap-1.5 cursor-pointer ${
+                      activeRole === 'student'
+                        ? 'bg-blue-600 text-white shadow-sm'
+                        : 'text-gray-500 hover:text-gray-800'
+                    }`}
+                  >
+                    <User className="w-3.5 h-3.5" />
+                    Student Account
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleRoleSwitch('organizer')}
+                    className={`flex-1 py-2 text-center text-xs font-bold rounded-xl transition-all duration-250 flex items-center justify-center gap-1.5 cursor-pointer ${
+                      activeRole === 'organizer'
+                        ? 'bg-blue-600 text-white shadow-sm'
+                        : 'text-gray-500 hover:text-gray-800'
+                    }`}
+                  >
+                    <Building className="w-3.5 h-3.5" />
+                    Organizer Account
+                  </button>
+                </div>
+              )}
+
               {activeTab === 'login' ? (
-                // ── LOGIN FORM ─────────────────────────────
+                // ── SINGLE UNIFIED LOGIN FORM ─────────────────────────────
                 <form onSubmit={handleLoginSubmit} className="space-y-4">
                   <div>
                     <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
@@ -465,8 +459,8 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
                       name="email"
                       required
                       placeholder="you@university.edu"
-                      value={activeRole === 'student' ? studentLoginData.email : organizerLoginData.email}
-                      onChange={activeRole === 'student' ? handleStudentLoginChange : handleOrganizerLoginChange}
+                      value={loginData.email}
+                      onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
                       className="w-full border border-gray-300 rounded-xl px-3.5 py-2.5 text-sm text-gray-700 placeholder-gray-400 outline-none focus:border-blue-500 transition-colors"
                     />
                   </div>
@@ -489,8 +483,8 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
                         name="password"
                         required
                         placeholder="Enter password"
-                        value={activeRole === 'student' ? studentLoginData.password : organizerLoginData.password}
-                        onChange={activeRole === 'student' ? handleStudentLoginChange : handleOrganizerLoginChange}
+                        value={loginData.password}
+                        onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
                         className="flex-1 outline-none text-sm text-gray-700 placeholder-gray-400 bg-transparent w-full"
                       />
                       <button
@@ -511,7 +505,7 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
                     {loading ? 'Signing In...' : 'Sign In'}
                   </button>
 
-                  {/* Bottom Google OAuth Button Container (Identical Full-Width Size to Sign In Button) */}
+                  {/* Google OAuth Button Container */}
                   <div className="mt-4 flex flex-col items-center justify-center w-full">
                     <div className="w-full flex items-center gap-3 mb-3">
                       <div className="flex-1 h-px bg-gray-200"></div>
@@ -520,7 +514,6 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
                     </div>
 
                     <div className="relative w-full overflow-hidden rounded-xl h-[46px]">
-                      {/* Styled full-width button matching primary button height & width */}
                       <div className="w-full h-full rounded-xl border border-slate-300 bg-white hover:bg-slate-50 flex items-center justify-center gap-3 text-slate-700 font-extrabold text-sm shadow-sm transition-all pointer-events-none">
                         <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="none">
                           <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -531,7 +524,6 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
                         <span>Sign in with Google</span>
                       </div>
 
-                      {/* Stretched GIS Overlay */}
                       <div 
                         id="google-signin-btn-modal" 
                         className="absolute inset-0 opacity-0 cursor-pointer flex justify-center items-center scale-x-[1.7] scale-y-[1.3]"
@@ -555,7 +547,7 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
                           required
                           placeholder="John Doe"
                           value={studentRegisterData.fullName}
-                          onChange={handleStudentRegisterChange}
+                          onChange={(e) => setStudentRegisterData({ ...studentRegisterData, fullName: e.target.value })}
                           className="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm text-gray-700 placeholder-gray-400 outline-none focus:border-blue-500 transition-colors"
                         />
                       </div>
@@ -570,7 +562,7 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
                           required
                           placeholder="STU123456"
                           value={studentRegisterData.studentId}
-                          onChange={handleStudentRegisterChange}
+                          onChange={(e) => setStudentRegisterData({ ...studentRegisterData, studentId: e.target.value })}
                           className="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm text-gray-700 placeholder-gray-400 outline-none focus:border-blue-500 transition-colors"
                         />
                       </div>
@@ -585,7 +577,7 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
                           required
                           placeholder="Faculty of Engineering"
                           value={studentRegisterData.faculty}
-                          onChange={handleStudentRegisterChange}
+                          onChange={(e) => setStudentRegisterData({ ...studentRegisterData, faculty: e.target.value })}
                           className="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm text-gray-700 placeholder-gray-400 outline-none focus:border-blue-500 transition-colors"
                         />
                       </div>
@@ -599,7 +591,7 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
                           name="skills"
                           placeholder="Leadership, Writing"
                           value={studentRegisterData.skills}
-                          onChange={handleStudentRegisterChange}
+                          onChange={(e) => setStudentRegisterData({ ...studentRegisterData, skills: e.target.value })}
                           className="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm text-gray-700 placeholder-gray-400 outline-none focus:border-blue-500 transition-colors"
                         />
                       </div>
@@ -614,7 +606,7 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
                           required
                           placeholder="student@university.edu"
                           value={studentRegisterData.email}
-                          onChange={handleStudentRegisterChange}
+                          onChange={(e) => setStudentRegisterData({ ...studentRegisterData, email: e.target.value })}
                           className="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm text-gray-700 placeholder-gray-400 outline-none focus:border-blue-500 transition-colors"
                         />
                       </div>
@@ -630,7 +622,7 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
                             required
                             placeholder="Choose password"
                             value={studentRegisterData.password}
-                            onChange={handleStudentRegisterChange}
+                            onChange={(e) => setStudentRegisterData({ ...studentRegisterData, password: e.target.value })}
                             className="flex-1 outline-none text-sm text-gray-700 placeholder-gray-400 bg-transparent w-full"
                           />
                           <button
@@ -656,7 +648,7 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
                           required
                           placeholder="Rotaract Club"
                           value={organizerRegisterData.clubName}
-                          onChange={handleOrganizerRegisterChange}
+                          onChange={(e) => setOrganizerRegisterData({ ...organizerRegisterData, clubName: e.target.value })}
                           className="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm text-gray-700 placeholder-gray-400 outline-none focus:border-blue-500 transition-colors"
                         />
                       </div>
@@ -671,7 +663,7 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
                           required
                           placeholder="+94771234567"
                           value={organizerRegisterData.contactNumber}
-                          onChange={handleOrganizerRegisterChange}
+                          onChange={(e) => setOrganizerRegisterData({ ...organizerRegisterData, contactNumber: e.target.value })}
                           className="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm text-gray-700 placeholder-gray-400 outline-none focus:border-blue-500 transition-colors"
                         />
                       </div>
@@ -686,7 +678,7 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
                           required
                           placeholder="club@organization.com"
                           value={organizerRegisterData.email}
-                          onChange={handleOrganizerRegisterChange}
+                          onChange={(e) => setOrganizerRegisterData({ ...organizerRegisterData, email: e.target.value })}
                           className="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm text-gray-700 placeholder-gray-400 outline-none focus:border-blue-500 transition-colors"
                         />
                       </div>
@@ -702,7 +694,7 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
                             required
                             placeholder="Choose password"
                             value={organizerRegisterData.password}
-                            onChange={handleOrganizerRegisterChange}
+                            onChange={(e) => setOrganizerRegisterData({ ...organizerRegisterData, password: e.target.value })}
                             className="flex-1 outline-none text-sm text-slate-800 placeholder-slate-400 bg-transparent w-full"
                           />
                           <button
@@ -725,7 +717,7 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
                     {loading ? 'Creating Account...' : `Create ${activeRole === 'student' ? 'Student Account' : 'Organizer Account'}`}
                   </button>
 
-                  {/* Bottom Google OAuth Button Container (Identical Full-Width Size to Sign In Button) */}
+                  {/* Bottom Google OAuth Button Container */}
                   <div className="mt-3 flex flex-col items-center justify-center w-full">
                     <div className="w-full flex items-center gap-3 mb-2">
                       <div className="flex-1 h-px bg-gray-200"></div>
@@ -734,7 +726,6 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
                     </div>
 
                     <div className="relative w-full overflow-hidden rounded-xl h-[46px]">
-                      {/* Styled full-width button matching primary button height & width */}
                       <div className="w-full h-full rounded-xl border border-slate-300 bg-white hover:bg-slate-50 flex items-center justify-center gap-3 text-slate-700 font-extrabold text-sm shadow-sm transition-all pointer-events-none">
                         <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="none">
                           <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -745,7 +736,6 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
                         <span>Sign up with Google</span>
                       </div>
 
-                      {/* Stretched GIS Overlay */}
                       <div 
                         id="google-signin-btn-modal" 
                         className="absolute inset-0 opacity-0 cursor-pointer flex justify-center items-center scale-x-[1.7] scale-y-[1.3]"
@@ -759,7 +749,9 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
               <div className="mt-5 pt-3 border-t border-slate-100 flex items-center justify-center gap-2 text-xs font-semibold text-blue-600">
                 <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
                 <span>
-                  {activeRole === 'student' 
+                  {activeTab === 'login'
+                    ? 'VolunteerHub: Connecting Students, Organizers & Administrators'
+                    : activeRole === 'student' 
                     ? 'Student Perks: Earn Verified Certificates & Leaderboard Points' 
                     : 'Organizer Perks: Automated Attendance & Volunteer Analytics'}
                 </span>
