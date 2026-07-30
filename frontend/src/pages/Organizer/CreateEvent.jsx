@@ -1,29 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Calendar, MapPin, Users, Tag, AlignLeft, Clock, ChevronLeft } from 'lucide-react';
+import { Calendar, MapPin, Users, Tag, AlignLeft, Clock, ChevronLeft, Video, Globe, Building, Link2, Image as ImageIcon } from 'lucide-react';
 import { getOrganizerSettings } from '../../services/userService';
 import { createEvent } from '../../services/eventService';
 
 const CATEGORIES = ['Community Service', 'Environment', 'Education', 'Health', 'Technology', 'Sports', 'Arts & Culture'];
 
-const PRESET_BANNERS = [
-  { title: 'IEEE WIE Day', url: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800' },
-  { title: 'IEEE Path Forward 3.0', url: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800' },
-  { title: 'PearlHack 4.0', url: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=800' },
-  { title: 'First Aid Training', url: 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=800' },
-  { title: 'Tree Plantation Drive', url: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800' },
-  { title: 'Blood Donation Camp', url: 'https://images.unsplash.com/photo-1615461066841-6116e61058f4?w=800' },
-];
-
-const getFallbackImage = (title, category) => {
-  const t = (title || '').toLowerCase();
-  if (t.includes('wie') || t.includes('women in engineering')) return PRESET_BANNERS[0].url;
-  if (t.includes('path forward')) return PRESET_BANNERS[1].url;
-  if (t.includes('pearlhack') || t.includes('hackathon')) return PRESET_BANNERS[2].url;
-  if (t.includes('first aid') || t.includes('training') || t.includes('cpr')) return PRESET_BANNERS[3].url;
-  if (t.includes('tree') || t.includes('plantation') || t.includes('plant')) return PRESET_BANNERS[4].url;
-  if (t.includes('blood') || t.includes('donation')) return PRESET_BANNERS[5].url;
-
+const getFallbackImage = (category) => {
   const cat = (category || '').toLowerCase();
   if (cat.includes('environment')) {
     return 'https://images.unsplash.com/photo-1473448912268-2022ce9509d8?w=800';
@@ -36,6 +19,7 @@ const getFallbackImage = (title, category) => {
   }
   return 'https://images.unsplash.com/photo-1559027615-cd44874e90e5?w=800';
 };
+
 const Field = ({ label, required, children }) => (
   <div>
     <label className="block text-base font-medium text-gray-700 mb-1.5">
@@ -60,9 +44,17 @@ const CreateEvent = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [form, setForm] = useState({
-    title: '', category: '', description: '',
-    date: '', time: '', location: '',
-    maxVolunteers: '', skills: '', image: '',
+    title: '',
+    category: '',
+    description: '',
+    date: '',
+    time: '',
+    eventType: 'In-Person', // 'In-Person' | 'Online'
+    location: '',
+    meetingLink: '',
+    maxVolunteers: '',
+    skills: '',
+    image: '',
   });
 
   const handleImageChange = (e) => {
@@ -74,10 +66,6 @@ const CreateEvent = () => {
       };
       reader.readAsDataURL(file);
     }
-  };
-
-  const selectPresetImage = (url) => {
-    setForm(prev => ({ ...prev, image: url }));
   };
 
   useEffect(() => {
@@ -117,6 +105,14 @@ const CreateEvent = () => {
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
+  const handleEventTypeChange = (type) => {
+    setForm(prev => ({
+      ...prev,
+      eventType: type,
+      location: type === 'Online' && !prev.location ? 'Online via Zoom / Teams' : prev.location
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -128,12 +124,14 @@ const CreateEvent = () => {
         description: form.description,
         eventDate: form.date,
         time: form.time || '10:00 AM',
-        location: form.location,
+        eventType: form.eventType,
+        location: form.eventType === 'Online' ? (form.location || 'Online Event') : form.location,
+        meetingLink: form.eventType === 'Online' ? form.meetingLink : '',
         volunteerRequired: parseInt(form.maxVolunteers) || 0,
         skills: form.skills || '',
-        image: form.image || getFallbackImage(form.title, form.category),
-        reputationPoints: 100, // standard points
-        volunteerHours: 4 // standard hours
+        image: form.image || getFallbackImage(form.category),
+        reputationPoints: 100,
+        volunteerHours: 4
       };
 
       await createEvent(eventData);
@@ -151,7 +149,6 @@ const CreateEvent = () => {
     }
   };
 
-
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       {/* Header */}
@@ -164,7 +161,7 @@ const CreateEvent = () => {
         </button>
         <div>
           <h1 className="text-3xl font-bold text-gray-800">Create New Event</h1>
-          <p className="text-gray-500 text-base mt-0.5">Fill in the details to publish a volunteer event</p>
+          <p className="text-gray-500 text-base mt-0.5">Fill in the details to publish an in-person or online volunteer event</p>
         </div>
       </div>
 
@@ -177,6 +174,35 @@ const CreateEvent = () => {
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
         <form onSubmit={handleSubmit} className="space-y-5">
 
+          {/* Event Mode (In-Person vs Online) */}
+          <Field label="Event Mode & Venue" required>
+            <div className="grid grid-cols-2 gap-3 mb-2">
+              <button
+                type="button"
+                onClick={() => handleEventTypeChange('In-Person')}
+                className={`flex items-center justify-center gap-2 py-3 px-4 rounded-xl border font-bold text-sm transition-all cursor-pointer ${
+                  form.eventType === 'In-Person'
+                    ? 'bg-blue-50 border-blue-600 text-blue-700 ring-2 ring-blue-100 shadow-sm'
+                    : 'bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100'
+                }`}
+              >
+                <Building className="w-4 h-4" /> In-Person Event
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleEventTypeChange('Online')}
+                className={`flex items-center justify-center gap-2 py-3 px-4 rounded-xl border font-bold text-sm transition-all cursor-pointer ${
+                  form.eventType === 'Online'
+                    ? 'bg-purple-50 border-purple-600 text-purple-700 ring-2 ring-purple-100 shadow-sm'
+                    : 'bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100'
+                }`}
+              >
+                <Video className="w-4 h-4" /> Online / Virtual Event
+              </button>
+            </div>
+          </Field>
+
           {/* Title + Category */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <Field label="Event Title" required>
@@ -184,7 +210,7 @@ const CreateEvent = () => {
                 <Tag className="w-4 h-4" />,
                 <input
                   name="title" value={form.title} onChange={handleChange} required
-                  placeholder="Beach Cleanup Drive"
+                  placeholder={form.eventType === 'Online' ? "Online Technical Workshop" : "Beach Cleanup Drive"}
                   className="flex-1 outline-none text-base text-gray-700 placeholder-gray-400 bg-transparent w-full"
                 />
               )}
@@ -236,45 +262,77 @@ const CreateEvent = () => {
             </Field>
           </div>
 
-          {/* Location + Max Volunteers */}
+          {/* Location & Online Join Link */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <Field label="Location" required>
+            <Field label={form.eventType === 'Online' ? "Platform / Venue" : "Physical Location"} required>
               {iconInput(
-                <MapPin className="w-4 h-4" />,
+                form.eventType === 'Online' ? <Globe className="w-4 h-4" /> : <MapPin className="w-4 h-4" />,
                 <input
                   name="location" value={form.location} onChange={handleChange} required
-                  placeholder="Colombo, Sri Lanka"
+                  placeholder={form.eventType === 'Online' ? "Zoom Video Call / Google Meet" : "Colombo, Sri Lanka"}
                   className="flex-1 outline-none text-base text-gray-700 placeholder-gray-400 bg-transparent w-full"
                 />
               )}
             </Field>
 
-            <Field label="Max Volunteers" required>
-              {iconInput(
-                <Users className="w-4 h-4" />,
-                <input
-                  type="number" name="maxVolunteers" value={form.maxVolunteers} onChange={handleChange} required min="1"
-                  placeholder="30"
-                  className="flex-1 outline-none text-base text-gray-700 placeholder-gray-400 bg-transparent w-full"
-                />
-              )}
-            </Field>
+            {form.eventType === 'Online' ? (
+              <Field label="Meeting Join Link (Zoom / Meet / Teams)" required>
+                {iconInput(
+                  <Link2 className="w-4 h-4 text-purple-500" />,
+                  <input
+                    type="url"
+                    name="meetingLink"
+                    value={form.meetingLink}
+                    onChange={handleChange}
+                    required
+                    placeholder="https://zoom.us/j/123456789 or https://meet.google.com/xyz"
+                    className="flex-1 outline-none text-base text-gray-700 placeholder-gray-400 bg-transparent w-full"
+                  />
+                )}
+              </Field>
+            ) : (
+              <Field label="Max Volunteers" required>
+                {iconInput(
+                  <Users className="w-4 h-4" />,
+                  <input
+                    type="number" name="maxVolunteers" value={form.maxVolunteers} onChange={handleChange} required min="1"
+                    placeholder="30"
+                    className="flex-1 outline-none text-base text-gray-700 placeholder-gray-400 bg-transparent w-full"
+                  />
+                )}
+              </Field>
+            )}
           </div>
+
+          {/* If Online, display Max Volunteers on its own row */}
+          {form.eventType === 'Online' && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <Field label="Max Volunteers" required>
+                {iconInput(
+                  <Users className="w-4 h-4" />,
+                  <input
+                    type="number" name="maxVolunteers" value={form.maxVolunteers} onChange={handleChange} required min="1"
+                    placeholder="30"
+                    className="flex-1 outline-none text-base text-gray-700 placeholder-gray-400 bg-transparent w-full"
+                  />
+                )}
+              </Field>
+            </div>
+          )}
 
           {/* Skills */}
           <Field label="Required Skills">
             <input
               name="skills" value={form.skills} onChange={handleChange}
-              placeholder="e.g. Leadership, First Aid, Communication"
+              placeholder="e.g. Leadership, Communication, Python"
               className={inputClass}
             />
             <p className="text-xs text-gray-400 mt-1">Separate multiple skills with commas</p>
           </Field>
 
-          {/* Event Banner Image */}
+          {/* Event Banner Image Upload */}
           <Field label="Event Banner Image">
-            <div className="space-y-4">
-              {/* Custom Upload Box */}
+            <div className="space-y-3">
               <div className="flex flex-col sm:flex-row gap-4 items-center">
                 <div className="w-full sm:w-1/2 h-36 border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center p-3 text-center bg-gray-50 hover:border-blue-500 transition-colors relative overflow-hidden group">
                   {form.image ? (
@@ -286,10 +344,8 @@ const CreateEvent = () => {
                     </>
                   ) : (
                     <div className="text-gray-400">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 mx-auto mb-1 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                      <span className="text-xs font-medium">Click to upload custom banner</span>
+                      <ImageIcon className="w-8 h-8 mx-auto mb-1 opacity-70" />
+                      <span className="text-xs font-medium">Click or drag to upload custom banner image</span>
                     </div>
                   )}
                   <input
@@ -300,50 +356,18 @@ const CreateEvent = () => {
                   />
                 </div>
 
-                <div className="w-full sm:w-1/2 text-left">
-                  <p className="text-sm font-semibold text-gray-700">Custom Banner Upload</p>
-                  <p className="text-xs text-gray-400 mt-1">Upload a JPG, PNG or WEBP image. High resolution landscape aspect ratios (e.g. 16:9) work best.</p>
+                <div className="w-full sm:w-1/2 text-left space-y-2">
+                  <p className="text-sm font-semibold text-gray-700">Custom Image Upload</p>
+                  <p className="text-xs text-gray-400">Upload a high-quality JPG, PNG, or WEBP image banner for your event.</p>
                   {form.image && (
                     <button
                       type="button"
                       onClick={() => setForm(prev => ({ ...prev, image: '' }))}
-                      className="mt-3 text-xs font-bold text-red-500 hover:text-red-600 transition-colors border-none bg-transparent cursor-pointer"
+                      className="text-xs font-bold text-red-500 hover:text-red-600 transition-colors border-none bg-transparent cursor-pointer"
                     >
-                      Clear Selection
+                      Clear Uploaded Image
                     </button>
                   )}
-                </div>
-              </div>
-
-              {/* Preset Selector Grid */}
-              <div className="space-y-2">
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Or Select From Preset Banners</p>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                  {PRESET_BANNERS.map((preset) => {
-                    const isSelected = form.image === preset.url;
-                    return (
-                      <button
-                        key={preset.title}
-                        type="button"
-                        onClick={() => selectPresetImage(preset.url)}
-                        className={`group relative h-20 rounded-xl overflow-hidden text-left border transition-all cursor-pointer ${isSelected ? 'border-blue-600 ring-2 ring-blue-100 shadow-sm' : 'border-gray-100 hover:border-blue-300'
-                          }`}
-                      >
-                        <img src={preset.url} alt={preset.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-200" />
-                        <div className={`absolute inset-0 transition-opacity flex flex-col justify-end p-2 ${isSelected ? 'bg-gradient-to-t from-blue-900/90 via-blue-900/50 to-transparent' : 'bg-gradient-to-t from-black/80 via-black/30 to-transparent'
-                          }`}>
-                          <span className="text-[10px] font-bold text-white leading-tight line-clamp-1">{preset.title}</span>
-                        </div>
-                        {isSelected && (
-                          <div className="absolute top-1.5 right-1.5 w-4.5 h-4.5 bg-blue-600 text-white rounded-full flex items-center justify-center shadow">
-                            <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}>
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                            </svg>
-                          </div>
-                        )}
-                      </button>
-                    );
-                  })}
                 </div>
               </div>
             </div>
