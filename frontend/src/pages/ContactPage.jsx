@@ -200,7 +200,9 @@ const ContactPage = () => {
                 style={{
                   alignSelf: "flex-start",
                   marginTop: "0.5rem",
-                  width: "auto"
+                  width: "auto",
+                  backgroundColor: "#2563EB",
+                  color: "#FFFFFF"
                 }}
               >
                 {submitted ? "Sending..." : "Send Message"} <Send className="w-4 h-4" />
