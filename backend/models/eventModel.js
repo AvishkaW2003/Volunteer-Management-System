@@ -24,6 +24,16 @@ const Event = sequelize.define("Event", {
     allowNull: false,
   },
 
+  eventType: {
+    type: DataTypes.ENUM("In-Person", "Online"),
+    defaultValue: "In-Person",
+  },
+
+  meetingLink: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
+
   eventDate: {
     type: DataTypes.DATEONLY,
     allowNull: false,
