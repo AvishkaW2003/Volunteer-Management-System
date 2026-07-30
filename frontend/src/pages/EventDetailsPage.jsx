@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { Calendar, MapPin, Users, Clock, ArrowLeft, Star, Tag, AlignLeft, ShieldCheck } from 'lucide-react';
+import { Calendar, MapPin, Users, Clock, ArrowLeft, Star, Tag, AlignLeft, ShieldCheck, Video, ExternalLink, Globe } from 'lucide-react';
 import { getEventById } from '../services/eventService';
 import { useAuth } from '../context/AuthContext';
 import ApplyModal from "./Student/ApplyModel";
@@ -149,10 +149,19 @@ const EventDetailsPage = () => {
             </div>
 
             <div className="flex items-center gap-3">
-              <MapPin className="w-5 h-5 text-purple-500 flex-shrink-0" />
+              {event.eventType === 'Online' || event.meetingLink ? (
+                <Video className="w-5 h-5 text-purple-500 flex-shrink-0" />
+              ) : (
+                <MapPin className="w-5 h-5 text-purple-500 flex-shrink-0" />
+              )}
               <div>
-                <p className="text-xs text-gray-400 font-medium uppercase">Location</p>
+                <p className="text-xs text-gray-400 font-medium uppercase">Venue / Mode</p>
                 <p className="text-sm font-bold text-gray-700">{event.location}</p>
+                {(event.eventType === 'Online' || event.meetingLink) && (
+                  <span className="inline-block mt-0.5 text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md bg-purple-100 text-purple-700">
+                    Online Virtual Event
+                  </span>
+                )}
               </div>
             </div>
 
@@ -167,6 +176,41 @@ const EventDetailsPage = () => {
               </div>
             </div>
           </div>
+
+          {/* Online Meeting Join Link Banner */}
+          {(event.eventType === 'Online' || event.meetingLink) && (
+            <div className="p-5 bg-gradient-to-r from-purple-50 via-indigo-50 to-blue-50 border border-purple-200 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 rounded-2xl bg-purple-600 text-white flex items-center justify-center flex-shrink-0 shadow-md shadow-purple-500/20">
+                  <Video className="w-6 h-6" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <p className="text-xs font-extrabold uppercase tracking-wider text-purple-700">Online Meeting Link</p>
+                    <span className="px-2 py-0.5 text-[10px] font-extrabold rounded-full bg-purple-200 text-purple-800 uppercase">Live Virtual</span>
+                  </div>
+                  <p className="text-sm font-semibold text-slate-800 mt-0.5">
+                    This event is conducted online via Zoom, Google Meet, or Teams.
+                  </p>
+                </div>
+              </div>
+
+              {event.meetingLink ? (
+                <a
+                  href={event.meetingLink.startsWith('http') ? event.meetingLink : `https://${event.meetingLink}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-extrabold text-sm transition-all shadow-md shadow-purple-500/20 no-underline cursor-pointer"
+                >
+                  <Video className="w-4 h-4" /> Join Online Event <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+              ) : (
+                <span className="text-xs font-bold text-purple-700 bg-purple-100 px-3 py-1.5 rounded-xl border border-purple-200">
+                  Meeting link will be activated by organizer
+                </span>
+              )}
+            </div>
+          )}
 
           {/* Description */}
           <div className="space-y-3">
