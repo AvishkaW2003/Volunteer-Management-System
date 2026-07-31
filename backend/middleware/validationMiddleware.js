@@ -246,15 +246,22 @@ export const validateEvent = (req, res, next) => {
     return res.status(400).json({ message: "Event location is required" });
   }
 
-  if (!eventDate || !/^\d{4}-\d{2}-\d{2}$/.test(eventDate)) {
+  if (!eventDate) {
+    return res.status(400).json({ message: "Event date is required" });
+  }
+
+  const dateStr = typeof eventDate === "string" ? eventDate.split("T")[0] : "";
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
     return res.status(400).json({ message: "Event date must be in YYYY-MM-DD format" });
   }
 
-  const selectedDate = new Date(eventDate);
+  const [year, month, day] = dateStr.split("-").map(Number);
+  const selectedDate = new Date(year, month - 1, day);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
+
   if (selectedDate < today) {
-    return res.status(400).json({ message: "Event date must be in the future" });
+    return res.status(400).json({ message: "Event date cannot be in the past" });
   }
 
   if (volunteerRequired === undefined || volunteerRequired === null || isNaN(volunteerRequired) || Number(volunteerRequired) <= 0) {
@@ -271,18 +278,17 @@ export const validateEvent = (req, res, next) => {
     if (typeof image !== "string") {
       return res.status(400).json({ message: "Invalid banner image format" });
     }
-    
-    const isUrl = image.startsWith("http://") || image.startsWith("https://");
+
+    const isUrl = image.startsWith("http://") || image.startsWith("https://") || image.startsWith("/");
     const isBase64 = image.startsWith("data:image/");
     if (!isUrl && !isBase64) {
-      return res.status(400).json({ message: "Banner image must be a valid URL or base64 image payload" });
+      return res.status(400).json({ message: "Banner image must be a valid URL, path, or base64 image payload" });
     }
 
-    if (image.length > 5 * 1024 * 1024) {
-      return res.status(400).json({ message: "Banner image size must be under 5MB" });
+    if (image.length > 10 * 1024 * 1024) {
+      return res.status(400).json({ message: "Banner image size must be under 10MB" });
     }
   }
 
   next();
 };
-
