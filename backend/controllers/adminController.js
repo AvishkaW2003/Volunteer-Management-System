@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import User from "../models/userModel.js";
 import Event from "../models/eventModel.js";
 import VolunteerRegistration from "../models/volunteerRegistration.js";
@@ -669,6 +670,9 @@ export const getOrganizationById = async (req, res) => {
 export const getEvents = async (req, res) => {
   try {
     const list = await Event.findAll({
+      where: {
+        status: { [Op.ne]: "Archived" }
+      },
       include: [{ model: User, attributes: ["id", "name", "email"] }],
       order: [["createdAt", "DESC"]]
     });
