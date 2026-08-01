@@ -1,0 +1,494 @@
+/* ==========================================================================
+   Contact Page Professional Stylesheet with Image Features
+   ========================================================================== */
+
+.contact-page-wrapper {
+  position: relative;
+  width: 100%;
+  min-height: calc(100vh - 76px);
+  background-color: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  padding-top: calc(76px + 1.25rem);
+  padding-bottom: 1.5rem;
+  overflow: visible;
+}
+
+/* Background Decorative Glowing Orbs */
+.contact-bg-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(85px);
+  opacity: 0.38;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.contact-glow-1 {
+  top: 0px;
+  right: -40px;
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.35) 0%, rgba(147, 51, 234, 0.15) 70%, transparent 100%);
+}
+
+.contact-glow-2 {
+  bottom: 0px;
+  left: -60px;
+  width: 380px;
+  height: 380px;
+  background: radial-gradient(circle, rgba(14, 165, 233, 0.3) 0%, rgba(99, 102, 241, 0.15) 70%, transparent 100%);
+}
+
+/* Main Container for Contact Page Content */
+.contact-single-screen-container {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+  box-sizing: border-box;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Compact Hero Header Section
+   ────────────────────────────────────────────────────────────────────────── */
+.contact-hero-compact {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.contact-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.85rem;
+  border-radius: 9999px;
+  background: rgba(37, 99, 235, 0.08);
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  color: #2563eb;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+
+.contact-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #2563eb;
+  box-shadow: 0 0 8px #2563eb;
+  animation: contact-pulse 2s infinite;
+}
+
+@keyframes contact-pulse {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.25); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.8; }
+}
+
+.contact-hero-heading {
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.15;
+  margin: 0 0 0.3rem 0;
+  letter-spacing: -0.02em;
+}
+
+.contact-gradient-text {
+  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.contact-hero-subtext {
+  font-size: 0.95rem;
+  color: #475569;
+  line-height: 1.45;
+  margin: 0;
+  max-width: 560px;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Main Content Grid
+   ────────────────────────────────────────────────────────────────────────── */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.25fr;
+  gap: 1.35rem;
+  align-items: stretch;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Left Column: Contact Information & Professional Campus Card
+   ────────────────────────────────────────────────────────────────────────── */
+.contact-info-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  justify-content: space-between;
+}
+
+.contact-section-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 0.2rem 0;
+  letter-spacing: -0.01em;
+}
+
+/* Professional Hero Image Banner Card */
+.contact-image-banner-card {
+  position: relative;
+  width: 100%;
+  height: 125px;
+  border-radius: 0.95rem;
+  overflow: hidden;
+  box-shadow: 0 6px 18px -4px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+}
+
+.contact-image-banner-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.contact-image-banner-card:hover img {
+  transform: scale(1.05);
+}
+
+.contact-image-banner-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.15) 0%, rgba(15, 23, 42, 0.75) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0.75rem 1rem;
+}
+
+.contact-image-banner-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.65rem;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 9999px;
+  color: #ffffff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  width: fit-content;
+  margin-bottom: 0.2rem;
+}
+
+.contact-image-banner-title {
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 0;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Contact Info Cards */
+.contact-info-card {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 0.95rem;
+  padding: 0.75rem 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.04);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.contact-info-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(37, 99, 235, 0.3);
+  box-shadow: 0 10px 22px -4px rgba(37, 99, 235, 0.12);
+}
+
+.contact-icon-box {
+  width: 40px;
+  height: 40px;
+  border-radius: 0.75rem;
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  flex-shrink: 0;
+  box-shadow: 0 6px 14px -4px rgba(37, 99, 235, 0.35);
+  transition: transform 0.25s ease;
+}
+
+.contact-info-card:hover .contact-icon-box {
+  transform: scale(1.06) rotate(-3deg);
+}
+
+.contact-info-content h3 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.contact-info-content p {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin: 0.1rem 0 0 0;
+}
+
+/* Social Links Card */
+.contact-social-card {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 0.95rem;
+  padding: 0.75rem 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.04);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.contact-social-card:hover {
+  border-color: rgba(37, 99, 235, 0.3);
+  box-shadow: 0 10px 22px -4px rgba(37, 99, 235, 0.12);
+}
+
+.contact-social-list {
+  display: flex;
+  gap: 0.55rem;
+}
+
+.contact-social-icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 0.65rem;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #475569;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.contact-social-icon-btn:hover {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px -3px rgba(37, 99, 235, 0.4);
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Right Column: Contact Form Card
+   ────────────────────────────────────────────────────────────────────────── */
+/* ──────────────────────────────────────────────────────────────────────────
+   Right Column: Contact Form Card (Stunning 3D Elevated Depth)
+   ────────────────────────────────────────────────────────────────────────── */
+.contact-form-card {
+  background: #ffffff;
+  border: 1px solid rgba(203, 213, 225, 0.8);
+  border-radius: 1.35rem;
+  padding: 1.5rem 1.75rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  /* 3D Multi-Layered Elevated Box Shadow & Highlight */
+  box-shadow: 
+    0 24px 48px -12px rgba(37, 99, 235, 0.18),
+    0 12px 24px -8px rgba(15, 23, 42, 0.08),
+    inset 0 2px 0 0 rgba(255, 255, 255, 1),
+    inset 0 -3px 0 0 rgba(226, 232, 240, 0.7);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.contact-form-card:hover {
+  transform: translateY(-4px) perspective(1000px) rotateX(1deg) rotateY(-1deg);
+  box-shadow: 
+    0 32px 64px -16px rgba(37, 99, 235, 0.25),
+    0 16px 32px -10px rgba(15, 23, 42, 0.1),
+    inset 0 2px 0 0 rgba(255, 255, 255, 1),
+    inset 0 -3px 0 0 rgba(226, 232, 240, 0.9);
+}
+
+.contact-form-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  border-top-left-radius: 1.35rem;
+  border-top-right-radius: 1.35rem;
+  background: linear-gradient(90deg, #2563eb 0%, #7c3aed 50%, #3b82f6 100%);
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.contact-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
+}
+
+.contact-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.contact-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #1e293b;
+  letter-spacing: 0.02em;
+}
+
+.contact-input,
+.contact-textarea {
+  width: 100%;
+  padding: 0.55rem 0.85rem;
+  background-color: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.7rem;
+  font-size: 0.88rem;
+  color: #0f172a;
+  font-family: inherit;
+  outline: none;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+  /* 3D Inset Depth Shadow */
+  box-shadow: inset 0 2px 4px 0 rgba(15, 23, 42, 0.05), 0 1px 0 0 rgba(255, 255, 255, 0.8);
+}
+
+.contact-input:hover,
+.contact-textarea:hover {
+  border-color: #94a3b8;
+  background-color: #ffffff;
+  box-shadow: inset 0 2px 4px 0 rgba(15, 23, 42, 0.07), 0 2px 6px -2px rgba(37, 99, 235, 0.1);
+}
+
+.contact-input:focus,
+.contact-textarea:focus {
+  border-color: #2563eb;
+  background-color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 
+    inset 0 1px 2px 0 rgba(0, 0, 0, 0.02),
+    0 8px 18px -4px rgba(37, 99, 235, 0.22),
+    0 0 0 3.5px rgba(37, 99, 235, 0.15);
+}
+
+.contact-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* 3D Tactile Push Button */
+.contact-submit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  padding: 0.7rem 1.75rem;
+  background: linear-gradient(180deg, #3b82f6 0%, #1d4ed8 100%);
+  color: #ffffff;
+  border: 1px solid #1d4ed8;
+  border-radius: 0.8rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  align-self: flex-start;
+  margin-top: 0.2rem;
+  position: relative;
+  /* 3D Push Button Shadow & Bevel */
+  box-shadow: 0 5px 0 0 #1e40af, 0 10px 20px -4px rgba(37, 99, 235, 0.45);
+  transition: all 0.15s ease-in-out;
+}
+
+.contact-submit-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 0 0 #1e40af, 0 16px 26px -4px rgba(37, 99, 235, 0.55);
+  background: linear-gradient(180deg, #60a5fa 0%, #1d4ed8 100%);
+}
+
+.contact-submit-btn:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 0 #1e40af, 0 4px 10px -2px rgba(37, 99, 235, 0.35);
+}
+
+.contact-submit-btn:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+  box-shadow: 0 3px 0 0 #1e40af;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Responsive Fallbacks for Mobile / Smaller Screens
+   ────────────────────────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .contact-page-wrapper {
+    min-height: auto;
+    padding-top: calc(76px + 1.5rem);
+    padding-bottom: 2rem;
+  }
+
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .contact-hero-heading {
+    font-size: 1.75rem;
+  }
+
+  .contact-form-card {
+    padding: 1.25rem 1rem;
+  }
+
+  .contact-form-row {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .contact-submit-btn {
+    width: 100%;
+  }
+}
