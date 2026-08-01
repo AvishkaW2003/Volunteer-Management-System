@@ -35,6 +35,8 @@ sequelize
     // Ensure new OTP columns exist
     await sequelize.query("ALTER TABLE Users ADD COLUMN resetOtp VARCHAR(255) NULL;").catch(() => {});
     await sequelize.query("ALTER TABLE Users ADD COLUMN resetOtpExpires DATETIME NULL;").catch(() => {});
+    // Widen Events.image from VARCHAR(255) to TEXT to fit base64 data URLs from custom banner uploads
+    await sequelize.query("ALTER TABLE Events MODIFY COLUMN image TEXT NULL;").catch(() => {});
     await seedDatabase();
   })
   .catch((err) => {
