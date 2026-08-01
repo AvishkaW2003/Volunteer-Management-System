@@ -64,10 +64,10 @@ const AdminCertificates = () => {
 
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-extrabold text-[#1E293B] flex items-center gap-2">
-          <Award className="w-8 h-8 text-teal-600" /> Certificate Management
+        <h1 className="text-3xl font-extrabold text-white tracking-tight flex items-center gap-2">
+          <Award className="w-8 h-8 text-teal-400" /> Certificate Management
         </h1>
-        <p className="text-slate-500 mt-1 font-medium">Manage default certificate templates, review stats, settings, and monitor generation activity system-wide.</p>
+        <p className="text-slate-400 mt-1 font-medium text-sm">Manage default certificate templates, review stats, settings, and monitor generation activity system-wide.</p>
       </div>
 
       {/* Stats Dashboard */}
