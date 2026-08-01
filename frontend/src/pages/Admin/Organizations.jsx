@@ -98,10 +98,10 @@ const Organizations = () => {
 
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-extrabold text-[#1E293B] flex items-center gap-2">
-          <Building2 className="w-8 h-8 text-teal-600" /> Organizations
+        <h1 className="text-3xl font-extrabold text-white tracking-tight flex items-center gap-2">
+          <Building2 className="w-8 h-8 text-teal-400" /> Organizations
         </h1>
-        <p className="text-slate-500 mt-1 font-medium">Verify, manage, and view performance metrics of student clubs, associations, and NGOs.</p>
+        <p className="text-slate-400 mt-1 font-medium text-sm">Verify, manage, and view performance metrics of student clubs, associations, and NGOs.</p>
       </div>
 
       {/* Stats bar */}
