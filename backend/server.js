@@ -41,6 +41,8 @@ sequelize
     await sequelize.query("ALTER TABLE Events ADD COLUMN reputationPoints INT DEFAULT 10;").catch(() => {});
     await sequelize.query("ALTER TABLE Events ADD COLUMN category VARCHAR(255) NULL;").catch(() => {});
     await sequelize.query("ALTER TABLE Events ADD COLUMN skills TEXT NULL;").catch(() => {});
+    await sequelize.query("ALTER TABLE Events MODIFY COLUMN image LONGTEXT NULL;").catch(() => {});
+    await sequelize.query("ALTER TABLE Events ALTER COLUMN image TEXT NULL;").catch(() => {});
     await seedDatabase();
   })
   .catch((err) => {
