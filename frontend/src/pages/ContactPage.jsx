@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Send } from "lucide-react";
+import "./ContactPage.css";
 
 /**
  * ContactPage Component
  * 
- * Beautiful public Contact Us page featuring styled interactive information cards
- * and a fully operational (mocked) feedback/support submission form.
+ * Professional Contact Us page featuring styled info cards, campus visual preview image,
+ * and a fully operational contact form cleanly formatted for a single-screen view.
  */
 const ContactPage = () => {
   const [formData, setFormData] = useState({
@@ -36,73 +37,94 @@ const ContactPage = () => {
   };
 
   return (
-    <div>
-      
-      <section className="vh-hero" style={{ background: "var(--bg-white)", paddingBottom: "3rem" }}>
-        <div className="vh-hero-container" style={{ gridTemplateColumns: "1fr", textAlign: "center" }}>
-          <div className="vh-hero-content" style={{ alignItems: "center", margin: "0 auto", maxWidth: "600px" }}>
-            <span className="vh-section-subtitle" style={{ textTransform: "uppercase" }}>Get in Touch</span>
-            <h1 className="vh-hero-heading" style={{ fontSize: "2.75rem", marginTop: "0.5rem" }}>
-              We'd Love to <span className="blue-highlight">Hear From You</span>
-            </h1>
-            <p className="vh-hero-subtext">
-              Have questions about volunteering or hosting an event? Drop us a message, and we will get back to you shortly.
-            </p>
-          </div>
-        </div>
-      </section>
+    <div className="contact-page-wrapper">
+      {/* Background Decorative Glow Orbs */}
+      <div className="contact-bg-glow contact-glow-1"></div>
+      <div className="contact-bg-glow contact-glow-2"></div>
 
-      <section className="vh-features" style={{ background: "var(--bg-body)", padding: "4rem 1.5rem" }}>
-        <div className="vh-features-container" style={{ display: "grid", gridTemplateColumns: "1fr 1.5fr", gap: "3rem" }}>
+      <div className="contact-single-screen-container">
+        {/* Compact Hero Header Section */}
+        <div className="contact-hero-compact">
+          <div className="contact-badge">
+            <span className="contact-badge-dot"></span>
+            Get in Touch
+          </div>
+          <h1 className="contact-hero-heading">
+            We'd Love to <span className="contact-gradient-text">Hear From You</span>
+          </h1>
+          <p className="contact-hero-subtext">
+            Have questions about volunteering or hosting an event? Drop us a message, and we will get back to you shortly.
+          </p>
+        </div>
+
+        {/* Main Content Grid (Side-by-side fit) */}
+        <div className="contact-grid">
           
-          {/* Left Column: Contact Details Cards */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-            <h2 className="vh-feature-title" style={{ fontSize: "1.5rem", marginBottom: "0.5rem" }}>Contact Details</h2>
+          {/* Left Column: Contact Details Cards & Image Banner */}
+          <div className="contact-info-column">
+            <h2 className="contact-section-title">Contact Details</h2>
             
-            {/* Phone Card */}
-            <div className="vh-feature-card" style={{ padding: "1.5rem", gap: "1rem", flexDirection: "row", alignItems: "center" }}>
-              <div className="vh-feature-icon-wrapper" style={{ flexShrink: 0 }}>
+            {/* Professional Campus Image Banner Card */}
+            <div className="contact-image-banner-card">
+              <img 
+                src="/images/community.jpg" 
+                alt="Volunteer Hub Headquarters" 
+              />
+              <div className="contact-image-banner-overlay">
+                <div className="contact-image-banner-badge">
+                  <span className="contact-badge-dot" style={{ backgroundColor: "#ffffff", boxShadow: "0 0 6px #ffffff" }}></span>
+                  Volunteer Hub HQ
+                </div>
+                <h4 className="contact-image-banner-title">Community Support Center</h4>
+              </div>
+            </div>
+
+            {/* Phone Support Card */}
+            <div className="contact-info-card">
+              <div className="contact-icon-box">
                 <Phone className="w-5 h-5" />
               </div>
-              <div>
-                <h3 className="vh-feature-title" style={{ fontSize: "1.1rem" }}>Phone Support</h3>
-                <p className="vh-feature-desc" style={{ marginTop: "0.25rem" }}>(555) 123-4567</p>
+              <div className="contact-info-content">
+                <h3>Phone Support</h3>
+                <p>(555) 123-4567</p>
               </div>
             </div>
 
-            {/* Email Card */}
-            <div className="vh-feature-card" style={{ padding: "1.5rem", gap: "1rem", flexDirection: "row", alignItems: "center" }}>
-              <div className="vh-feature-icon-wrapper" style={{ flexShrink: 0 }}>
+            {/* Email Inquiries Card */}
+            <div className="contact-info-card">
+              <div className="contact-icon-box">
                 <Mail className="w-5 h-5" />
               </div>
-              <div>
-                <h3 className="vh-feature-title" style={{ fontSize: "1.1rem" }}>Email Inquiries</h3>
-                <p className="vh-feature-desc" style={{ marginTop: "0.25rem" }}>info@volunteerhub.edu</p>
+              <div className="contact-info-content">
+                <h3>Email Inquiries</h3>
+                <p>info@volunteerhub.edu</p>
               </div>
             </div>
 
-            {/* Office Location Card */}
-            <div className="vh-feature-card" style={{ padding: "1.5rem", gap: "1rem", flexDirection: "row", alignItems: "center" }}>
-              <div className="vh-feature-icon-wrapper" style={{ flexShrink: 0 }}>
+            {/* Main Campus Office Card */}
+            <div className="contact-info-card">
+              <div className="contact-icon-box">
                 <MapPin className="w-5 h-5" />
               </div>
-              <div>
-                <h3 className="vh-feature-title" style={{ fontSize: "1.1rem" }}>Main Campus Office</h3>
-                <p className="vh-feature-desc" style={{ marginTop: "0.25rem" }}>Student Union, Wing B, Room 302</p>
+              <div className="contact-info-content">
+                <h3>Main Campus Office</h3>
+                <p>Student Union, Wing B, Room 302</p>
               </div>
             </div>
 
             {/* Social Links Panel */}
-            <div className="vh-feature-card" style={{ padding: "1.5rem", gap: "1rem" }}>
-              <h3 className="vh-feature-title" style={{ fontSize: "1.1rem" }}>Follow Us</h3>
-              <div className="vh-social-links" style={{ display: "flex", gap: "1rem", marginTop: "0.5rem" }}>
-                <a href="#" className="vh-social-btn" aria-label="Facebook">
+            <div className="contact-social-card">
+              <h3 className="contact-info-content" style={{ margin: 0, fontSize: "0.95rem", fontWeight: 700, color: "#0f172a" }}>
+                Follow Us
+              </h3>
+              <div className="contact-social-list">
+                <a href="#" className="contact-social-icon-btn" aria-label="Facebook">
                   <Facebook className="w-4 h-4" />
                 </a>
-                <a href="#" className="vh-social-btn" aria-label="Twitter">
+                <a href="#" className="contact-social-icon-btn" aria-label="Twitter">
                   <Twitter className="w-4 h-4" />
                 </a>
-                <a href="#" className="vh-social-btn" aria-label="LinkedIn">
+                <a href="#" className="contact-social-icon-btn" aria-label="LinkedIn">
                   <Linkedin className="w-4 h-4" />
                 </a>
               </div>
@@ -111,13 +133,13 @@ const ContactPage = () => {
           </div>
 
           {/* Right Column: Contact/Feedback Form */}
-          <div className="vh-feature-card" style={{ padding: "2.5rem", width: "100%", gap: "1.5rem" }}>
-            <h2 className="vh-feature-title" style={{ fontSize: "1.5rem", marginBottom: "0.5rem" }}>Send a Message</h2>
+          <div className="contact-form-card">
+            <h2 className="contact-section-title" style={{ marginBottom: "0.75rem" }}>Send a Message</h2>
             
-            <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                  <label htmlFor="name" style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--text-muted)" }}>Full Name</label>
+            <form onSubmit={handleSubmit} className="contact-form">
+              <div className="contact-form-row">
+                <div className="contact-field-group">
+                  <label htmlFor="name" className="contact-label">Full Name</label>
                   <input
                     type="text"
                     id="name"
@@ -125,18 +147,12 @@ const ContactPage = () => {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    style={{
-                      padding: "0.65rem 0.85rem",
-                      border: "1px solid var(--border-color)",
-                      borderRadius: "var(--radius-sm)",
-                      fontSize: "0.95rem",
-                      outline: "none"
-                    }}
+                    className="contact-input"
                   />
                 </div>
                 
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                  <label htmlFor="email" style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--text-muted)" }}>Email Address</label>
+                <div className="contact-field-group">
+                  <label htmlFor="email" className="contact-label">Email Address</label>
                   <input
                     type="email"
                     id="email"
@@ -144,66 +160,40 @@ const ContactPage = () => {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    style={{
-                      padding: "0.65rem 0.85rem",
-                      border: "1px solid var(--border-color)",
-                      borderRadius: "var(--radius-sm)",
-                      fontSize: "0.95rem",
-                      outline: "none"
-                    }}
+                    className="contact-input"
                   />
                 </div>
               </div>
 
-              <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                <label htmlFor="subject" style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--text-muted)" }}>Subject</label>
+              <div className="contact-field-group">
+                <label htmlFor="subject" className="contact-label">Subject</label>
                 <input
                   type="text"
                   id="subject"
                   name="subject"
                   value={formData.subject}
                   onChange={handleChange}
-                  style={{
-                    padding: "0.65rem 0.85rem",
-                    border: "1px solid var(--border-color)",
-                    borderRadius: "var(--radius-sm)",
-                    fontSize: "0.95rem",
-                    outline: "none"
-                  }}
+                  className="contact-input"
                 />
               </div>
 
-              <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                <label htmlFor="message" style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--text-muted)" }}>Message</label>
+              <div className="contact-field-group">
+                <label htmlFor="message" className="contact-label">Message</label>
                 <textarea
                   id="message"
                   name="message"
                   value={formData.message}
                   onChange={handleChange}
                   required
-                  rows="5"
-                  style={{
-                    padding: "0.65rem 0.85rem",
-                    border: "1px solid var(--border-color)",
-                    borderRadius: "var(--radius-sm)",
-                    fontSize: "0.95rem",
-                    outline: "none",
-                    resize: "vertical"
-                  }}
+                  rows="4"
+                  className="contact-textarea"
                 ></textarea>
               </div>
 
               <button
                 type="submit"
                 disabled={submitted}
-                className="vh-btn-primary"
-                style={{
-                  alignSelf: "flex-start",
-                  marginTop: "0.5rem",
-                  width: "auto",
-                  backgroundColor: "#2563EB",
-                  color: "#FFFFFF"
-                }}
+                className="contact-submit-btn"
               >
                 {submitted ? "Sending..." : "Send Message"} <Send className="w-4 h-4" />
               </button>
@@ -211,8 +201,7 @@ const ContactPage = () => {
           </div>
 
         </div>
-      </section>
-
+      </div>
     </div>
   );
 };
