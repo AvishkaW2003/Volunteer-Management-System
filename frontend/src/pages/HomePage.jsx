@@ -23,14 +23,14 @@ const AnimatedCounter = ({ end, suffix = "" }) => {
   useEffect(() => {
     let start = 0;
     const duration = 2000; // Total animation duration in milliseconds
-    
+
     // Calculate how much to increment per frame (assuming ~60fps / 16ms per frame)
-    const increment = end / (duration / 16); 
-    
+    const increment = end / (duration / 16);
+
     // Set up the animation interval
     const timer = setInterval(() => {
       start += increment;
-      
+
       // Stop the animation once we reach or exceed the target number
       if (start >= end) {
         clearInterval(timer);
@@ -380,31 +380,34 @@ const Home = () => {
 
   return (
     <div>
-      
+
       {/* ── SECTION 1: HERO ─────────────────────────────────── */}
       <section className="vh-hero">
         <div className="vh-hero-container">
-          {/* Left Column: Headline and Call-to-Action buttons */}
-          <div className="vh-hero-content">
-            <h1 className="vh-hero-heading">
-              Empowering Students Through <span className="blue-highlight">Volunteer Opportunities</span>
-            </h1>
-            <p className="vh-hero-subtext">
-              Join hundreds of students making a difference. Discover events, earn certificates, and build your reputation.
-            </p>
-            <div className="vh-hero-buttons">
-              <button onClick={handleExplore} className="vh-btn-primary">
-                Explore Events <ArrowRight className="w-4 h-4" />
-              </button>
-              <button onClick={handleJoinNow} className="vh-btn-secondary">
-                Join Now
-              </button>
+          <div className="vh-hero-card">
+            {/* Left Side: Text Details */}
+            <div className="vh-hero-content">
+              <div className="vh-hero-badge">
+                <Star className="w-4 h-4" /> #1 Volunteer Platform for Students
+              </div>
+              <h1 className="vh-hero-heading">
+                Empowering Students Through <span className="blue-highlight">Volunteer Opportunities</span>
+              </h1>
+              <p className="vh-hero-subtext">
+                Join hundreds of students making a difference. Discover events, earn certificates, and build your reputation.
+              </p>
+              <div className="vh-hero-buttons">
+                <button onClick={handleExplore} className="vh-btn-primary">
+                  Explore Events <ArrowRight className="w-4 h-4" />
+                </button>
+                <button onClick={handleJoinNow} className="vh-btn-secondary">
+                  Join Now
+                </button>
+              </div>
             </div>
-          </div>
 
-          {/* Right Column: Hero graphic/image showcase */}
-          <div className="vh-hero-media">
-            <div className="vh-hero-image-card">
+            {/* Right Side: Featured Image */}
+            <div className="vh-hero-media">
               <div className="vh-hero-image-wrapper">
                 <img
                   src="/images/hero-volunteers.jpg"
@@ -434,7 +437,7 @@ const Home = () => {
               <div className="vh-shelf-row-header">
                 <h3 className="vh-shelf-row-title">{shelf.title}</h3>
                 <div className="vh-shelf-nav-arrows">
-                  <button 
+                  <button
                     className="vh-shelf-arrow-btn"
                     onClick={() => {
                       const list = document.getElementById(shelf.id);
@@ -443,7 +446,7 @@ const Home = () => {
                   >
                     <ChevronLeft className="w-4 h-4" />
                   </button>
-                  <button 
+                  <button
                     className="vh-shelf-arrow-btn"
                     onClick={() => {
                       const list = document.getElementById(shelf.id);
@@ -459,9 +462,9 @@ const Home = () => {
                 {shelf.list.map((ev) => (
                   <div key={ev.id} className="vh-shelf-card">
                     <div className="vh-shelf-card-image-wrapper">
-                      <img 
-                        src={ev.image || `https://picsum.photos/seed/${encodeURIComponent(ev.title)}/300/200`} 
-                        alt={ev.title} 
+                      <img
+                        src={ev.image || `https://picsum.photos/seed/${encodeURIComponent(ev.title)}/300/200`}
+                        alt={ev.title}
                         className="vh-shelf-card-image"
                         onError={e => {
                           e.currentTarget.src = 'https://picsum.photos/seed/placeholder/300/200';
@@ -469,13 +472,13 @@ const Home = () => {
                       />
                       <span className="vh-shelf-card-category">{ev.category}</span>
                     </div>
-                    
+
                     <div className="vh-shelf-card-body">
                       <div className="vh-shelf-card-org">
                         <span className="vh-shelf-card-organizer">{ev.organizer || 'Student Club'}</span>
                       </div>
                       <h4 className="vh-shelf-card-title" title={ev.title}>{ev.title}</h4>
-                      
+
                       <div className="vh-shelf-card-details">
                         <div className="vh-shelf-card-detail-item">
                           <Calendar className="w-3.5 h-3.5" />
@@ -599,7 +602,7 @@ const Home = () => {
       <section className="vh-club-logos-section">
         <div className="vh-club-logos-container">
           <h4 className="vh-club-logos-title">Explore Opportunities from 20+ Active Clubs</h4>
-          
+
           <div className="vh-club-logos-wrapper">
             <div id="vh-club-logos-list" className="vh-club-logos-list">
               {[
@@ -632,7 +635,7 @@ const Home = () => {
                 </div>
               ))}
             </div>
-            
+
             <button className="vh-club-logos-scroll-btn" onClick={() => {
               const list = document.getElementById("vh-club-logos-list");
               if (list) {
@@ -671,7 +674,7 @@ const Home = () => {
       <section className="vh-categories-section">
         <div className="vh-categories-container">
           <h2 className="vh-categories-title">Explore categories</h2>
-          
+
           <div className="vh-categories-grid">
             {[
               { name: "Environment", icon: Leaf },
@@ -685,8 +688,8 @@ const Home = () => {
             ].map((cat, idx) => {
               const Icon = cat.icon;
               return (
-                <div 
-                  key={idx} 
+                <div
+                  key={idx}
                   className="vh-category-pill"
                   onClick={() => {
                     navigate("/events");
