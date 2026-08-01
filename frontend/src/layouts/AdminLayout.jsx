@@ -93,11 +93,24 @@ const AdminLayout = () => {
     },
   ];
 
-  // Determine current page section title for breadcrumbs
-  const currentNavItem = navItems.find(item => location.pathname.startsWith(item.path)) || { label: 'Admin Portal' };
+  const [isDarkMode, setIsDarkMode] = useState(() => localStorage.getItem('darkMode') === 'true');
+
+  useEffect(() => {
+    const handleThemeChange = () => {
+      setIsDarkMode(localStorage.getItem('darkMode') === 'true');
+    };
+    window.addEventListener('admin-theme-change', handleThemeChange);
+    return () => window.removeEventListener('admin-theme-change', handleThemeChange);
+  }, []);
+
+  // Determine current page section title and icon for header bar
+  const currentNavItem = navItems.find(item => 
+    location.pathname === item.path || (item.path !== '/admin/dashboard' && location.pathname.startsWith(item.path))
+  ) || navItems[0];
+  const CurrentIcon = currentNavItem?.icon;
 
   return (
-    <div className="h-screen w-screen overflow-hidden flex bg-slate-900 font-sans text-slate-100 antialiased">
+    <div className={`admin-workspace h-screen w-screen overflow-hidden flex bg-slate-900 font-sans text-slate-100 antialiased ${isDarkMode ? 'dark' : ''}`}>
       
       {/* Mobile Drawer Overlay */}
       {mobileOpen && (
@@ -193,40 +206,32 @@ const AdminLayout = () => {
         </div>
 
         {/* Sidebar Footer (Fixed at bottom of sidebar) */}
-        <div className="p-3 border-t border-slate-800/80 bg-slate-950/60 flex-shrink-0">
+        <div className="p-3 border-t border-slate-800/80 bg-slate-950/80 flex-shrink-0 space-y-2">
           {/* Quick View Public Website */}
           <a
             href="/"
             target="_blank"
             rel="noopener noreferrer"
-            className={`flex items-center gap-2 px-3 py-2 mb-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-blue-300 hover:bg-slate-900 transition-colors ${collapsed ? 'justify-center px-0' : ''}`}
+            className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-blue-300 hover:bg-slate-900 border border-transparent hover:border-slate-800/80 transition-all ${
+              collapsed ? 'justify-center px-0' : ''
+            }`}
             title="Open Public Website"
           >
             <ExternalLink className="w-4 h-4 text-blue-400 flex-shrink-0" />
             {!collapsed && <span>View Public Site</span>}
           </a>
 
-          {/* Admin Profile & Logout Card */}
-          <div className={`flex items-center gap-3 p-2 rounded-xl bg-slate-900 border border-slate-800/60 ${collapsed ? 'justify-center p-1.5' : ''}`}>
-            <div className="w-8 h-8 rounded-lg bg-blue-600/20 text-blue-400 flex items-center justify-center font-bold text-xs flex-shrink-0 border border-blue-500/30">
-              AD
-            </div>
-            
-            {!collapsed && (
-              <div className="flex-1 min-w-0">
-                <p className="text-xs font-bold text-slate-200 truncate">{user?.name || 'Super Admin'}</p>
-                <p className="text-[10px] text-slate-400 truncate">{user?.email || 'admin@volunteerhub.com'}</p>
-              </div>
-            )}
-
-            <button
-              onClick={handleLogout}
-              className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
-              title="Logout from Admin Portal"
-            >
-              <LogOut className="w-4 h-4" />
-            </button>
-          </div>
+          {/* Dedicated Proper Admin Logout Button */}
+          <button
+            onClick={handleLogout}
+            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-xs text-rose-400 bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/20 hover:text-rose-300 hover:border-rose-500/40 transition-all duration-200 cursor-pointer ${
+              collapsed ? 'justify-center px-0 py-2.5' : ''
+            }`}
+            title="Logout from Admin Portal"
+          >
+            <LogOut className="w-4 h-4 text-rose-400 flex-shrink-0" />
+            {!collapsed && <span>Logout</span>}
+          </button>
         </div>
       </aside>
 
@@ -246,10 +251,16 @@ const AdminLayout = () => {
               <Menu className="w-5 h-5" />
             </button>
 
-            <div className="flex items-center gap-2 text-xs md:text-sm font-semibold">
-              <span className="text-slate-400">Admin Portal</span>
-              <span className="text-slate-600">/</span>
-              <span className="text-blue-400 font-bold">{currentNavItem.label}</span>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 flex-shrink-0 shadow-sm">
+                {CurrentIcon && <CurrentIcon className="w-4.5 h-4.5" />}
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-base font-extrabold text-slate-100 tracking-tight">{currentNavItem.label}</span>
+                <span className="hidden sm:inline-block px-2 py-0.5 text-[10px] font-bold rounded-full bg-slate-800 text-slate-400 border border-slate-700/60 uppercase tracking-wider">
+                  Admin Portal
+                </span>
+              </div>
             </div>
           </div>
 
