@@ -158,10 +158,10 @@ const ManageUsers = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-[#1E293B] flex items-center gap-2">
-            <Users className="w-8 h-8 text-teal-600" /> User Management
+          <h1 className="text-3xl font-extrabold text-white tracking-tight flex items-center gap-2">
+            <Users className="w-8 h-8 text-teal-400" /> User Management
           </h1>
-          <p className="text-slate-500 mt-1 font-medium">Manage student volunteers and organization accounts.</p>
+          <p className="text-slate-400 mt-1 font-medium text-sm">Manage student volunteers and organization accounts.</p>
         </div>
       </div>
 
