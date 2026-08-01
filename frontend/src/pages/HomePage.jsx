@@ -381,38 +381,65 @@ const Home = () => {
   return (
     <div>
 
-      {/* ── SECTION 1: HERO ─────────────────────────────────── */}
-      <section className="vh-hero">
-        <div className="vh-hero-container">
-          <div className="vh-hero-card">
-            {/* Left Side: Text Details */}
-            <div className="vh-hero-content">
-              <div className="vh-hero-badge">
-                <Star className="w-4 h-4" /> #1 Volunteer Platform for Students
+      {/* ── SECTION 1: MINIMALIST HERO ─────────────────── */}
+      <section className="vh-minimal-hero">
+        <div className="vh-minimal-hero-container">
+          <div className="vh-minimal-hero-grid">
+            {/* Left Side: Content & Actions */}
+            <div className="vh-minimal-hero-content">
+              <div className="vh-minimal-badge">
+                <Star className="w-4 h-4 text-blue-600 fill-blue-50" />
+                <span>#1 Volunteer Platform for University Students</span>
               </div>
-              <h1 className="vh-hero-heading">
-                Empowering Students Through <span className="blue-highlight">Volunteer Opportunities</span>
+
+              <h1 className="vh-minimal-heading">
+                Empowering Students To Lead & <span className="vh-minimal-highlight">Make Real Impact</span>
               </h1>
-              <p className="vh-hero-subtext">
-                Join hundreds of students making a difference. Discover events, earn certificates, and build your reputation.
+
+              <p className="vh-minimal-subtext">
+                Join over 500+ students across 20+ active university clubs. Discover high-impact volunteer opportunities, earn verified digital certificates, and build your leadership legacy.
               </p>
-              <div className="vh-hero-buttons">
-                <button onClick={handleExplore} className="vh-btn-primary">
-                  Explore Events <ArrowRight className="w-4 h-4" />
+
+              <div className="vh-minimal-buttons">
+                <button onClick={handleExplore} className="vh-btn-minimal-primary">
+                  Explore Opportunities <ArrowRight className="w-4 h-4" />
                 </button>
-                <button onClick={handleJoinNow} className="vh-btn-secondary">
-                  Join Now
+                <button onClick={handleJoinNow} className="vh-btn-minimal-secondary">
+                  Join as Volunteer
                 </button>
+              </div>
+
+              {/* Minimalist Stats Highlights Row */}
+              <div className="vh-minimal-stats-row">
+                <div className="vh-minimal-stat-item">
+                  <span className="vh-minimal-stat-num">500+</span>
+                  <span className="vh-minimal-stat-label">Active Volunteers</span>
+                </div>
+                <div className="vh-minimal-stat-sep"></div>
+                <div className="vh-minimal-stat-item">
+                  <span className="vh-minimal-stat-num">120+</span>
+                  <span className="vh-minimal-stat-label">Events Hosted</span>
+                </div>
+                <div className="vh-minimal-stat-sep"></div>
+                <div className="vh-minimal-stat-item">
+                  <span className="vh-minimal-stat-num">20+</span>
+                  <span className="vh-minimal-stat-label">Partner Clubs</span>
+                </div>
+                <div className="vh-minimal-stat-sep"></div>
+                <div className="vh-minimal-stat-item">
+                  <span className="vh-minimal-stat-num">1500+</span>
+                  <span className="vh-minimal-stat-label">Volunteer Hours</span>
+                </div>
               </div>
             </div>
 
-            {/* Right Side: Featured Image */}
-            <div className="vh-hero-media">
-              <div className="vh-hero-image-wrapper">
+            {/* Right Side: Clean Minimalist Image Showcase */}
+            <div className="vh-minimal-hero-media">
+              <div className="vh-minimal-image-frame">
                 <img
                   src="/images/hero-volunteers.jpg"
-                  alt="Students volunteering together at VolunteerHub"
-                  className="vh-hero-image"
+                  alt="Students volunteering together"
+                  className="vh-minimal-hero-img"
                 />
               </div>
             </div>
