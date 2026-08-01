@@ -19,7 +19,7 @@ const errorHandler = (err, req, res, next) => {
   // 2. Handle Sequelize General Database Constraint Errors (like foreign keys)
   else if (err.name === "SequelizeDatabaseError" || err.name === "SequelizeForeignKeyConstraintError") {
     statusCode = 400;
-    message = "Database constraint violation";
+    message = err.parent?.message || err.original?.message || err.message || "Database constraint violation";
     if (err.parent) {
       if (err.parent.code === "ER_NO_REFERENCED_ROW_2") {
         message = "The referenced parent record does not exist (Foreign Key Constraint Failed).";
