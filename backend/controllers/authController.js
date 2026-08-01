@@ -74,11 +74,23 @@ export const forgotPassword = async (req, res, next) => {
       return res.status(400).json({ success: false, message: "Email is required" });
     }
 
-    const resetToken = await authService.forgotPassword(email);
+    await authService.forgotPassword(email);
     res.status(200).json({
       success: true,
-      message: "If an account exists, a password reset email has been sent.",
-      token: resetToken // Returning token for test/verification convenience
+      message: "If an account exists, a password reset email has been sent."
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const verifyOtp = async (req, res, next) => {
+  try {
+    const { email, otp } = req.body;
+    await authService.verifyOtp({ email, otp });
+    res.status(200).json({
+      success: true,
+      message: "OTP verified successfully"
     });
   } catch (error) {
     next(error);
@@ -87,7 +99,7 @@ export const forgotPassword = async (req, res, next) => {
 
 export const resetPassword = async (req, res, next) => {
   try {
-    const { token } = req.params;
+    const token = req.params.token || req.body.token;
     const { newPassword } = req.body;
     if (!token || !newPassword) {
       return res.status(400).json({ success: false, message: "Token and newPassword are required" });
@@ -97,6 +109,19 @@ export const resetPassword = async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: "Password has been reset successfully"
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const resetPasswordWithOtp = async (req, res, next) => {
+  try {
+    const { email, otp, newPassword } = req.body;
+    await authService.resetPasswordWithOtp({ email, otp, newPassword });
+    res.status(200).json({
+      success: true,
+      message: "Password has been reset successfully using OTP"
     });
   } catch (error) {
     next(error);

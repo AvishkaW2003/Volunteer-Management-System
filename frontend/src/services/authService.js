@@ -31,8 +31,18 @@ export const forgotPassword = async (email) => {
   return response.data;
 };
 
+export const verifyOtp = async (email, otp) => {
+  const response = await axios.post(`${API_URL}/verify-otp`, { email, otp });
+  return response.data;
+};
+
 export const resetPassword = async (token, newPassword) => {
   const response = await axios.post(`${API_URL}/reset-password/${token}`, { newPassword });
+  return response.data;
+};
+
+export const resetPasswordWithOtp = async (email, otp, newPassword) => {
+  const response = await axios.post(`${API_URL}/reset-password-otp`, { email, otp, newPassword });
   return response.data;
 };
 
@@ -45,3 +55,4 @@ export const googleRegisterOrganizer = async (idToken, organizationName, phone) 
   const response = await axios.post(`${API_URL}/google-register/organizer`, { idToken, organizationName, phone });
   return response.data;
 };
+

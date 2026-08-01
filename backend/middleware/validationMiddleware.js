@@ -292,3 +292,50 @@ export const validateEvent = (req, res, next) => {
 
   next();
 };
+
+export const validateForgotPassword = (req, res, next) => {
+  const { email } = req.body;
+  if (!email || typeof email !== "string" || !email.includes("@")) {
+    return res.status(400).json({ success: false, message: "A valid email address is required" });
+  }
+  next();
+};
+
+export const validateResetPassword = (req, res, next) => {
+  const { newPassword } = req.body;
+  const token = req.params.token || req.body.token;
+
+  if (!token) {
+    return res.status(400).json({ success: false, message: "Password reset token is required" });
+  }
+  if (!newPassword || typeof newPassword !== "string" || newPassword.length < 6) {
+    return res.status(400).json({ success: false, message: "Password must be at least 6 characters long" });
+  }
+  next();
+};
+
+export const validateVerifyOtp = (req, res, next) => {
+  const { email, otp } = req.body;
+  if (!email || !email.includes("@")) {
+    return res.status(400).json({ success: false, message: "A valid email address is required" });
+  }
+  if (!otp || typeof otp !== "string" || otp.trim().length !== 6) {
+    return res.status(400).json({ success: false, message: "A 6-digit OTP code is required" });
+  }
+  next();
+};
+
+export const validateResetPasswordWithOtp = (req, res, next) => {
+  const { email, otp, newPassword } = req.body;
+  if (!email || !email.includes("@")) {
+    return res.status(400).json({ success: false, message: "A valid email address is required" });
+  }
+  if (!otp || typeof otp !== "string" || otp.trim().length !== 6) {
+    return res.status(400).json({ success: false, message: "A 6-digit OTP code is required" });
+  }
+  if (!newPassword || typeof newPassword !== "string" || newPassword.length < 6) {
+    return res.status(400).json({ success: false, message: "Password must be at least 6 characters long" });
+  }
+  next();
+};
+
