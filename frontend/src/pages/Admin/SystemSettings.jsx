@@ -22,15 +22,19 @@ const SystemSettings = () => {
     const fetchSettingsData = async () => {
       try {
         const data = await getSettings();
+        const isDark = data.darkModeEnabled !== undefined ? data.darkModeEnabled : (localStorage.getItem('darkMode') === 'true');
         setFormData({
           siteName: data.siteName || 'VolunteerHub',
           adminEmail: data.adminEmail || 'admin@volunteerhub.com',
           eventApprovalRequired: data.eventApprovalRequired !== undefined ? data.eventApprovalRequired : true,
           notificationsEnabled: data.notificationsEnabled !== undefined ? data.notificationsEnabled : true,
           registrationOpen: data.registrationOpen !== undefined ? data.registrationOpen : true,
-          darkModeEnabled: data.darkModeEnabled !== undefined ? data.darkModeEnabled : false,
+          darkModeEnabled: isDark,
           maintenanceMode: data.maintenanceMode !== undefined ? data.maintenanceMode : false,
         });
+
+        localStorage.setItem('darkMode', String(isDark));
+        window.dispatchEvent(new Event('admin-theme-change'));
       } catch (err) {
         console.error("Error fetching system settings:", err);
       }
@@ -45,10 +49,17 @@ const SystemSettings = () => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+    const val = type === 'checkbox' ? checked : value;
+    
     setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: val,
     }));
+
+    if (name === 'darkModeEnabled') {
+      localStorage.setItem('darkMode', String(val));
+      window.dispatchEvent(new Event('admin-theme-change'));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -58,11 +69,8 @@ const SystemSettings = () => {
       setSuccess(true);
       showToast('System configuration saved successfully!');
       
-      if (formData.darkModeEnabled) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
+      localStorage.setItem('darkMode', String(formData.darkModeEnabled));
+      window.dispatchEvent(new Event('admin-theme-change'));
       
       setTimeout(() => setSuccess(false), 4000);
     } catch (err) {
@@ -83,10 +91,10 @@ const SystemSettings = () => {
 
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-slate-800 flex items-center gap-2">
-          <Settings className="w-8 h-8 text-teal-600" /> System Settings
+        <h1 className="text-3xl font-extrabold text-white tracking-tight flex items-center gap-2">
+          <Settings className="w-8 h-8 text-teal-400" /> System Settings
         </h1>
-        <p className="text-slate-500 mt-1 font-medium">Configure application variables, notification defaults, and system toggles.</p>
+        <p className="text-slate-400 mt-1 font-medium text-sm">Configure application variables, notification defaults, and system toggles.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
