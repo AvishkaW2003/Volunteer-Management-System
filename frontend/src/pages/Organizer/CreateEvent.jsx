@@ -60,6 +60,10 @@ const CreateEvent = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert("Banner image size should be under 5MB.");
+        return;
+      }
       const reader = new FileReader();
       reader.onloadend = () => {
         setForm(prev => ({ ...prev, image: reader.result }));
