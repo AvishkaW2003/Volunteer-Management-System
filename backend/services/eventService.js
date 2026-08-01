@@ -71,21 +71,26 @@ export const deleteEvent = async (eventId, userId, userRole) => {
     throw err;
   }
 
-  // Security Check: Only event owner or admin can soft delete
+  // Security Check: Only event owner or admin can delete
   if (userRole !== "admin" && event.UserId !== userId) {
     const err = new Error("You can delete only your events");
     err.statusCode = 403;
     throw err;
   }
 
-  // Soft delete: status is changed to Archived
-  await event.update({ status: "Archived" });
-  return event;
+  // Clean up associated registrations and attendance records, then destroy event
+  await VolunteerRegistration.destroy({ where: { EventId: eventId } }).catch(() => {});
+  await Attendance.destroy({ where: { EventId: eventId } }).catch(() => {});
+  await event.destroy();
+  return { id: eventId, message: "Event deleted successfully" };
 };
 
 export const getOrganizerEvents = async (organizerId) => {
   const events = await Event.findAll({
-    where: { UserId: organizerId },
+    where: { 
+      UserId: organizerId,
+      status: { [Op.ne]: "Archived" }
+    },
     order: [["eventDate", "DESC"]]
   });
 
