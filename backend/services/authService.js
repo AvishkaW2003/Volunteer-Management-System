@@ -8,6 +8,7 @@ import User from "../models/userModel.js";
 import StudentProfile from "../models/studentProfileModel.js";
 import OrganizerProfile from "../models/organizerProfileModel.js";
 import jwtConfig from "../config/jwt.js";
+import { sendPasswordResetEmail } from "../utils/emailService.js";
 
 /**
  * Service handling all core auth business logic.
@@ -176,71 +177,62 @@ export const getUserIdentity = async (userId) => {
 export const forgotPassword = async (email) => {
   const user = await User.findOne({ where: { email } });
   
-  // Generate token regardless of user existence to avoid timing attacks/leaks
+  // Generate token and 6-digit OTP regardless of user existence to avoid timing attacks/leaks
   const resetToken = crypto.randomBytes(32).toString("hex");
+  const resetOtp = Math.floor(100000 + Math.random() * 900000).toString();
 
   if (!user) {
-    // Suppress error and return dummy token to prevent email enumeration
+    // Suppress error to prevent email enumeration
     console.log(`[FORGOT PASSWORD] Requested email ${email} not found in database. Suppressing error.`);
-    return resetToken;
+    return true;
   }
 
   const hashedToken = crypto.createHash("sha256").update(resetToken).digest("hex");
-  const tokenExpiry = Date.now() + 3600000; // 1 hour expiration
+  const tokenExpiry = new Date(Date.now() + 3600000); // 1 hour expiration
 
-  // Update user model with hash token and expiration
+  // Update user model with hash token, OTP and expiration
   await user.update({
     resetPasswordToken: hashedToken,
-    resetPasswordExpires: tokenExpiry
+    resetPasswordExpires: tokenExpiry,
+    resetOtp: resetOtp,
+    resetOtpExpires: tokenExpiry
   });
 
   const resetUrl = `http://localhost:5173/reset-password/${resetToken}`;
 
-  // Log mocked email reset link to console for testing
-  console.log(`[MOCKED EMAIL SEND] Password Reset Request for ${email}`);
-  console.log(`Reset Token: ${resetToken}`);
-  console.log(`Hashed Token Stored: ${hashedToken}`);
-  console.log(`Reset URL: ${resetUrl}`);
-
-  // Send real email via nodemailer if config exists
-  const smtpHost = process.env.EMAIL_HOST;
-  const smtpPort = process.env.EMAIL_PORT;
-  const smtpUser = process.env.EMAIL_USER;
-  const smtpPass = process.env.EMAIL_PASS;
-  const smtpFrom = process.env.EMAIL_FROM || '"VolunteerHub" <no-reply@volunteerhub.com>';
-
-  if (smtpHost && smtpUser && smtpPass) {
-    try {
-      const transporter = nodemailer.createTransport({
-        host: smtpHost,
-        port: parseInt(smtpPort || "587"),
-        secure: smtpPort === "465",
-        auth: {
-          user: smtpUser,
-          pass: smtpPass
-        }
-      });
-
-      const mailOptions = {
-        from: smtpFrom,
-        to: email,
-        subject: "VolunteerHub - Password Reset Request",
-        text: `You requested a password reset. Please click the link below to reset your password:\n\n${resetUrl}\n\nThis link is valid for 1 hour.`,
-        html: `<p>You requested a password reset. Please click the link below to reset your password:</p>
-               <p><a href="${resetUrl}">${resetUrl}</a></p>
-               <p>This link is valid for 1 hour.</p>`
-      };
-
-      await transporter.sendMail(mailOptions);
-      console.log(`[EMAIL SENT] Password reset email successfully sent to ${email}`);
-    } catch (mailError) {
-      console.error("[EMAIL ERROR] Failed to send email via Nodemailer:", mailError.message);
-    }
-  } else {
-    console.log("[SMTP CONFIG] SMTP details not fully set up in .env. Skipping real email dispatch.");
+  // Send password reset email using SMTP service
+  try {
+    await sendPasswordResetEmail({
+      to: email,
+      userName: user.name,
+      resetUrl,
+      resetOtp
+    });
+  } catch (mailError) {
+    console.error("[SMTP ERROR] Failed to send email via SMTP:", mailError.message);
   }
 
-  return resetToken;
+  return true;
+};
+
+export const verifyOtp = async ({ email, otp }) => {
+  const user = await User.findOne({
+    where: {
+      email,
+      resetOtp: otp.trim(),
+      resetOtpExpires: {
+        [Op.gt]: Date.now()
+      }
+    }
+  });
+
+  if (!user) {
+    const err = new Error("Invalid or expired 6-digit OTP code");
+    err.statusCode = 400;
+    throw err;
+  }
+
+  return { valid: true, email };
 };
 
 export const resetPassword = async ({ token, newPassword }) => {
@@ -271,11 +263,45 @@ export const resetPassword = async ({ token, newPassword }) => {
   // Hash new password
   const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-  // Update password and clear reset token fields
+  // Update password and clear reset token & OTP fields
   await user.update({
     password: hashedPassword,
     resetPasswordToken: null,
-    resetPasswordExpires: null
+    resetPasswordExpires: null,
+    resetOtp: null,
+    resetOtpExpires: null
+  });
+
+  return true;
+};
+
+export const resetPasswordWithOtp = async ({ email, otp, newPassword }) => {
+  const user = await User.findOne({
+    where: {
+      email,
+      resetOtp: otp.trim(),
+      resetOtpExpires: {
+        [Op.gt]: Date.now()
+      }
+    }
+  });
+
+  if (!user) {
+    const err = new Error("Invalid or expired OTP code");
+    err.statusCode = 400;
+    throw err;
+  }
+
+  // Hash new password
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+  // Update password and clear reset token & OTP fields
+  await user.update({
+    password: hashedPassword,
+    resetPasswordToken: null,
+    resetPasswordExpires: null,
+    resetOtp: null,
+    resetOtpExpires: null
   });
 
   return true;

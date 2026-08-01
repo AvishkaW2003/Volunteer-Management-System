@@ -2,7 +2,11 @@ import express from "express";
 import authMiddleware from "../middleware/authMiddleware.js";
 import { 
   validateStudentRegistration, 
-  validateOrganizerRegistration 
+  validateOrganizerRegistration,
+  validateForgotPassword,
+  validateResetPassword,
+  validateVerifyOtp,
+  validateResetPasswordWithOtp
 } from "../middleware/validationMiddleware.js";
 import { 
   registerStudent, 
@@ -10,7 +14,9 @@ import {
   login, 
   getMe, 
   forgotPassword, 
+  verifyOtp,
   resetPassword,
+  resetPasswordWithOtp,
   googleLogin,
   googleRegisterOrganizer
 } from "../controllers/authController.js";
@@ -24,8 +30,9 @@ router.post("/login", authRateLimiter, login);
 router.post("/google-login", authRateLimiter, googleLogin);
 router.post("/google-register/organizer", authRateLimiter, googleRegisterOrganizer);
 router.get("/me", authMiddleware, getMe);
-router.post("/forgot-password", resetRateLimiter, forgotPassword);
-router.post("/reset-password/:token", resetRateLimiter, resetPassword);
-
+router.post("/forgot-password", resetRateLimiter, validateForgotPassword, forgotPassword);
+router.post("/verify-otp", resetRateLimiter, validateVerifyOtp, verifyOtp);
+router.post("/reset-password/:token", resetRateLimiter, validateResetPassword, resetPassword);
+router.post("/reset-password-otp", resetRateLimiter, validateResetPasswordWithOtp, resetPasswordWithOtp);
 
 export default router;
