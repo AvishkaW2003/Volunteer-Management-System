@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import {
   Calendar, Award, Star, CheckCircle, Trophy, Bell
 } from "lucide-react";
+import "./HomePage.css";
 
 /**
  * AnimatedCounter Component
@@ -39,60 +40,72 @@ const AnimatedCounter = ({ end, suffix = "" }) => {
 const AboutPage = () => {
   const features = [
     {
-      icon: <Calendar className="w-6 h-6" />,
+      icon: <Calendar className="w-5 h-5" />,
       title: "Event Discovery",
       description: "Browse and apply to hundreds of volunteer opportunities.",
+      image: "https://images.unsplash.com/photo-1511578314322-379afb476865?w=500&q=80"
     },
     {
-      icon: <Award className="w-6 h-6" />,
+      icon: <Award className="w-5 h-5" />,
       title: "Certificate Generation",
       description: "Earn verified certificates for your contributions.",
+      image: "https://images.unsplash.com/photo-1579389083078-4e7018379f7e?w=800&q=80"
     },
     {
-      icon: <Star className="w-6 h-6" />,
+      icon: <Star className="w-5 h-5" />,
       title: "Reputation Points",
       description: "Build your volunteer reputation and unlock perks.",
+      image: "https://images.unsplash.com/photo-1578269174936-2709b6aeb913?w=600&q=80"
     },
     {
-      icon: <CheckCircle className="w-6 h-6" />,
+      icon: <CheckCircle className="w-5 h-5" />,
       title: "Attendance Tracking",
       description: "Automated check-in and participation monitoring.",
+      image: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=500&q=80"
     },
     {
-      icon: <Trophy className="w-6 h-6" />,
+      icon: <Trophy className="w-5 h-5" />,
       title: "Volunteer Leaderboard",
       description: "Compete and get recognized for your impact.",
+      image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=500&q=80"
     },
     {
-      icon: <Bell className="w-6 h-6" />,
+      icon: <Bell className="w-5 h-5" />,
       title: "Smart Notifications",
       description: "Never miss an opportunity with real-time alerts.",
+      image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500&q=80"
     },
   ];
 
   return (
     <div>
       
-      {/* Intro Mission Statement */}
-      <section className="vh-hero" style={{ background: "var(--bg-white)", paddingBottom: "3rem" }}>
-        <div className="vh-hero-container" style={{ gridTemplateColumns: "1.2fr 1fr", gap: "2rem" }}>
-          <div className="vh-hero-content">
-            <span className="vh-section-subtitle" style={{ textTransform: "uppercase" }}>Our Vision</span>
-            <h1 className="vh-hero-heading" style={{ fontSize: "2.75rem", marginTop: "0.5rem" }}>
-              Connecting Students with <span className="blue-highlight">Purposeful Impact</span>
-            </h1>
-            <p className="vh-hero-subtext">
-              VolunteerHub is dedicated to building a supportive community of students and organizers. We streamline event management, attendance verification, and performance gamification to make student participation in volunteer projects simple, accessible, and deeply rewarding.
-            </p>
-          </div>
-          <div className="vh-hero-media">
-            <div className="vh-hero-image-card" style={{ maxWidth: "420px" }}>
-              <div className="vh-hero-image-wrapper" style={{ height: "260px" }}>
-                <img
-                  src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&q=80"
-                  alt="Students collaborating"
-                  className="vh-hero-image"
-                />
+      {/* Intro Mission Statement Section with Tall Hero Card Box */}
+      <section className="vh-hero" style={{ background: "var(--bg-hero)", paddingTop: "calc(var(--navbar-height) + 2.5rem)", paddingBottom: "4rem" }}>
+        <div className="vh-hero-container">
+          <div className="vh-hero-card" style={{ minHeight: "480px", padding: "3.75rem 3.5rem", alignItems: "center" }}>
+            {/* Left Side: Vision Text */}
+            <div className="vh-hero-content" style={{ gap: "1.5rem" }}>
+              <span className="vh-section-subtitle" style={{ textTransform: "uppercase", letterSpacing: "0.08em" }}>Our Vision</span>
+              <h1 className="vh-hero-heading" style={{ fontSize: "2.85rem", marginTop: "0.25rem", lineHeight: "1.2" }}>
+                Connecting Students with <span className="blue-highlight">Purposeful Impact</span>
+              </h1>
+              <p className="vh-hero-subtext" style={{ fontSize: "1.08rem", lineHeight: "1.7" }}>
+                VolunteerHub is dedicated to building a supportive community of students and organizers. We streamline event management, attendance verification, and performance gamification to make student participation in volunteer projects simple, accessible, and deeply rewarding.
+              </p>
+            </div>
+
+            {/* Right Side: Image Banner */}
+            <div className="vh-hero-media" style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100%" }}>
+              <div className="vh-hero-image-card" style={{ width: "100%", maxWidth: "100%" }}>
+                <div className="vh-hero-image-wrapper" style={{ height: "360px", borderRadius: "1.25rem", overflow: "hidden" }}>
+                  <img
+                    src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&q=80"
+                    alt="Students collaborating"
+                    className="vh-hero-image"
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -109,12 +122,61 @@ const AboutPage = () => {
 
           <div className="vh-features-grid">
             {features.map((feature, idx) => (
-              <div key={idx} className="vh-feature-card">
-                <div className="vh-feature-icon-wrapper">
-                  {feature.icon}
+              <div 
+                key={idx} 
+                className="vh-feature-card"
+                style={{
+                  padding: 0,
+                  overflow: "hidden",
+                  borderRadius: "1.15rem",
+                  display: "flex",
+                  flexDirection: "column",
+                  background: "#ffffff",
+                  boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 4px 10px -2px rgba(0, 0, 0, 0.02)",
+                  border: "1px solid rgba(226, 232, 240, 0.8)",
+                  transition: "transform 0.3s ease, box-shadow 0.3s ease"
+                }}
+              >
+                <div style={{ height: "155px", width: "100%", overflow: "hidden", position: "relative" }}>
+                  {feature.title === "Certificate Generation" ? (
+                    <div style={{ height: "155px", width: "100%", overflow: "hidden", position: "relative", background: "linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)", padding: "10px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <div style={{ width: "100%", height: "100%", background: "#ffffff", borderRadius: "10px", border: "2px solid #d97706", padding: "8px 12px", display: "flex", flexDirection: "column", justifyContent: "space-between", position: "relative", boxShadow: "0 6px 16px rgba(0,0,0,0.25)" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                            <div style={{ width: "14px", height: "14px", borderRadius: "4px", background: "#2563eb", color: "#ffffff", fontSize: "8px", fontWeight: "900", display: "flex", alignItems: "center", justifyContent: "center" }}>VH</div>
+                            <span style={{ fontSize: "9px", fontWeight: "800", color: "#1e293b", letterSpacing: "0.5px" }}>VolunteerHub</span>
+                          </div>
+                          <span style={{ fontSize: "8px", fontWeight: "700", background: "#fef3c7", color: "#b45309", padding: "2px 6px", borderRadius: "4px", border: "1px solid #fde68a" }}>OFFICIAL CERTIFICATE</span>
+                        </div>
+                        <div style={{ textTransform: "uppercase", fontSize: "10px", fontWeight: "900", color: "#4338ca", letterSpacing: "1px", textAlign: "center", margin: "2px 0" }}>
+                          Certificate of Participation
+                        </div>
+                        <div style={{ fontSize: "8.5px", color: "#475569", textAlign: "center", lineHeight: "1.2" }}>
+                          This certifies that <strong style={{ color: "#0f172a" }}>Sarah Chen</strong> completed <strong style={{ color: "#2563eb" }}>25+ Hours</strong> at <span style={{ color: "#7c3aed", fontWeight: "700" }}>IEEE WIE Day</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px dashed #cbd5e1", paddingTop: "4px" }}>
+                          <span style={{ fontSize: "7.5px", color: "#94a3b8" }}>ID: #VH-2026-CERT</span>
+                          <span style={{ fontSize: "7.5px", fontWeight: "700", color: "#059669", display: "flex", alignItems: "center", gap: "2px" }}>✓ Verified Signature</span>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <img 
+                      src={feature.image} 
+                      alt={feature.title}
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+                    />
+                  )}
+                  <div style={{ position: "absolute", bottom: "10px", left: "12px", background: "rgba(255, 255, 255, 0.95)", backdropFilter: "blur(6px)", padding: "0.35rem 0.5rem", borderRadius: "0.75rem", boxShadow: "0 4px 12px rgba(0,0,0,0.12)", display: "flex", alignItems: "center", gap: "0.5rem", zIndex: 2 }}>
+                    <div style={{ color: "var(--primary-color)", display: "flex" }}>
+                      {feature.icon}
+                    </div>
+                  </div>
                 </div>
-                <h3 className="vh-feature-title">{feature.title}</h3>
-                <p className="vh-feature-desc">{feature.description}</p>
+                <div style={{ padding: "1.25rem 1.25rem 1.5rem" }}>
+                  <h3 className="vh-feature-title" style={{ fontSize: "1.1rem", margin: 0, fontWeight: 700, color: "#0f172a" }}>{feature.title}</h3>
+                  <p className="vh-feature-desc" style={{ marginTop: "0.4rem", fontSize: "0.92rem", color: "#475569", lineHeight: 1.5 }}>{feature.description}</p>
+                </div>
               </div>
             ))}
           </div>
