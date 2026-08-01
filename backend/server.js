@@ -32,9 +32,15 @@ sequelize
   .sync()
   .then(async () => {
     console.log("Database synced");
-    // Ensure new OTP columns exist
+    // Ensure new columns exist on existing tables if sync alter was skipped
     await sequelize.query("ALTER TABLE Users ADD COLUMN resetOtp VARCHAR(255) NULL;").catch(() => {});
     await sequelize.query("ALTER TABLE Users ADD COLUMN resetOtpExpires DATETIME NULL;").catch(() => {});
+    await sequelize.query("ALTER TABLE Events ADD COLUMN eventType ENUM('In-Person', 'Online') DEFAULT 'In-Person';").catch(() => {});
+    await sequelize.query("ALTER TABLE Events ADD COLUMN meetingLink TEXT NULL;").catch(() => {});
+    await sequelize.query("ALTER TABLE Events ADD COLUMN time VARCHAR(255) DEFAULT '10:00 AM';").catch(() => {});
+    await sequelize.query("ALTER TABLE Events ADD COLUMN reputationPoints INT DEFAULT 10;").catch(() => {});
+    await sequelize.query("ALTER TABLE Events ADD COLUMN category VARCHAR(255) NULL;").catch(() => {});
+    await sequelize.query("ALTER TABLE Events ADD COLUMN skills TEXT NULL;").catch(() => {});
     await seedDatabase();
   })
   .catch((err) => {
