@@ -59,12 +59,9 @@ const Event = sequelize.define("Event", {
   },
 
   image: {
-<<<<<<< HEAD
     type: DataTypes.TEXT("long"),
-=======
-    type: DataTypes.TEXT,
->>>>>>> 1d0b9543fa12f1967fee12ed14e300ca7a9d3fe0
     allowNull: true,
+    defaultValue: "https://images.unsplash.com/photo-1593113598332-cd288d649433?w=800",
   },
   time: {
     type: DataTypes.STRING,
