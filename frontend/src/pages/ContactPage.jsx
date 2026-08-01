@@ -5,8 +5,8 @@ import "./ContactPage.css";
 /**
  * ContactPage Component
  * 
- * Professional Contact Us page featuring styled info cards, campus visual preview image,
- * and a fully operational contact form cleanly formatted for a single-screen view.
+ * Professional Contact Us page featuring styled info cards with section preview images,
+ * campus visual preview banner, and a 3D contact form cleanly formatted for a single-screen view.
  */
 const ContactPage = () => {
   const [formData, setFormData] = useState({
@@ -80,36 +80,57 @@ const ContactPage = () => {
             </div>
 
             {/* Phone Support Card */}
-            <div className="contact-info-card">
-              <div className="contact-icon-box">
-                <Phone className="w-5 h-5" />
+            <div className="contact-info-card" style={{ justifyContent: "space-between" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.9rem" }}>
+                <div className="contact-icon-box">
+                  <Phone className="w-5 h-5" />
+                </div>
+                <div className="contact-info-content">
+                  <h3>Phone Support</h3>
+                  <p>(555) 123-4567</p>
+                </div>
               </div>
-              <div className="contact-info-content">
-                <h3>Phone Support</h3>
-                <p>(555) 123-4567</p>
-              </div>
+              <img 
+                src="https://images.unsplash.com/photo-1534536281715-e28d76689b4d?w=200&q=80" 
+                alt="Phone Support Representative" 
+                style={{ width: "44px", height: "44px", borderRadius: "0.65rem", objectFit: "cover", flexShrink: 0, opacity: 0.9, border: "1px solid rgba(226, 232, 240, 0.8)" }} 
+              />
             </div>
 
             {/* Email Inquiries Card */}
-            <div className="contact-info-card">
-              <div className="contact-icon-box">
-                <Mail className="w-5 h-5" />
+            <div className="contact-info-card" style={{ justifyContent: "space-between" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.9rem" }}>
+                <div className="contact-icon-box">
+                  <Mail className="w-5 h-5" />
+                </div>
+                <div className="contact-info-content">
+                  <h3>Email Inquiries</h3>
+                  <p>info@volunteerhub.edu</p>
+                </div>
               </div>
-              <div className="contact-info-content">
-                <h3>Email Inquiries</h3>
-                <p>info@volunteerhub.edu</p>
-              </div>
+              <img 
+                src="https://images.unsplash.com/photo-1596526131083-e8c633c948d2?w=200&q=80" 
+                alt="Email Support Desk" 
+                style={{ width: "44px", height: "44px", borderRadius: "0.65rem", objectFit: "cover", flexShrink: 0, opacity: 0.9, border: "1px solid rgba(226, 232, 240, 0.8)" }} 
+              />
             </div>
 
             {/* Main Campus Office Card */}
-            <div className="contact-info-card">
-              <div className="contact-icon-box">
-                <MapPin className="w-5 h-5" />
+            <div className="contact-info-card" style={{ justifyContent: "space-between" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.9rem" }}>
+                <div className="contact-icon-box">
+                  <MapPin className="w-5 h-5" />
+                </div>
+                <div className="contact-info-content">
+                  <h3>Main Campus Office</h3>
+                  <p>Student Union, Wing B, Room 302</p>
+                </div>
               </div>
-              <div className="contact-info-content">
-                <h3>Main Campus Office</h3>
-                <p>Student Union, Wing B, Room 302</p>
-              </div>
+              <img 
+                src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=200&q=80" 
+                alt="Main Campus Office Building" 
+                style={{ width: "44px", height: "44px", borderRadius: "0.65rem", objectFit: "cover", flexShrink: 0, opacity: 0.9, border: "1px solid rgba(226, 232, 240, 0.8)" }} 
+              />
             </div>
 
             {/* Social Links Panel */}
