@@ -179,10 +179,10 @@ const ReportsAnalytics = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-slate-800 flex items-center gap-2">
-            <BarChart2 className="w-8 h-8 text-teal-600" /> Reports & Analytics
+          <h1 className="text-3xl font-extrabold text-white tracking-tight flex items-center gap-2">
+            <BarChart2 className="w-8 h-8 text-teal-400" /> Reports & Analytics
           </h1>
-          <p className="text-slate-500 mt-1 font-medium">Real-time analytical graphs, active summaries, and export capabilities.</p>
+          <p className="text-slate-400 mt-1 font-medium text-sm">Real-time analytical graphs, active summaries, and export capabilities.</p>
         </div>
         
         {/* Mock Export Controls */}
