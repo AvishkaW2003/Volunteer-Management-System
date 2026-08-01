@@ -15,6 +15,7 @@ export const createEvent = async (eventData, organizerId) => {
 
   const event = await Event.create({
     ...eventData,
+    image: eventData.image || "https://images.unsplash.com/photo-1593113598332-cd288d649433?w=800",
     UserId: organizerId,
     approvalStatus: "Pending",
     status: "Upcoming",
