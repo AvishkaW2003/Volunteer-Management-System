@@ -50,14 +50,12 @@ const CustomToggle = ({ checked, onChange, label }) => (
     className="flex items-center gap-3 cursor-pointer focus:outline-none text-left border-none bg-transparent"
   >
     <div
-      className={`relative w-11 h-6 rounded-full transition-colors duration-200 ${
-        checked ? 'bg-blue-600' : 'bg-gray-200'
-      }`}
+      className={`relative w-11 h-6 rounded-full transition-colors duration-200 ${checked ? 'bg-blue-600' : 'bg-gray-200'
+        }`}
     >
       <div
-        className={`absolute top-0.5 left-0.5 bg-white w-5 h-5 rounded-full shadow transition-transform duration-200 ${
-          checked ? 'transform translate-x-5' : ''
-        }`}
+        className={`absolute top-0.5 left-0.5 bg-white w-5 h-5 rounded-full shadow transition-transform duration-200 ${checked ? 'transform translate-x-5' : ''
+          }`}
       />
     </div>
     <span className="text-sm text-gray-600 font-medium">{label}</span>
@@ -453,7 +451,7 @@ const StudentSettings = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Forms column */}
         <div className="lg:col-span-8 space-y-8">
-          
+
           {/* Section 1: Profile Picture */}
           <SectionCard icon={Camera} title="Profile Picture">
             <div className="flex flex-col sm:flex-row items-center gap-6">
@@ -607,7 +605,7 @@ const StudentSettings = () => {
             <p className="text-xs text-gray-500 -mt-2 mb-4">
               Select multiple skills that match your capabilities. You can add custom skills tags below.
             </p>
-            
+
             {/* Interactive Grid of skills */}
             <div className="flex flex-wrap gap-2.5 mb-5">
               {DEFAULT_SKILLS.map((skill) => {
@@ -617,11 +615,10 @@ const StudentSettings = () => {
                     key={skill}
                     type="button"
                     onClick={() => handleToggleSkill(skill)}
-                    className={`px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all duration-150 border-none cursor-pointer ${
-                      selected
+                    className={`px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all duration-150 border-none cursor-pointer ${selected
                         ? 'bg-blue-600 text-white shadow-sm'
                         : 'bg-white hover:bg-gray-50 text-gray-600 border border-gray-200 border-solid'
-                    }`}
+                      }`}
                   >
                     {skill}
                   </button>
@@ -680,16 +677,15 @@ const StudentSettings = () => {
               {PREFERENCE_CATEGORIES.map((category) => (
                 <div
                   key={category}
-                  className={`p-3 border rounded-xl transition cursor-pointer select-none ${
-                    selectedPreferences.includes(category)
+                  className={`p-3 border rounded-xl transition cursor-pointer select-none ${selectedPreferences.includes(category)
                       ? 'border-blue-300 bg-blue-50/40 border-solid'
                       : 'border-gray-200 hover:bg-gray-50/60 bg-white border-solid'
-                  }`}
+                    }`}
                   onClick={() => handleTogglePreference(category)}
                 >
                   <GradientCheckbox
                     checked={selectedPreferences.includes(category)}
-                    onChange={() => {}}
+                    onChange={() => { }}
                     label={category}
                   />
                 </div>
@@ -713,11 +709,10 @@ const StudentSettings = () => {
                         key={day}
                         type="button"
                         onClick={() => handleToggleDay(day)}
-                        className={`px-4.5 py-2.5 rounded-xl text-xs font-semibold border transition cursor-pointer ${
-                          active
+                        className={`px-4.5 py-2.5 rounded-xl text-xs font-semibold border transition cursor-pointer ${active
                             ? 'bg-blue-50 text-blue-700 border-blue-300 font-bold border-solid'
                             : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50 border-solid'
-                        }`}
+                          }`}
                       >
                         {day}
                       </button>
@@ -736,11 +731,10 @@ const StudentSettings = () => {
                         key={time}
                         type="button"
                         onClick={() => handleToggleTime(time)}
-                        className={`px-4.5 py-2.5 rounded-xl text-xs font-semibold border transition cursor-pointer ${
-                          active
+                        className={`px-4.5 py-2.5 rounded-xl text-xs font-semibold border transition cursor-pointer ${active
                             ? 'bg-blue-50 text-blue-700 border-blue-300 font-bold border-solid'
                             : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50 border-solid'
-                        }`}
+                          }`}
                       >
                         {time}
                       </button>
@@ -829,7 +823,7 @@ const StudentSettings = () => {
 
         {/* Sidebar Grid column (Profile Summary and Security) */}
         <div className="lg:col-span-4 space-y-8">
-          
+
           {/* Section 9: Security / Change Password */}
           <SectionCard icon={Lock} title="Security">
             <p className="text-xs text-gray-500 -mt-2 mb-4">

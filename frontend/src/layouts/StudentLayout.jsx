@@ -5,16 +5,17 @@ import {
   Trophy, Award, Bell, Settings, Menu, X
 } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
+import '../pages/Student/StudentSection.css';
 
 const navItems = [
-  { to: '/student/dashboard',    icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/student/events',       icon: CalendarDays,    label: 'Browse Events' },
-  { to: '/student/applications', icon: FileText,        label: 'Applications' },
-  { to: '/student/history',      icon: HistoryIcon,     label: 'History' },
-  { to: '/student/leaderboard',  icon: Trophy,          label: 'Leaderboard' },
-  { to: '/student/certificates', icon: Award,           label: 'Certificates' },
-  { to: '/student/notifications',icon: Bell,            label: 'Notifications' },
-  { to: '/student/settings',     icon: Settings,        label: 'Settings' },
+  { to: '/student/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+  { to: '/student/events', icon: CalendarDays, label: 'Browse Events' },
+  { to: '/student/applications', icon: FileText, label: 'Applications' },
+  { to: '/student/history', icon: HistoryIcon, label: 'History' },
+  { to: '/student/leaderboard', icon: Trophy, label: 'Leaderboard' },
+  { to: '/student/certificates', icon: Award, label: 'Certificates' },
+  { to: '/student/notifications', icon: Bell, label: 'Notifications' },
+  { to: '/student/settings', icon: Settings, label: 'Settings' },
 ];
 
 /**
@@ -29,7 +30,7 @@ const StudentLayout = () => {
 
   return (
     <div className="h-full flex flex-col md:flex-row overflow-hidden relative">
-      
+
       {/* Mobile Header Bar for Student Panel */}
       <div className="md:hidden flex items-center justify-between px-4 py-2.5 bg-white border-b border-slate-200 flex-shrink-0 z-20">
         <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500">Student Navigation</span>
@@ -51,14 +52,13 @@ const StudentLayout = () => {
 
       {/* Persistent Left Sidebar (Desktop) & Sliding Drawer (Mobile) */}
       <aside
-        className={`fixed md:static inset-y-0 left-0 z-50 flex-shrink-0 h-full bg-white border-r border-slate-200/80 transition-all duration-300 transform ${
-          collapsed ? 'w-20' : 'w-64'
-        } ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
+        className={`fixed md:static inset-y-0 left-0 z-50 flex-shrink-0 h-full bg-white border-r border-slate-200/80 transition-all duration-300 transform ${collapsed ? 'w-20' : 'w-64'
+          } ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
       >
-        <Sidebar 
-          showBrand={false} 
-          sectionTitle="NAVIGATION" 
-          navItems={navItems} 
+        <Sidebar
+          showBrand={false}
+          sectionTitle="NAVIGATION"
+          navItems={navItems}
           collapsed={collapsed}
           onToggleCollapse={() => setCollapsed(!collapsed)}
           onClose={() => setMobileMenuOpen(false)}
@@ -67,7 +67,7 @@ const StudentLayout = () => {
 
       {/* Main Page Workspace */}
       <div className="flex-1 h-full overflow-y-auto p-4 md:p-6 lg:p-8 relative bg-gradient-to-br from-blue-50/60 via-white to-purple-50/40 transition-all duration-300">
-        
+
         {/* Background ambient lighting */}
         <div className="pointer-events-none fixed inset-0 overflow-hidden -z-10">
           <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full bg-gradient-to-br from-purple-200/40 to-blue-200/30 blur-3xl" />
