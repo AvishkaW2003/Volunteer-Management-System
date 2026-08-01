@@ -32,7 +32,7 @@ sequelize
   .sync()
   .then(async () => {
     console.log("Database synced");
-    // Ensure new OTP columns exist
+    // Ensure new columns exist on existing tables if sync alter was skipped
     await sequelize.query("ALTER TABLE Users ADD COLUMN resetOtp VARCHAR(255) NULL;").catch(() => {});
     await sequelize.query("ALTER TABLE Users ADD COLUMN resetOtpExpires DATETIME NULL;").catch(() => {});
     // Widen Events.image from VARCHAR(255) to TEXT to fit base64 data URLs from custom banner uploads

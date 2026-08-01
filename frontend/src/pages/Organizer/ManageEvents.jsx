@@ -76,7 +76,11 @@ const ManageEvents = () => {
 
   const openEdit = (event) => {
     setEditingEvent(event);
-    setEditForm({ ...event });
+    setEditForm({
+      ...event,
+      date: event.eventDate || event.date || '',
+      maxVolunteers: event.volunteerRequired || event.maxVolunteers || ''
+    });
   };
 
   const closeEdit = () => {
@@ -93,8 +97,8 @@ const ManageEvents = () => {
         title: editForm.title,
         category: editForm.category,
         status: editForm.status,
-        eventDate: editForm.date,
-        volunteerRequired: parseInt(editForm.maxVolunteers),
+        eventDate: editForm.date || editForm.eventDate,
+        volunteerRequired: parseInt(editForm.maxVolunteers || editForm.volunteerRequired) || 1,
         location: editForm.location,
         description: editForm.description || '',
         skills: editForm.skills ? (Array.isArray(editForm.skills) ? editForm.skills.join(', ') : editForm.skills) : '',
@@ -105,7 +109,7 @@ const ManageEvents = () => {
       await updateEvent(editingEvent.id, updateData);
 
       setEvents((prev) =>
-        prev.map((ev) => (ev.id === editingEvent.id ? { ...ev, ...editForm } : ev))
+        prev.map((ev) => (ev.id === editingEvent.id ? { ...ev, ...editForm, eventDate: updateData.eventDate, volunteerRequired: updateData.volunteerRequired } : ev))
       );
       closeEdit();
     } catch (err) {
