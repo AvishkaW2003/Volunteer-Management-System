@@ -145,10 +145,10 @@ const AdminNotifications = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-slate-800 flex items-center gap-2">
-            <Bell className="w-8 h-8 text-teal-600" /> Notifications Center
+          <h1 className="text-3xl font-extrabold text-white tracking-tight flex items-center gap-2">
+            <Bell className="w-8 h-8 text-teal-400" /> Notifications Center
           </h1>
-          <p className="text-slate-500 mt-1 font-medium font-sans">View registration alerts, event requests, and announcements.</p>
+          <p className="text-slate-400 mt-1 font-medium text-sm font-sans">View registration alerts, event requests, and announcements.</p>
         </div>
 
         {/* Global actions */}
