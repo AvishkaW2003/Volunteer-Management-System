@@ -138,10 +138,10 @@ const ManageEvents = () => {
 
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-extrabold text-[#1E293B] flex items-center gap-2">
-          <CalendarRange className="w-8 h-8 text-teal-600" /> Manage Events
+        <h1 className="text-3xl font-extrabold text-white tracking-tight flex items-center gap-2">
+          <CalendarRange className="w-8 h-8 text-teal-400" /> Manage Events
         </h1>
-        <p className="text-slate-500 mt-1 font-medium">Monitor active and archived events, track application rates and volunteer attendance.</p>
+        <p className="text-slate-400 mt-1 font-medium text-sm">Monitor active and archived events, track application rates and volunteer attendance.</p>
       </div>
 
       {/* Stats bar */}
