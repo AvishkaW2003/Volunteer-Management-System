@@ -35,6 +35,7 @@ sequelize
     // Ensure new columns exist on existing tables if sync alter was skipped
     await sequelize.query("ALTER TABLE Users ADD COLUMN resetOtp VARCHAR(255) NULL;").catch(() => {});
     await sequelize.query("ALTER TABLE Users ADD COLUMN resetOtpExpires DATETIME NULL;").catch(() => {});
+<<<<<<< HEAD
     await sequelize.query("ALTER TABLE Events ADD COLUMN eventType ENUM('In-Person', 'Online') DEFAULT 'In-Person';").catch(() => {});
     await sequelize.query("ALTER TABLE Events ADD COLUMN meetingLink TEXT NULL;").catch(() => {});
     await sequelize.query("ALTER TABLE Events ADD COLUMN time VARCHAR(255) DEFAULT '10:00 AM';").catch(() => {});
@@ -43,6 +44,10 @@ sequelize
     await sequelize.query("ALTER TABLE Events ADD COLUMN skills TEXT NULL;").catch(() => {});
     await sequelize.query("ALTER TABLE Events MODIFY COLUMN image LONGTEXT NULL;").catch(() => {});
     await sequelize.query("ALTER TABLE Events ALTER COLUMN image TEXT NULL;").catch(() => {});
+=======
+    // Widen Events.image from VARCHAR(255) to TEXT to fit base64 data URLs from custom banner uploads
+    await sequelize.query("ALTER TABLE Events MODIFY COLUMN image TEXT NULL;").catch(() => {});
+>>>>>>> 1d0b9543fa12f1967fee12ed14e300ca7a9d3fe0
     await seedDatabase();
   })
   .catch((err) => {
