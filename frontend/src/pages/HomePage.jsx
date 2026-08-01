@@ -735,6 +735,7 @@ const Home = () => {
       <section className="vh-testimonials">
         <div className="vh-testimonials-container">
           <div className="vh-section-header">
+            <span className="vh-testimonial-badge">Community Feedback</span>
             <h2 className="vh-section-title">What Students Say</h2>
             <p className="vh-section-subtitle">Real experiences from our volunteer community</p>
           </div>
@@ -743,9 +744,21 @@ const Home = () => {
             {testimonials.map((t, idx) => (
               <div key={idx} className="vh-testimonial-wrapper">
                 <div className="vh-testimonial-bubble">
+                  <div className="vh-testimonial-card-header">
+                    <div className="vh-testimonial-stars">
+                      {[...Array(5)].map((_, sIdx) => (
+                        <Star key={sIdx} className="vh-testimonial-star-icon" />
+                      ))}
+                    </div>
+                    <span className="vh-testimonial-verified">
+                      <span className="vh-testimonial-verified-dot" />
+                      Verified Student
+                    </span>
+                  </div>
                   <p className="vh-testimonial-quote">
                     "{t.feedback}"
                   </p>
+                  <div className="vh-testimonial-quote-mark">“</div>
                 </div>
                 <div className="vh-testimonial-author">
                   <div className="vh-testimonial-avatar-wrapper">
