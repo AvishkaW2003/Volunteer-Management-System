@@ -29,3 +29,21 @@ export const updateSettings = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+export const getPublicSettings = async (req, res) => {
+  try {
+    const settings = await settingsService.getSettings();
+    res.status(200).json({
+      siteName: settings.siteName,
+      adminEmail: settings.adminEmail,
+      eventApprovalRequired: settings.eventApprovalRequired,
+      notificationsEnabled: settings.notificationsEnabled,
+      registrationOpen: settings.registrationOpen,
+      maintenanceMode: settings.maintenanceMode,
+      darkModeEnabled: settings.darkModeEnabled,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
