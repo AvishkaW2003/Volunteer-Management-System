@@ -22,6 +22,10 @@ export const sendNotification = async (req, res) => {
 // Admin view (returns all role=admin notifications for dashboard)
 export const getAdminNotifications = async (req, res) => {
   try {
+    const settings = await getSettings();
+    if (!settings.notificationsEnabled) {
+      return res.status(200).json([]);
+    }
     const list = await Notification.findAll({
       where: { role: "admin" },
       order: [["createdAt", "DESC"]]
@@ -38,6 +42,10 @@ export const getNotifications = getAdminNotifications;
 // User view (returns authenticated user's notifications only, latest first)
 export const myNotifications = async (req, res) => {
   try {
+    const settings = await getSettings();
+    if (!settings.notificationsEnabled) {
+      return res.status(200).json([]);
+    }
     const list = await Notification.findAll({
       where: { userId: req.user.id },
       order: [["createdAt", "DESC"]]
@@ -51,6 +59,10 @@ export const myNotifications = async (req, res) => {
 // Get unread count
 export const getUnreadCount = async (req, res) => {
   try {
+    const settings = await getSettings();
+    if (!settings.notificationsEnabled) {
+      return res.status(200).json({ unreadCount: 0 });
+    }
     const unreadCount = await Notification.count({
       where: { userId: req.user.id, isRead: false }
     });
