@@ -18,7 +18,7 @@ const getApiBaseUrl = () => {
   }
 
   // Default to deployed Render backend URL
-  return "https://volunteer-management-system-qyku.onrender.com";
+  return "https://volunteer-management-system-2.onrender.com";
 };
 
 export const API_BASE_URL = getApiBaseUrl();
