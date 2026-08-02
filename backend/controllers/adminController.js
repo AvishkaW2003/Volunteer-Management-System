@@ -17,18 +17,20 @@ export const dashboard = async (req, res) => {
     const totalUsers = await User.count();
     const totalStudents = await User.count({ where: { role: "student" } });
     const totalOrganizers = await User.count({ where: { role: "organizer" } });
-    const totalEvents = await Event.count();
-    const pendingEventsCount = await Event.count({ where: { approvalStatus: "Pending" } });
-    const approvedEventsCount = await Event.count({ where: { approvalStatus: "Approved" } });
+    const totalEvents = await Event.count({ where: { status: { [Op.ne]: "Archived" } } });
+    const pendingEventsCount = await Event.count({ where: { approvalStatus: "Pending", status: { [Op.ne]: "Archived" } } });
+    const approvedEventsCount = await Event.count({ where: { approvalStatus: "Approved", status: { [Op.ne]: "Archived" } } });
     const totalApplications = await VolunteerRegistration.count();
     const totalCertificates = await Certificate.count();
 
-    const volunteerHours = 1240 + totalApplications * 4;
+    const presentCount = await Attendance.count({ where: { status: "Present" } });
+    const totalHoursFromCertificates = await Certificate.sum("hours") || 0;
+    const volunteerHours = totalHoursFromCertificates > 0 ? totalHoursFromCertificates : (presentCount * 4);
 
     const pendingEventsList = await Event.findAll({
-      where: { approvalStatus: "Pending" },
+      where: { approvalStatus: "Pending", status: { [Op.ne]: "Archived" } },
       limit: 5,
-      include: [{ model: User, attributes: ["name"] }]
+      include: [{ model: User, attributes: ["name", "email"] }]
     });
 
     const recentActivity = await AuditLog.findAll({
@@ -36,32 +38,82 @@ export const dashboard = async (req, res) => {
       limit: 5
     });
 
-    const userGrowth = [
-      { name: "Jan", students: Math.max(0, totalStudents - 3), organizers: Math.max(0, totalOrganizers - 2) },
-      { name: "Feb", students: Math.max(0, totalStudents - 2), organizers: Math.max(0, totalOrganizers - 1) },
-      { name: "Mar", students: Math.max(0, totalStudents - 2), organizers: Math.max(0, totalOrganizers - 1) },
-      { name: "Apr", students: Math.max(0, totalStudents - 1), organizers: Math.max(0, totalOrganizers) },
-      { name: "May", students: totalStudents, organizers: totalOrganizers }
-    ];
+    // Build real dynamic monthly trends for past 6 months
+    const allUsers = await User.findAll({ attributes: ["role", "createdAt"] });
+    const allEvents = await Event.findAll({ where: { status: { [Op.ne]: "Archived" } }, attributes: ["createdAt"] });
+    const allRegistrations = await VolunteerRegistration.findAll({ attributes: ["createdAt"] });
+    const allAttendances = await Attendance.findAll({ where: { status: "Present" }, attributes: ["createdAt"] });
 
-    const eventTrends = [
-      { name: "Jan", events: Math.max(0, totalEvents - 4), participation: Math.max(0, totalApplications - 3) },
-      { name: "Feb", events: Math.max(0, totalEvents - 3), participation: Math.max(0, totalApplications - 2) },
-      { name: "Mar", events: Math.max(0, totalEvents - 2), participation: Math.max(0, totalApplications - 2) },
-      { name: "Apr", events: Math.max(0, totalEvents - 1), participation: Math.max(0, totalApplications - 1) },
-      { name: "May", events: totalEvents, participation: totalApplications }
-    ];
+    const now = new Date();
+    const months = [];
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const monthName = d.toLocaleString("default", { month: "short" });
+      months.push({
+        year: d.getFullYear(),
+        monthIndex: d.getMonth(),
+        name: monthName,
+        students: 0,
+        organizers: 0,
+        events: 0,
+        participation: 0,
+        attendance: 0
+      });
+    }
+
+    months.forEach((m) => {
+      allUsers.forEach((u) => {
+        const d = new Date(u.createdAt);
+        if (d.getFullYear() === m.year && d.getMonth() === m.monthIndex) {
+          if (u.role === "student") m.students++;
+          if (u.role === "organizer") m.organizers++;
+        }
+      });
+
+      allEvents.forEach((e) => {
+        const d = new Date(e.createdAt);
+        if (d.getFullYear() === m.year && d.getMonth() === m.monthIndex) {
+          m.events++;
+        }
+      });
+
+      allRegistrations.forEach((r) => {
+        const d = new Date(r.createdAt);
+        if (d.getFullYear() === m.year && d.getMonth() === m.monthIndex) {
+          m.participation++;
+        }
+      });
+
+      allAttendances.forEach((a) => {
+        const d = new Date(a.createdAt);
+        if (d.getFullYear() === m.year && d.getMonth() === m.monthIndex) {
+          m.attendance++;
+        }
+      });
+    });
+
+    const userGrowth = months.map((m) => ({
+      name: m.name,
+      students: m.students,
+      organizers: m.organizers
+    }));
+
+    const eventTrends = months.map((m) => ({
+      name: m.name,
+      events: m.events,
+      participation: m.participation,
+      attendance: m.attendance
+    }));
 
     res.json({
       totalUsers,
       totalStudents,
       totalOrganizers,
-      totalEvents,
+      totalEvents: approvedEventsCount,
       pendingEvents: pendingEventsCount,
       approvedEvents: approvedEventsCount,
       totalApplications,
       totalCertificates,
-      // Backend dashboard alignment extras
       partnerClubs: totalOrganizers,
       volunteerHours,
       userGrowth,
@@ -306,9 +358,9 @@ export const rejectEvent = async (req, res, next) => {
 export const reports = async (req, res) => {
   try {
     const totalUsers = await User.count();
-    const totalEvents = await Event.count();
-    const approvedEvents = await Event.count({ where: { approvalStatus: "Approved" } });
-    const pendingEvents = await Event.count({ where: { approvalStatus: "Pending" } });
+    const totalEvents = await Event.count({ where: { status: { [Op.ne]: "Archived" } } });
+    const approvedEvents = await Event.count({ where: { approvalStatus: "Approved", status: { [Op.ne]: "Archived" } } });
+    const pendingEvents = await Event.count({ where: { approvalStatus: "Pending", status: { [Op.ne]: "Archived" } } });
     const totalRegistrations = await VolunteerRegistration.count();
 
     // Student participation by faculty
@@ -328,7 +380,7 @@ export const reports = async (req, res) => {
     });
 
     const eventDistribution = await Promise.all(organizersList.map(async (org) => {
-      const count = await Event.count({ where: { UserId: org.id } });
+      const count = await Event.count({ where: { UserId: org.id, status: { [Op.ne]: "Archived" } } });
       return {
         name: org.organizerProfile?.organizationName || org.name,
         value: count
@@ -568,7 +620,7 @@ export const getOrganizations = async (req, res) => {
       include: [{ model: OrganizerProfile, as: "organizerProfile" }]
     });
     const list = await Promise.all(organizers.map(async (org) => {
-      const events = await Event.findAll({ where: { UserId: org.id } });
+      const events = await Event.findAll({ where: { UserId: org.id, status: { [Op.ne]: "Archived" } } });
       const eventCount = events.length;
       const eventIds = events.map(e => e.id);
       let totalVolunteerHours = 0;
@@ -616,7 +668,7 @@ export const getOrganizationById = async (req, res) => {
       return res.status(404).json({ message: "Organization not found" });
     }
     const events = await Event.findAll({
-      where: { UserId: org.id },
+      where: { UserId: org.id, status: { [Op.ne]: "Archived" } },
       order: [["createdAt", "DESC"]]
     });
     const eventIds = events.map(e => e.id);
@@ -690,6 +742,66 @@ export const getEvents = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+export const getCertificateStats = async (req, res) => {
+  try {
+    const totalCertificates = await Certificate.count();
+
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+
+    const allCertificates = await Certificate.findAll({
+      include: [
+        {
+          model: Event,
+          as: "event",
+          attributes: ["id", "title", "eventDate"],
+        },
+      ],
+      order: [["createdAt", "DESC"]],
+    });
+
+    const thisMonthCertificates = allCertificates.filter((c) => {
+      const d = new Date(c.issueDate || c.createdAt);
+      return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+    }).length;
+
+    const uniqueEventsWithCerts = new Set(allCertificates.map((c) => c.EventId)).size;
+
+    const monthName = now.toLocaleString("default", { month: "long" });
+    const monthYearStr = `${monthName} ${currentYear}`;
+
+    // Group activity by event
+    const eventActivityMap = {};
+    allCertificates.forEach((c) => {
+      const eventName = c.event?.title || "General Event";
+      if (!eventActivityMap[eventName]) {
+        eventActivityMap[eventName] = {
+          event: eventName,
+          count: 0,
+          date: c.createdAt ? new Date(c.createdAt).toLocaleDateString() : "Recently",
+          status: "Completed",
+        };
+      }
+      eventActivityMap[eventName].count += 1;
+    });
+
+    const recentActivity = Object.values(eventActivityMap).slice(0, 5);
+
+    res.status(200).json({
+      totalCertificates,
+      thisMonthCertificates,
+      monthYearStr,
+      activeTemplates: 3,
+      eventsWithCertificates: uniqueEventsWithCerts,
+      recentActivity,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 
 
 
