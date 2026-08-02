@@ -5,6 +5,7 @@ import VolunteerRegistration from "../models/volunteerRegistration.js";
 import Attendance from "../models/attendanceModel.js";
 import StudentProfile from "../models/studentProfileModel.js";
 import { createNotification } from "./notificationService.js";
+import { getSettings } from "./settingsService.js";
 
 /**
  * Service to handle core event business logic and lifecycles.
@@ -12,22 +13,26 @@ import { createNotification } from "./notificationService.js";
 export const createEvent = async (eventData, organizerId) => {
   const organizer = await User.findByPk(organizerId);
   const orgName = organizer ? organizer.name : 'An Organizer';
+  const settings = await getSettings();
+  const isApprovalRequired = settings.eventApprovalRequired !== false;
 
   const event = await Event.create({
     ...eventData,
     image: eventData.image || "https://images.unsplash.com/photo-1593113598332-cd288d649433?w=800",
     UserId: organizerId,
-    approvalStatus: "Pending",
+    approvalStatus: isApprovalRequired ? "Pending" : "Approved",
     status: "Upcoming",
     acceptedCount: 0
   });
 
-  await createNotification({
-    userId: null,
-    title: "New Event Submission",
-    message: `${orgName} submitted a new event "${event.title}" awaiting your approval.`,
-    role: "admin"
-  });
+  if (isApprovalRequired) {
+    await createNotification({
+      userId: null,
+      title: "New Event Submission",
+      message: `${orgName} submitted a new event "${event.title}" awaiting your approval.`,
+      role: "admin"
+    });
+  }
 
   return event;
 };
