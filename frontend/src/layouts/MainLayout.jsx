@@ -8,6 +8,7 @@ import { useAuth } from "../context/AuthContext";
 import { getNotifications, markAsRead, markAllAsRead, getAdminNotifications } from "../services/notificationService";
 import "../pages/HomePage.css";
 import AuthModal from "../components/AuthModal";
+import { VolunteerHubLogoIcon } from "../components/VolunteerHubLogo";
 import { API_BASE_URL } from "../services/apiConfig";
 
 /**
