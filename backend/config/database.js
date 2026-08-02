@@ -5,7 +5,9 @@ dotenv.config();
 
 let sequelize;
 
-const isSsl = process.env.DB_SSL === "true" || process.env.NODE_ENV === "production";
+const dbHost = process.env.DB_HOST || "localhost";
+const isLocalHost = dbHost === "localhost" || dbHost === "127.0.0.1";
+const isSsl = process.env.DB_SSL === "true" || process.env.NODE_ENV === "production" || (!isLocalHost && process.env.DB_SSL !== "false");
 
 if (process.env.DATABASE_URL) {
   sequelize = new Sequelize(process.env.DATABASE_URL, {
