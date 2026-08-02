@@ -20,7 +20,8 @@ reports,
 updateUserStatus,
 getOrganizations,
 getOrganizationById,
-getEvents
+getEvents,
+getCertificateStats
 }
 from "../controllers/adminController.js";
 import { getLogs } from "../controllers/auditController.js";
@@ -114,5 +115,8 @@ router.get("/events", getEvents);
 
 // Audit logs
 router.get("/audit-logs", getLogs);
+
+// Certificate stats
+router.get("/certificates/stats", getCertificateStats);
 
 export default router;

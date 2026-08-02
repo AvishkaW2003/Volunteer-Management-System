@@ -8,6 +8,7 @@ import { useAuth } from "../context/AuthContext";
 import { getNotifications, markAsRead, markAllAsRead, getAdminNotifications } from "../services/notificationService";
 import "../pages/HomePage.css";
 import AuthModal from "../components/AuthModal";
+import { VolunteerHubLogoIcon } from "../components/VolunteerHubLogo";
 
 /**
  * MainLayout Component
@@ -33,6 +34,24 @@ const MainLayout = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authModalTab, setAuthModalTab] = useState("login");
   const [authModalRole, setAuthModalRole] = useState("student");
+  const [isMaintenance, setIsMaintenance] = useState(false);
+
+  useEffect(() => {
+    const checkMaintenance = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/public-settings");
+        const data = await res.json();
+        if (data && data.maintenanceMode) {
+          setIsMaintenance(true);
+        } else {
+          setIsMaintenance(false);
+        }
+      } catch (err) {
+        // quiet fallback
+      }
+    };
+    checkMaintenance();
+  }, [location.pathname]);
 
   const openAuthModal = (tab = "login", role = "student") => {
     setAuthModalTab(tab);
@@ -131,6 +150,33 @@ const MainLayout = () => {
     location.pathname.startsWith('/reset-password');
   const showNavbar = !isAuthPage && !showAuthModal;
 
+  if (isMaintenance && user?.role !== 'admin' && location.pathname !== '/admin/login' && location.pathname !== '/login/admin') {
+    return (
+      <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col items-center justify-center p-6 text-center font-sans">
+        <div className="w-16 h-16 rounded-2xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center mb-6 text-blue-400">
+          <VolunteerHubLogoIcon className="w-12 h-12" />
+        </div>
+        <span className="bg-amber-500/20 text-amber-300 border border-amber-500/30 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
+          System Maintenance Mode Active
+        </span>
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-3">
+          VolunteerHub is Under Maintenance
+        </h1>
+        <p className="text-slate-400 max-w-md text-sm leading-relaxed mb-8 font-medium">
+          We are currently updating our platform services to improve your experience. Non-administrative features are temporarily paused.
+        </p>
+        <div className="flex gap-4">
+          <button 
+            onClick={() => navigate('/admin/login')} 
+            className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-bold text-xs shadow-lg transition-all border-none cursor-pointer"
+          >
+            Admin Sign In
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="vh-wrapper">
       
@@ -140,13 +186,11 @@ const MainLayout = () => {
         <div className="vh-nav-container">
           
           {/* Main Logo & Branding */}
-          <Link to="/" className="vh-logo flex items-center">
-            <div className="vh-logo-icon">
-              <HandHelping className="w-5 h-5" />
-            </div>
-            <span>VolunteerHub</span>
+          <Link to="/" className="vh-logo flex items-center gap-2.5">
+            <VolunteerHubLogoIcon className="w-8 h-8" />
+            <span className="font-extrabold text-xl tracking-tight text-slate-900">Volunteer<span className="text-[#1D61F2]">Hub</span></span>
             {user?.role === 'admin' && (
-              <span className="ml-2.5 bg-teal-50 text-teal-600 border border-teal-200/60 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
+              <span className="ml-2 bg-blue-50 text-[#1D61F2] border border-blue-200/60 text-[10px] px-2 py-0.5 rounded-full font-extrabold uppercase tracking-wider">
                 ADMIN PORTAL
               </span>
             )}

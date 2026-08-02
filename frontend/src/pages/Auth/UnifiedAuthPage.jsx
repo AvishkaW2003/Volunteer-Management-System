@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { User, Building, Eye, EyeOff, HandHelping, ArrowLeft, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { User, Building, Eye, EyeOff, ArrowLeft, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { VolunteerHubLogoIcon } from '../../components/VolunteerHubLogo';
 import { loginUser, registerStudent, registerOrganizer, googleLogin } from '../../services/authService';
 import { useAuth } from '../../context/AuthContext';
 
@@ -11,6 +12,18 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
 
   const [activeRole, setActiveRole] = useState(initialRole);
   const [activeTab, setActiveTab] = useState(initialTab);
+  const [registrationOpen, setRegistrationOpen] = useState(true);
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/public-settings')
+      .then(res => res.json())
+      .then(data => {
+        if (data.registrationOpen !== undefined) {
+          setRegistrationOpen(data.registrationOpen);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   // Sync state if initial props or route changes
   useEffect(() => {
@@ -235,11 +248,9 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
 
       {/* Top Brand Logo */}
       <div className="flex items-center gap-2.5 mb-6 cursor-pointer group" onClick={() => navigate('/')}>
-        <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-blue-600/25 group-hover:scale-105 transition-transform duration-200">
-          <HandHelping className="w-6 h-6" />
-        </div>
+        <VolunteerHubLogoIcon className="w-11 h-11" />
         <div className="flex flex-col">
-          <span className="font-extrabold text-2xl text-slate-900 tracking-tight leading-none">VolunteerHub</span>
+          <span className="font-extrabold text-2xl text-slate-900 tracking-tight leading-none">Volunteer<span className="text-[#1D61F2]">Hub</span></span>
           <span className="text-[10px] font-bold text-slate-400 tracking-widest uppercase mt-0.5">Campus Opportunity Portal</span>
         </div>
       </div>
@@ -268,6 +279,14 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
             <div className="bg-rose-50 text-rose-600 text-xs px-4 py-2.5 rounded-2xl mb-4 border border-rose-100 font-semibold flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-rose-500 flex-shrink-0 animate-ping" />
               <span>{error}</span>
+            </div>
+          )}
+
+          {/* Registration Closed Notice */}
+          {activeTab === 'register' && !registrationOpen && (
+            <div className="bg-amber-50 text-amber-800 text-xs p-3.5 rounded-2xl mb-4 border border-amber-200 font-bold flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-amber-600 flex-shrink-0" />
+              <span>New user registrations are currently closed by system administrators.</span>
             </div>
           )}
 

@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { loginUser } from '../../services/authService';
 import { Mail, Lock, ShieldAlert, ArrowLeft, Eye, EyeOff } from 'lucide-react';
+import { VolunteerHubLogoIcon } from '../../components/VolunteerHubLogo';
 
 const AdminLogin = () => {
   const navigate = useNavigate();
@@ -49,11 +50,9 @@ const AdminLogin = () => {
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center px-4 py-10">
 
       {/* Logo */}
-      <div className="flex items-center gap-2 mb-6">
-        <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center shadow-sm">
-          <ShieldAlert className="w-5 h-5 text-white" />
-        </div>
-        <span className="text-lg font-bold text-gray-800 tracking-tight">VolunteerHub</span>
+      <div className="flex items-center gap-2.5 mb-6">
+        <VolunteerHubLogoIcon className="w-9 h-9" />
+        <span className="text-xl font-extrabold text-slate-900 tracking-tight">Volunteer<span className="text-[#1D61F2]">Hub</span></span>
       </div>
 
       {/* Page Heading */}
