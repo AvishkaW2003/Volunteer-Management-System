@@ -8,19 +8,12 @@ const getApiBaseUrl = () => {
     return envUrl.trim().replace(/\/$/, "");
   }
 
-  // If running on a live domain (like Vercel) and environment variable is not set
-  if (typeof window !== "undefined" && !["localhost", "127.0.0.1"].includes(window.location.hostname)) {
-    console.warn(
-      "[VolunteerHub API Warning] VITE_API_URL / VITE_API_BASE_URL environment variable is missing on Vercel.\n" +
-      "Falling back to default Render backend production URL."
-    );
-    if (window.__API_BASE_URL__) {
-      return window.__API_BASE_URL__.replace(/\/$/, "");
-    }
-    return "https://volunteer-management-system-qyku.onrender.com";
+  if (typeof window !== "undefined" && window.__API_BASE_URL__) {
+    return window.__API_BASE_URL__.replace(/\/$/, "");
   }
 
-  return "http://localhost:5000";
+  // Default to deployed Render backend URL
+  return "https://volunteer-management-system-qyku.onrender.com";
 };
 
 export const API_BASE_URL = getApiBaseUrl();
