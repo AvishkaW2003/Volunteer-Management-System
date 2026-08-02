@@ -892,46 +892,7 @@ const OrganizerSettings = () => {
             </div>
           </SectionCard>
 
-          {/* Section 7: Notifications */}
-          <SectionCard icon={Bell} title="Notification Settings">
-            <div className="space-y-4">
-              <CustomToggle
-                checked={notifications.newApplicationSubmitted}
-                onChange={() => setNotifications({ ...notifications, newApplicationSubmitted: !notifications.newApplicationSubmitted })}
-                label="Email me when a new volunteer application is submitted for my events"
-              />
-              <CustomToggle
-                checked={notifications.applicationApprovedRejected}
-                onChange={() => setNotifications({ ...notifications, applicationApprovedRejected: !notifications.applicationApprovedRejected })}
-                label="Email me when my application decision is finalized"
-              />
-              <CustomToggle
-                checked={notifications.eventApprovedByAdmin}
-                onChange={() => setNotifications({ ...notifications, eventApprovedByAdmin: !notifications.eventApprovedByAdmin })}
-                label="Email me when my submitted event is approved by admin"
-              />
-              <CustomToggle
-                checked={notifications.eventRejectedByAdmin}
-                onChange={() => setNotifications({ ...notifications, eventRejectedByAdmin: !notifications.eventRejectedByAdmin })}
-                label="Email me when my submitted event is rejected by admin"
-              />
-              <CustomToggle
-                checked={notifications.attendanceReminders}
-                onChange={() => setNotifications({ ...notifications, attendanceReminders: !notifications.attendanceReminders })}
-                label="Email me event attendance marking reminders"
-              />
-              <CustomToggle
-                checked={notifications.certificateGenerationReminders}
-                onChange={() => setNotifications({ ...notifications, certificateGenerationReminders: !notifications.certificateGenerationReminders })}
-                label="Email me certificate generation reminders"
-              />
-              <CustomToggle
-                checked={notifications.weeklyActivitySummary}
-                onChange={() => setNotifications({ ...notifications, weeklyActivitySummary: !notifications.weeklyActivitySummary })}
-                label="Receive weekly activity and registration summaries"
-              />
-            </div>
-          </SectionCard>
+
 
           {/* Global Save Panel */}
           <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm flex items-center justify-between">
