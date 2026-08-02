@@ -9,11 +9,18 @@ import StudentProfile from "../models/studentProfileModel.js";
 import OrganizerProfile from "../models/organizerProfileModel.js";
 import jwtConfig from "../config/jwt.js";
 import { sendPasswordResetEmail } from "../utils/emailService.js";
+import { getSettings } from "./settingsService.js";
 
 /**
  * Service handling all core auth business logic.
  */
 export const registerStudent = async (studentData) => {
+  const settings = await getSettings();
+  if (settings.registrationOpen === false) {
+    const err = new Error("New user registrations are currently closed by system administrators.");
+    err.statusCode = 403;
+    throw err;
+  }
   const transaction = await sequelize.transaction();
   try {
     const { name, email, password, phone, studentId, faculty } = studentData;
@@ -63,6 +70,12 @@ export const registerStudent = async (studentData) => {
 };
 
 export const registerOrganizer = async (organizerData) => {
+  const settings = await getSettings();
+  if (settings.registrationOpen === false) {
+    const err = new Error("New user registrations are currently closed by system administrators.");
+    err.statusCode = 403;
+    throw err;
+  }
   const transaction = await sequelize.transaction();
   try {
     const { organizationName, email, password, phone } = organizerData;
