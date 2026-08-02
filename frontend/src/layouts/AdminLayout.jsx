@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { getAdminDashboard } from '../services/adminService';
+import { VolunteerHubLogoIcon } from '../components/VolunteerHubLogo';
 
 /**
  * Enterprise Standalone AdminLayout Component
@@ -130,13 +131,11 @@ const AdminLayout = () => {
         <div className="flex flex-col h-full overflow-hidden">
           <div className="h-16 flex-shrink-0 flex items-center justify-between px-4 border-b border-slate-800/80">
             <div className="flex items-center gap-3 overflow-hidden cursor-pointer" onClick={() => navigate('/admin/dashboard')}>
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-sky-400 flex items-center justify-center text-white shadow-lg shadow-blue-500/20 flex-shrink-0">
-                <ShieldCheck className="w-6 h-6 stroke-[2.5]" />
-              </div>
+              <VolunteerHubLogoIcon className="w-9 h-9" />
               {!collapsed && (
                 <div className="flex flex-col">
-                  <span className="font-extrabold text-base tracking-tight text-white leading-tight">VolunteerHub</span>
-                  <span className="text-[10px] font-bold tracking-wider text-blue-400 uppercase">Admin Portal</span>
+                  <span className="font-extrabold text-base tracking-tight text-white leading-tight">Volunteer<span className="text-[#1D61F2]">Hub</span></span>
+                  <span className="text-[10px] font-extrabold tracking-wider text-blue-400 uppercase">Admin Portal</span>
                 </div>
               )}
             </div>
