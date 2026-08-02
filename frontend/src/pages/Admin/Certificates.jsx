@@ -1,14 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
-  Award, FileText, CheckCircle, Eye, Settings, ShieldCheck, Activity, ToggleLeft, ToggleRight, Check
+  Award, FileText, CheckCircle, Eye, Settings, ShieldCheck, Activity, ToggleLeft, ToggleRight, Check, X
 } from 'lucide-react';
-
-const MOCK_STATS = [
-  { label: 'Total Certificates Generated', value: '350', subtext: 'System-wide', color: 'text-teal-600', bg: 'bg-teal-50' },
-  { label: 'Certificates This Month', value: '85', subtext: 'June 2026', color: 'text-indigo-600', bg: 'bg-indigo-50' },
-  { label: 'Active Templates', value: '3', subtext: 'System styles', color: 'text-emerald-600', bg: 'bg-emerald-50' },
-  { label: 'Events With Certificates', value: '15', subtext: 'Chapter events', color: 'text-amber-600', bg: 'bg-amber-50' },
-];
+import { getCertificateStats } from '../../services/adminService';
 
 const TEMPLATES = [
   { id: 'standard', name: 'Standard Template', description: 'Classic design with golden double borders and serif headings.', style: 'Classic Font & Double Border' },
@@ -16,15 +10,32 @@ const TEMPLATES = [
   { id: 'university', name: 'University Template', description: 'Academic style featuring university seal watermark and traditional layout.', style: 'Formal Academic Layout' }
 ];
 
-const RECENT_ACTIVITY = [
-  { event: 'IEEE WIE Day', count: 50, date: '10 min ago', status: 'Completed' },
-  { event: 'PearlHack 4.0', count: 75, date: '2 hours ago', status: 'Completed' },
-  { event: 'Leo Charity Project', count: 30, date: '1 day ago', status: 'Completed' },
-];
-
 const AdminCertificates = () => {
   const [defaultTemplate, setDefaultTemplate] = useState('standard');
   const [previewTemplate, setPreviewTemplate] = useState(null);
+  const [statsData, setStatsData] = useState(null);
+  const [recentActivity, setRecentActivity] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        setLoading(true);
+        const data = await getCertificateStats();
+        setStatsData(data);
+        if (data.recentActivity && data.recentActivity.length > 0) {
+          setRecentActivity(data.recentActivity);
+        } else {
+          setRecentActivity([]);
+        }
+      } catch (err) {
+        console.error("Failed to load certificate stats:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStats();
+  }, []);
   
   // Settings state
   const [settings, setSettings] = useState({
@@ -52,6 +63,46 @@ const AdminCertificates = () => {
     showToast(`Default template changed to "${name}".`);
   };
 
+  const statsCards = [
+    {
+      label: 'Total Certificates Generated',
+      value: statsData?.totalCertificates !== undefined ? String(statsData.totalCertificates) : '0',
+      subtext: 'System-wide',
+      color: 'text-teal-600',
+      bg: 'bg-teal-50'
+    },
+    {
+      label: 'Certificates This Month',
+      value: statsData?.thisMonthCertificates !== undefined ? String(statsData.thisMonthCertificates) : '0',
+      subtext: statsData?.monthYearStr || 'Current Month',
+      color: 'text-indigo-600',
+      bg: 'bg-indigo-50'
+    },
+    {
+      label: 'Active Templates',
+      value: statsData?.activeTemplates !== undefined ? String(statsData.activeTemplates) : '3',
+      subtext: 'System styles',
+      color: 'text-emerald-600',
+      bg: 'bg-emerald-50'
+    },
+    {
+      label: 'Events With Certificates',
+      value: statsData?.eventsWithCertificates !== undefined ? String(statsData.eventsWithCertificates) : '0',
+      subtext: 'Chapter events',
+      color: 'text-amber-600',
+      bg: 'bg-amber-50'
+    },
+  ];
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px]">
+        <div className="w-12 h-12 border-4 border-[#14B8A6] border-t-transparent rounded-full animate-spin mb-4"></div>
+        <p className="text-gray-400 font-medium">Loading certificate management data...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6 text-[#1E293B]">
       {/* Toast Notification */}
@@ -72,7 +123,7 @@ const AdminCertificates = () => {
 
       {/* Stats Dashboard */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {MOCK_STATS.map((stat, i) => (
+        {statsCards.map((stat, i) => (
           <div key={i} className="bg-white p-6 rounded-2xl border border-teal-50 shadow-sm flex flex-col justify-between min-h-[120px]">
             <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">{stat.label}</span>
             <div className="flex items-baseline justify-between mt-2">
@@ -144,7 +195,7 @@ const AdminCertificates = () => {
             </h2>
             <div className="overflow-hidden rounded-xl border border-slate-100">
               <table className="w-full text-left text-xs">
-                <thead className="bg-slate-55 bg-slate-50 border-b border-slate-100 text-slate-500 font-bold uppercase tracking-wider">
+                <thead className="bg-slate-50 border-b border-slate-100 text-slate-500 font-bold uppercase tracking-wider">
                   <tr>
                     <th className="px-6 py-3.5">Event Name</th>
                     <th className="px-6 py-3.5">Certificates Issued</th>
@@ -153,18 +204,26 @@ const AdminCertificates = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50 font-medium text-slate-600">
-                  {RECENT_ACTIVITY.map((act, idx) => (
-                    <tr key={idx} className="hover:bg-slate-50/50">
-                      <td className="px-6 py-4 font-bold text-slate-800">{act.event}</td>
-                      <td className="px-6 py-4">{act.count} Certificates</td>
-                      <td className="px-6 py-4 text-slate-400">{act.date}</td>
-                      <td className="px-6 py-4">
-                        <span className="bg-emerald-50 text-emerald-700 border border-emerald-100 px-2 py-0.5 rounded-full text-[10px] font-bold">
-                          {act.status}
-                        </span>
+                  {recentActivity.length > 0 ? (
+                    recentActivity.map((act, idx) => (
+                      <tr key={idx} className="hover:bg-slate-50/50">
+                        <td className="px-6 py-4 font-bold text-slate-800">{act.event}</td>
+                        <td className="px-6 py-4">{act.count} Certificates</td>
+                        <td className="px-6 py-4 text-slate-400">{act.date}</td>
+                        <td className="px-6 py-4">
+                          <span className="bg-emerald-50 text-emerald-700 border border-emerald-100 px-2 py-0.5 rounded-full text-[10px] font-bold">
+                            {act.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="4" className="px-6 py-6 text-center text-slate-400 italic">
+                        No recent certificate activity found.
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>
