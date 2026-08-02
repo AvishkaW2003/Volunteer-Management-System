@@ -14,10 +14,10 @@ export const getOverviewStats = async (req, res) => {
     const totalUsers = await User.count();
     const totalStudents = await User.count({ where: { role: 'student' } });
     const totalOrganizers = await User.count({ where: { role: 'organizer' } });
-    const totalEvents = await Event.count();
-    const approvedEvents = await Event.count({ where: { approvalStatus: 'Approved' } });
-    const pendingEvents = await Event.count({ where: { approvalStatus: 'Pending' } });
-    const rejectedEvents = await Event.count({ where: { approvalStatus: 'Rejected' } });
+    const totalEvents = await Event.count({ where: { status: { [Op.ne]: 'Archived' } } });
+    const approvedEvents = await Event.count({ where: { approvalStatus: 'Approved', status: { [Op.ne]: 'Archived' } } });
+    const pendingEvents = await Event.count({ where: { approvalStatus: 'Pending', status: { [Op.ne]: 'Archived' } } });
+    const rejectedEvents = await Event.count({ where: { approvalStatus: 'Rejected', status: { [Op.ne]: 'Archived' } } });
     const totalApplications = await VolunteerRegistration.count();
     const approvedApplications = await VolunteerRegistration.count({ where: { status: 'Approved' } });
     const totalCertificates = await Certificate.count();
@@ -73,7 +73,7 @@ export const getUserGrowth = async (req, res) => {
 // GET /api/admin/reports/events
 export const getEventReport = async (req, res) => {
   try {
-    const totalEvents = await Event.count();
+    const totalEvents = await Event.count({ where: { status: { [Op.ne]: 'Archived' } } });
     const upcomingEvents = await Event.count({ where: { status: 'Upcoming' } });
     const activeEvents = await Event.count({ where: { status: 'Active' } });
     const completedEvents = await Event.count({ where: { status: 'Completed' } });
@@ -156,6 +156,7 @@ export const getTopOrganizations = async (req, res) => {
             SELECT COUNT(*)
             FROM Events AS e
             WHERE e.UserId = User.id
+              AND e.status != 'Archived'
           )`),
           "eventsCreated"
         ],
