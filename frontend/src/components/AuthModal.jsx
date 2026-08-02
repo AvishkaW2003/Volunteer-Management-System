@@ -12,6 +12,7 @@ import {
   resetPasswordWithOtp
 } from '../services/authService';
 import { useAuth } from '../context/AuthContext';
+import { VolunteerHubLogoIcon } from './VolunteerHubLogo';
 
 const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'student' }) => {
   const navigate = useNavigate();
@@ -465,10 +466,8 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
           
           {/* Header/Logo (Visible on Mobile only) */}
           <div className="flex items-center gap-2 mb-6 md:hidden">
-            <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white">
-              <HandHelping className="w-4 h-4" />
-            </div>
-            <span className="font-extrabold text-gray-800 text-lg">VolunteerHub</span>
+            <VolunteerHubLogoIcon className="w-8 h-8" />
+            <span className="font-extrabold text-slate-900 text-lg">Volunteer<span className="text-[#1D61F2]">Hub</span></span>
           </div>
 
           <div className="mb-6 text-left">

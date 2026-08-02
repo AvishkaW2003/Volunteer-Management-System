@@ -119,3 +119,11 @@ export const getAdminEvents = async () => {
   });
   return response.data;
 };
+
+export const getCertificateStats = async () => {
+  const response = await axios.get(`${API_URL}/certificates/stats`, {
+    headers: getAuthHeader(),
+  });
+  return response.data;
+};
+

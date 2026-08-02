@@ -5,6 +5,7 @@
 .vh-events-page {
   background-color: var(--bg-body);
   min-height: 100vh;
+  padding-top: calc(var(--navbar-height, 76px) + 1.5rem);
 }
 
 /* Used when EventsPage is nested inside the student sidebar layout,
@@ -542,8 +543,12 @@
 
 /* Responsiveness */
 @media (max-width: 768px) {
+  .vh-events-page {
+    padding-top: calc(var(--navbar-height, 70px) + 1rem);
+  }
+
   .vh-events-header-section {
-    padding: 3rem 1rem 1.5rem 1rem;
+    padding: 2rem 1rem 1.5rem 1rem;
   }
   
   .vh-events-title {

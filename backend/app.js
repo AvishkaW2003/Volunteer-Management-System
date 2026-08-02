@@ -12,11 +12,13 @@ import certificateRoutes from "./routes/certificateRoutes.js";
 import organizerRoutes from "./routes/organizerRoutes.js";
 import reportRoutes from "./routes/reportRoutes.js";
 import { getSettings, updateSettings, reports } from "./controllers/adminController.js";
+import { getPublicSettings } from "./controllers/settingsController.js";
 import { getLeaderboard } from "./controllers/certificateController.js";
 import authMiddleware from "./middleware/authMiddleware.js";
 import roleMiddleware from "./middleware/roleMiddleware.js";
 import errorHandler from "./middleware/errorHandler.js";
 import xssSanitizer from "./middleware/xssSanitizer.js";
+import { checkMaintenanceMode } from "./middleware/maintenanceMiddleware.js";
 
 const app = express();
 
@@ -25,6 +27,12 @@ app.use(cors());
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
 app.use(xssSanitizer);
+
+// Unauthenticated public settings endpoint
+app.get("/api/public-settings", getPublicSettings);
+
+// Maintenance Mode middleware check
+app.use(checkMaintenanceMode);
 
 
 // API Route Bindings

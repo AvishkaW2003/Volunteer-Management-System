@@ -387,11 +387,6 @@ const Home = () => {
           <div className="vh-minimal-hero-grid">
             {/* Left Side: Content & Actions */}
             <div className="vh-minimal-hero-content">
-              <div className="vh-minimal-badge">
-                <Star className="w-4 h-4 text-blue-600 fill-blue-50" />
-                <span>#1 Volunteer Platform for University Students</span>
-              </div>
-
               <h1 className="vh-minimal-heading">
                 Empowering Students To Lead & <span className="vh-minimal-highlight">Make Real Impact</span>
               </h1>

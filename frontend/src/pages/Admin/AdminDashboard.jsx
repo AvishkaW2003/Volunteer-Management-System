@@ -40,7 +40,7 @@ const AdminDashboard = () => {
   const stats = [
     { label: 'Total Students', value: data?.totalStudents || 0, icon: Users, gradient: 'from-[#14B8A6] to-[#6EE7D8]' },
     { label: 'Total Organizers', value: data?.totalOrganizers || 0, icon: Compass, gradient: 'from-indigo-400 to-indigo-300' },
-    { label: 'Total Events', value: data?.totalEvents || 0, icon: CalendarCheck, gradient: 'from-sky-400 to-sky-300' },
+    { label: 'Total Events', value: data?.approvedEvents !== undefined ? data.approvedEvents : (data?.totalEvents || 0), icon: CalendarCheck, gradient: 'from-sky-400 to-sky-300' },
     { label: 'Pending Approvals', value: data?.pendingEvents || 0, icon: Clock, gradient: 'from-amber-400 to-amber-300' },
     { label: 'Total Applications', value: data?.totalApplications || 0, icon: FileText, gradient: 'from-emerald-400 to-emerald-300' },
     { label: 'Certificates Generated', value: data?.totalCertificates || 0, icon: Award, gradient: 'from-rose-400 to-rose-300' },
@@ -60,7 +60,7 @@ const AdminDashboard = () => {
   const participationTrendData = (data?.eventTrends || []).map(e => ({
     name: e.name,
     Registrations: e.participation,
-    Attendance: Math.round(e.participation * 0.85)
+    Attendance: e.attendance !== undefined ? e.attendance : 0
   }));
 
   return (

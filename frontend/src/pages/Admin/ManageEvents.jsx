@@ -79,7 +79,7 @@ const ManageEvents = () => {
 
   const handleSaveEdit = async (e) => {
     e.preventDefault();
-    const { id, name, date, location, description, volunteerRequired, organizer, applicationsCount, attendanceCount } = editingEvent;
+    const { id, name, date, location, description, volunteerRequired, organizer, applicationsCount, attendanceCount, image } = editingEvent;
     
     try {
       const updateData = {
@@ -87,7 +87,8 @@ const ManageEvents = () => {
         eventDate: date,
         location,
         description,
-        volunteerRequired: parseInt(volunteerRequired) || 30
+        volunteerRequired: parseInt(volunteerRequired) || 30,
+        image: image || ''
       };
       
       await updateEvent(id, updateData);
@@ -100,6 +101,7 @@ const ManageEvents = () => {
               date, 
               location, 
               description,
+              image: updateData.image,
               volunteerRequired: parseInt(volunteerRequired) || 30
             } 
           : ev
@@ -370,7 +372,7 @@ const ManageEvents = () => {
 
       {/* Edit modal */}
       {editingEvent && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4 pt-20">
           <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setEditingEvent(null)} />
           <form onSubmit={handleSaveEdit} className="relative bg-white w-full max-w-md rounded-2xl shadow-xl border border-slate-100 overflow-hidden">
             <div className="p-5.5 border-b border-slate-100 flex justify-between items-start">
@@ -394,6 +396,29 @@ const ManageEvents = () => {
                   onChange={e => setEditingEvent({ ...editingEvent, name: e.target.value })}
                   required
                   className="w-full bg-slate-50 border border-slate-200 px-3 py-2 rounded-lg text-slate-800 font-semibold outline-none focus:border-teal-500"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-500 uppercase mb-1">Event Banner Image</label>
+                {editingEvent.image && (
+                  <div className="relative mb-2 rounded-lg overflow-hidden border border-slate-200 h-28 bg-slate-100 flex items-center justify-center">
+                    <img src={editingEvent.image} alt="Preview" className="w-full h-full object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => setEditingEvent({ ...editingEvent, image: '' })}
+                      className="absolute top-1.5 right-1.5 bg-slate-900/80 text-white p-1 rounded-full border-none cursor-pointer"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                )}
+                <input 
+                  type="text" 
+                  placeholder="Paste banner image URL"
+                  value={editingEvent.image || ''}
+                  onChange={e => setEditingEvent({ ...editingEvent, image: e.target.value })}
+                  className="w-full bg-slate-50 border border-slate-200 px-3 py-2 rounded-lg text-slate-800 font-semibold outline-none focus:border-teal-500 text-xs"
                 />
               </div>
 

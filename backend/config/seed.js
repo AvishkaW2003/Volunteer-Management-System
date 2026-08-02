@@ -52,12 +52,7 @@ export const seedDatabase = async () => {
     });
 
     const students = [];
-    const studentData = [
-      { name: "Avishka Weerasinghe", email: "avishka@uni.lk", faculty: "Faculty of Computing", studentId: "STU100001" },
-      { name: "Dinithi Perera", email: "dinithi@uni.lk", faculty: "Faculty of Engineering", studentId: "STU100002" },
-      { name: "Kasun Mendis", email: "kasun@uni.lk", faculty: "Faculty of Business", studentId: "STU100003" },
-      { name: "Sanduni Silva", email: "sanduni@uni.lk", faculty: "Faculty of Computing", studentId: "STU100004" },
-    ];
+    const studentData = [];
 
     for (const data of studentData) {
       const u = await User.create({
@@ -79,11 +74,7 @@ export const seedDatabase = async () => {
     }
 
     const organizers = [];
-    const organizerData = [
-      { name: "Rotaract Club", email: "rotaract@uni.lk", orgName: "Rotaract Club of University" },
-      { name: "IEEE Student Branch", email: "ieee@uni.lk", orgName: "IEEE Student Branch" },
-      { name: "Leo Club", email: "leo@uni.lk", orgName: "Leo Club of University" },
-    ];
+    const organizerData = [];
 
     for (const data of organizerData) {
       const u = await User.create({
@@ -210,27 +201,7 @@ export const seedDatabase = async () => {
     await VolunteerRegistration.create({ UserId: students[2].id, EventId: events[2].id });
     await VolunteerRegistration.create({ UserId: students[3].id, EventId: events[1].id });
 
-    // 5. Seed System Notifications
-    await Notification.create({
-      title: "System Started",
-      message: "The VolunteerHub platform has been initialized and database models verified.",
-      role: "admin",
-      isRead: true,
-    });
-    await Notification.create({
-      title: "New Event Registration",
-      message: "Rotaract Club submitted 'Beach Cleanup Drive' for approval.",
-      role: "admin",
-      isRead: false,
-    });
-    await Notification.create({
-      title: "New Student Sign Up",
-      message: "Avishka Weerasinghe joined the platform as a student.",
-      role: "admin",
-      isRead: false,
-    });
-
-    // 6. Seed Audit Logs
+    // 5. Seed Audit Logs
     await AuditLog.create({
       action: "System Initialization",
       performedBy: admin.id,

@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import sequelize from "../config/database.js";
 import User from "../models/userModel.js";
 import OrganizerProfile from "../models/organizerProfileModel.js";
@@ -17,10 +18,10 @@ export const getOrganizerSettings = async (req, res) => {
     if (!user) return res.status(404).json({ message: "User not found" });
 
     // Compute stats
-    const eventsCreated = await Event.count({ where: { UserId: req.user.id } });
+    const eventsCreated = await Event.count({ where: { UserId: req.user.id, status: { [Op.ne]: "Archived" } } });
     
     const myEvents = await Event.findAll({
-      where: { UserId: req.user.id },
+      where: { UserId: req.user.id, status: { [Op.ne]: "Archived" } },
       attributes: ["id"]
     });
     const eventIds = myEvents.map(e => e.id);
