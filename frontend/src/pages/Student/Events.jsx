@@ -2,8 +2,9 @@ import { Search, Calendar, MapPin, Users, ChevronDown, ImageOff, User, Star } fr
 import { useState, useEffect } from 'react';
 import ApplyModal from './ApplyModel';
 import { getEvents } from '../../services/eventService';
+import { API_BASE_URL } from '../../services/apiConfig';
 
-const BACKEND_URL = 'http://localhost:5000';
+const BACKEND_URL = API_BASE_URL;
 
 const resolveImage = (image) => {
   if (!image) return null;

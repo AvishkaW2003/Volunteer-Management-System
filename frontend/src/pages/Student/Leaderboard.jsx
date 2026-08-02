@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Trophy, Medal, Award } from 'lucide-react';
 import axios from 'axios';
+import { API_BASE_URL } from '../../services/apiConfig';
 
 const initials = name => {
   if (!name) return 'V';
@@ -33,7 +34,7 @@ const Leaderboard = () => {
       try {
         const token = localStorage.getItem('token');
         const headers = token ? { Authorization: `Bearer ${token}` } : {};
-        const response = await axios.get('http://localhost:5000/api/leaderboard', { headers });
+        const response = await axios.get(`${API_BASE_URL}/api/leaderboard`, { headers });
         const mapped = response.data.map((item, idx) => ({
           rank: idx + 1,
           name: item.name || 'Volunteer',

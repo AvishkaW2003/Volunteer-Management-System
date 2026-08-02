@@ -4,6 +4,7 @@ import { User, Building, Eye, EyeOff, ArrowLeft, CheckCircle2, ShieldCheck } fro
 import { VolunteerHubLogoIcon } from '../../components/VolunteerHubLogo';
 import { loginUser, registerStudent, registerOrganizer, googleLogin } from '../../services/authService';
 import { useAuth } from '../../context/AuthContext';
+import { API_BASE_URL } from '../../services/apiConfig';
 
 const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
   const [registrationOpen, setRegistrationOpen] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/public-settings')
+    fetch(`${API_BASE_URL}/api/public-settings`)
       .then(res => res.json())
       .then(data => {
         if (data.registrationOpen !== undefined) {

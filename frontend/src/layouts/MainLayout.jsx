@@ -8,7 +8,7 @@ import { useAuth } from "../context/AuthContext";
 import { getNotifications, markAsRead, markAllAsRead, getAdminNotifications } from "../services/notificationService";
 import "../pages/HomePage.css";
 import AuthModal from "../components/AuthModal";
-import { VolunteerHubLogoIcon } from "../components/VolunteerHubLogo";
+import { API_BASE_URL } from "../services/apiConfig";
 
 /**
  * MainLayout Component
@@ -39,7 +39,7 @@ const MainLayout = () => {
   useEffect(() => {
     const checkMaintenance = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/public-settings");
+        const res = await fetch(`${API_BASE_URL}/api/public-settings`);
         const data = await res.json();
         if (data && data.maintenanceMode) {
           setIsMaintenance(true);
