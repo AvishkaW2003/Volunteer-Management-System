@@ -13,7 +13,7 @@ const AnimatedCounter = ({ end, suffix = "" }) => {
   useEffect(() => {
     let start = 0;
     const duration = 2000;
-    const increment = end / (duration / 16); 
+    const increment = end / (duration / 16);
     const timer = setInterval(() => {
       start += increment;
       if (start >= end) {
@@ -79,33 +79,48 @@ const AboutPage = () => {
 
   return (
     <div>
-      
-      {/* Intro Mission Statement Section with Tall Hero Card Box */}
-      <section className="vh-hero" style={{ background: "var(--bg-hero)", paddingTop: "calc(var(--navbar-height) + 2.5rem)", paddingBottom: "4rem" }}>
-        <div className="vh-hero-container">
-          <div className="vh-hero-card" style={{ minHeight: "480px", padding: "3.75rem 3.5rem", alignItems: "center" }}>
-            {/* Left Side: Vision Text */}
-            <div className="vh-hero-content" style={{ gap: "1.5rem" }}>
-              <span className="vh-section-subtitle" style={{ textTransform: "uppercase", letterSpacing: "0.08em" }}>Our Vision</span>
-              <h1 className="vh-hero-heading" style={{ fontSize: "2.85rem", marginTop: "0.25rem", lineHeight: "1.2" }}>
-                Connecting Students with <span className="blue-highlight">Purposeful Impact</span>
+
+      {/* ── SECTION 1: MINIMALIST ABOUT HERO ─────────────────── */}
+      <section className="vh-minimal-hero">
+        <div className="vh-minimal-hero-container">
+          <div className="vh-minimal-hero-grid">
+            {/* Left Side: Content & Vision */}
+            <div className="vh-minimal-hero-content">
+              <div className="vh-minimal-badge">
+                <Star className="w-4 h-4 text-blue-600 fill-blue-50" />
+                <span>Our Vision & Mission</span>
+              </div>
+
+              <h1 className="vh-minimal-heading">
+                Connecting Students with <span className="vh-minimal-highlight">Purposeful Impact</span>
               </h1>
-              <p className="vh-hero-subtext" style={{ fontSize: "1.08rem", lineHeight: "1.7" }}>
+
+              <p className="vh-minimal-subtext">
                 VolunteerHub is dedicated to building a supportive community of students and organizers. We streamline event management, attendance verification, and performance gamification to make student participation in volunteer projects simple, accessible, and deeply rewarding.
               </p>
+
+              {/* Minimalist Feature Pills */}
+              <div className="vh-minimal-pills-row">
+                <div className="vh-minimal-pill-tag">
+                  <span className="vh-pill-check">✓</span> Verified Certificates
+                </div>
+                <div className="vh-minimal-pill-tag">
+                  <span className="vh-pill-check">✓</span> Community Driven
+                </div>
+                <div className="vh-minimal-pill-tag">
+                  <span className="vh-pill-check">✓</span> Gamified Rewards
+                </div>
+              </div>
             </div>
 
-            {/* Right Side: Image Banner */}
-            <div className="vh-hero-media" style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100%" }}>
-              <div className="vh-hero-image-card" style={{ width: "100%", maxWidth: "100%" }}>
-                <div className="vh-hero-image-wrapper" style={{ height: "360px", borderRadius: "1.25rem", overflow: "hidden" }}>
-                  <img
-                    src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&q=80"
-                    alt="Students collaborating"
-                    className="vh-hero-image"
-                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                  />
-                </div>
+            {/* Right Side: Clean Minimalist Image Showcase */}
+            <div className="vh-minimal-hero-media">
+              <div className="vh-minimal-image-frame">
+                <img
+                  src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=80"
+                  alt="Students collaborating"
+                  className="vh-minimal-hero-img"
+                />
               </div>
             </div>
           </div>
@@ -122,8 +137,8 @@ const AboutPage = () => {
 
           <div className="vh-features-grid">
             {features.map((feature, idx) => (
-              <div 
-                key={idx} 
+              <div
+                key={idx}
                 className="vh-feature-card"
                 style={{
                   padding: 0,
@@ -161,10 +176,10 @@ const AboutPage = () => {
                       </div>
                     </div>
                   ) : (
-                    <img 
-                      src={feature.image} 
+                    <img
+                      src={feature.image}
                       alt={feature.title}
-                      style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
                     />
                   )}
                   <div style={{ position: "absolute", bottom: "10px", left: "12px", background: "rgba(255, 255, 255, 0.95)", backdropFilter: "blur(6px)", padding: "0.35rem 0.5rem", borderRadius: "0.75rem", boxShadow: "0 4px 12px rgba(0,0,0,0.12)", display: "flex", alignItems: "center", gap: "0.5rem", zIndex: 2 }}>
