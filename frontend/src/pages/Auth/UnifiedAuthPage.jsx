@@ -123,7 +123,7 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
             { 
               theme: "outline", 
               size: "large", 
-              width: targetWidth,
+              width: String(targetWidth),
               text: activeTab === 'login' ? 'signin_with' : 'signup_with',
               shape: "rectangular"
             }
