@@ -47,7 +47,7 @@ const StudentLogin = () => {
           });
           window.google.accounts.id.renderButton(
             btn,
-            { theme: "outline", size: "large", width: 384 }
+            { type: "standard", theme: "outline", size: "large", width: "350", text: "signin_with", shape: "rectangular" }
           );
           return true;
         } catch (err) {
@@ -66,6 +66,23 @@ const StudentLogin = () => {
       return () => clearInterval(interval);
     }
   }, []);
+
+  const handleCustomGoogleClick = () => {
+    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "527555008291-hs544883ee4apu936ltu543sorp9g2b2.apps.googleusercontent.com";
+    const googleIframe = document.getElementById("google-signin-btn")?.querySelector("iframe");
+    if (googleIframe) {
+      googleIframe.click();
+    }
+    if (window.google?.accounts?.id) {
+      window.google.accounts.id.initialize({
+        client_id: clientId,
+        callback: handleGoogleCredentialResponse,
+      });
+      window.google.accounts.id.prompt();
+    } else {
+      setError("Google Sign-In is still loading. Please wait a moment.");
+    }
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
