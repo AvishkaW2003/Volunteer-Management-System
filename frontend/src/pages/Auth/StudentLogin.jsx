@@ -103,14 +103,7 @@ const StudentLogin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col
-                    items-center justify-center px-4 pt-28 pb-10">
-
-
-
-      {/* Page Heading */}
-      <h1 className="text-3xl font-bold text-gray-800 mb-1">
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex flex-col items-center justify-center p-4 pt-24 pb-10">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8">
         
         {/* Header */}
@@ -221,31 +214,27 @@ const StudentLogin = () => {
         {/* Register Link */}
         <button
           onClick={() => navigate('/register/student')}
-          className="w-full py-3 rounded-xl text-white
-                     font-semibold text-base bg-blue-600
-                     hover:bg-blue-700 shadow-sm hover:shadow transition-all duration-200">
+          className="w-full py-3 rounded-xl text-blue-600 border border-blue-200 hover:bg-blue-50 font-semibold text-sm transition-all duration-200">
           Create Student Account
         </button>
 
       </div>
 
       {/* Link to Organizer Login */}
-      <p className="mt-6 text-sm text-gray-500">
+      <p className="mt-6 text-sm text-gray-300">
         Are you an organization?{' '}
         <span
           onClick={() => navigate('/login/organizer')}
-          className="text-blue-500 font-medium cursor-pointer
-                     hover:underline">
+          className="text-blue-400 font-medium cursor-pointer hover:underline">
           Log in as an organizer
         </span>
       </p>
 
       {/* Link to Admin Portal */}
-      <p className="mt-3 text-sm text-gray-500">
+      <p className="mt-3 text-sm text-gray-400">
         <span
           onClick={() => navigate('/admin/login')}
-          className="text-blue-500 font-medium cursor-pointer
-                     hover:underline">
+          className="text-blue-400 font-medium cursor-pointer hover:underline">
           Admin Portal &rarr;
         </span>
       </p>
