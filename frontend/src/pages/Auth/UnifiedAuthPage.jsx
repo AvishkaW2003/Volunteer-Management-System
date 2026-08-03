@@ -104,9 +104,11 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
   // Google OAuth button renderer
   useEffect(() => {
     if (showOnboarding) return;
-    const timer = setTimeout(() => {
+
+    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "527555008291-hs544883ee4apu936ltu543sorp9g2b2.apps.googleusercontent.com";
+
+    const initGoogle = () => {
       const btn = document.getElementById("google-signin-btn-page");
-      const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "527555008291-hs544883ee4apu936ltu543sorp9g2b2.apps.googleusercontent.com";
       if (btn && window.google) {
         try {
           window.google.accounts.id.initialize({
@@ -126,13 +128,22 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
               shape: "rectangular"
             }
           );
+          return true;
         } catch (err) {
           console.error("Google Sign-In initialization failed:", err);
         }
       }
-    }, 150);
+      return false;
+    };
 
-    return () => clearTimeout(timer);
+    if (!initGoogle()) {
+      const interval = setInterval(() => {
+        if (initGoogle()) {
+          clearInterval(interval);
+        }
+      }, 100);
+      return () => clearInterval(interval);
+    }
   }, [activeTab, activeRole, showOnboarding]);
 
   // Submit Single Login for Student, Organizer & Admin

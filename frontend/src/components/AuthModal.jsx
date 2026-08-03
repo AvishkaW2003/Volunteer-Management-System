@@ -171,9 +171,10 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
   useEffect(() => {
     if (!isOpen || showOnboarding || activeTab === 'forgot') return;
 
-    const timer = setTimeout(() => {
+    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "527555008291-hs544883ee4apu936ltu543sorp9g2b2.apps.googleusercontent.com";
+
+    const initGoogle = () => {
       const btn = document.getElementById("google-signin-btn-modal");
-      const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "527555008291-hs544883ee4apu936ltu543sorp9g2b2.apps.googleusercontent.com";
       if (btn && window.google) {
         try {
           window.google.accounts.id.initialize({
@@ -193,13 +194,22 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
               shape: "rectangular"
             }
           );
+          return true;
         } catch (err) {
           console.error("Google Sign-In initialization failed:", err);
         }
       }
-    }, 100);
+      return false;
+    };
 
-    return () => clearTimeout(timer);
+    if (!initGoogle()) {
+      const interval = setInterval(() => {
+        if (initGoogle()) {
+          clearInterval(interval);
+        }
+      }, 100);
+      return () => clearInterval(interval);
+    }
   }, [isOpen, activeTab, activeRole, showOnboarding]);
 
   // Submit Organizer Google Onboarding

@@ -83,20 +83,36 @@ const OrganizerLogin = () => {
   };
 
   useEffect(() => {
+    if (showOnboarding) return;
     const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "527555008291-hs544883ee4apu936ltu543sorp9g2b2.apps.googleusercontent.com";
-    if (window.google) {
-      try {
-        window.google.accounts.id.initialize({
-          client_id: clientId,
-          callback: handleGoogleCredentialResponse,
-        });
-        window.google.accounts.id.renderButton(
-          document.getElementById("google-signin-btn"),
-          { theme: "outline", size: "large", width: 384 }
-        );
-      } catch (err) {
-        console.error("Google Sign-In initialization failed:", err);
+    
+    const initGoogle = () => {
+      const btn = document.getElementById("google-signin-btn");
+      if (btn && window.google) {
+        try {
+          window.google.accounts.id.initialize({
+            client_id: clientId,
+            callback: handleGoogleCredentialResponse,
+          });
+          window.google.accounts.id.renderButton(
+            btn,
+            { theme: "outline", size: "large", width: 384 }
+          );
+          return true;
+        } catch (err) {
+          console.error("Google Sign-In initialization failed:", err);
+        }
       }
+      return false;
+    };
+
+    if (!initGoogle()) {
+      const interval = setInterval(() => {
+        if (initGoogle()) {
+          clearInterval(interval);
+        }
+      }, 100);
+      return () => clearInterval(interval);
     }
   }, [showOnboarding]);
 
