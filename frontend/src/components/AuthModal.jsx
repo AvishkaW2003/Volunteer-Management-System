@@ -202,7 +202,7 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
             { 
               theme: "outline", 
               size: "large", 
-              width: targetWidth,
+              width: String(targetWidth),
               text: activeTab === 'login' ? 'signin_with' : 'signup_with',
               shape: "rectangular"
             }
