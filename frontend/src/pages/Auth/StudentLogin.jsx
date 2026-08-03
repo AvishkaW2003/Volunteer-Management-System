@@ -35,19 +35,22 @@ const StudentLogin = () => {
   };
 
   useEffect(() => {
-    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "527555008291-hs544883ee4apu936ltu543sorp9g2b2.apps.googleusercontent.com";
+    const rawClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "527555008291-hs544883ee4apu936ltu543sorp9g2b2.apps.googleusercontent.com";
+    const clientId = rawClientId.trim();
     
     const initGoogle = () => {
       const btn = document.getElementById("google-signin-btn");
-      if (btn && window.google) {
+      if (btn && window.google?.accounts?.id) {
         try {
           window.google.accounts.id.initialize({
             client_id: clientId,
             callback: handleGoogleCredentialResponse,
+            cancel_on_tap_outside: false,
           });
+          btn.innerHTML = "";
           window.google.accounts.id.renderButton(
             btn,
-            { type: "standard", theme: "outline", size: "large", width: "350", text: "signin_with", shape: "rectangular" }
+            { type: "standard", theme: "outline", size: "large", width: 320, text: "signin_with", shape: "rectangular" }
           );
           return true;
         } catch (err) {
@@ -62,8 +65,9 @@ const StudentLogin = () => {
         if (initGoogle()) {
           clearInterval(interval);
         }
-      }, 100);
+      }, 150);
       return () => clearInterval(interval);
+    }
   }, []);
 
   const handleChange = (e) => {

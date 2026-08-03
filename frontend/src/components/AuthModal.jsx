@@ -171,25 +171,29 @@ const AuthModal = ({ isOpen, onClose, initialTab = 'login', initialRole = 'stude
   useEffect(() => {
     if (!isOpen || showOnboarding || activeTab === 'forgot') return;
 
-    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "527555008291-hs544883ee4apu936ltu543sorp9g2b2.apps.googleusercontent.com";
+    const rawClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "527555008291-hs544883ee4apu936ltu543sorp9g2b2.apps.googleusercontent.com";
+    const clientId = rawClientId.trim();
 
     const initGoogle = () => {
       const btn = document.getElementById("google-signin-btn-modal");
-      if (btn && window.google) {
+      if (btn && window.google?.accounts?.id) {
         try {
           window.google.accounts.id.initialize({
             client_id: clientId,
             callback: handleGoogleCredentialResponse,
+            cancel_on_tap_outside: false,
           });
-          const parentWidth = btn.parentElement ? btn.parentElement.clientWidth : 400;
-          const targetWidth = Math.min(Math.max(parentWidth, 240), 500);
+          btn.innerHTML = "";
+          const parentWidth = btn.parentElement ? btn.parentElement.clientWidth : 320;
+          const targetWidth = Math.min(Math.max(parentWidth, 240), 400);
 
           window.google.accounts.id.renderButton(
             btn,
             { 
+              type: "standard",
               theme: "outline", 
               size: "large", 
-              width: String(targetWidth),
+              width: targetWidth,
               text: activeTab === 'login' ? 'signin_with' : 'signup_with',
               shape: "rectangular"
             }
