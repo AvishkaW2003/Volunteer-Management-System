@@ -105,7 +105,7 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
   useEffect(() => {
     if (showOnboarding) return;
 
-    const rawClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "527555008291-hs544883ee4apu936ltu543sorp9g2b2.apps.googleusercontent.com";
+    const rawClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || import.meta.env.GOOGLE_CLIENT_ID || "527555008291-hs544883ee4apu936ltu543sorp9g2b2.apps.googleusercontent.com";
     const clientId = rawClientId.trim();
 
     const initGoogle = () => {
