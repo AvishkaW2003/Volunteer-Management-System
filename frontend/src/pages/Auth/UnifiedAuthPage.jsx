@@ -147,6 +147,7 @@ const UnifiedAuthPage = ({ initialTab = 'login', initialRole = 'student' }) => {
         }
       }, 100);
       return () => clearInterval(interval);
+    }
   }, [activeTab, activeRole, showOnboarding]);
 
   // Submit Single Login for Student, Organizer & Admin
