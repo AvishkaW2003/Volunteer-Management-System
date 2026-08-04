@@ -50,7 +50,7 @@ export const rateLimiter = (options = {}) => {
 // Rate limiter for authentication attempts
 export const authRateLimiter = rateLimiter({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 15,
+  max: 50,
   message: "Too many authentication attempts. Please try again after 15 minutes."
 });
 
