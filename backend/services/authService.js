@@ -346,9 +346,10 @@ export const googleLoginUser = async (idToken, targetRole = "student") => {
   }
 
   // Verify audience if configured and this is a real token
-  const googleClientId = process.env.GOOGLE_CLIENT_ID;
+  const googleClientId = process.env.GOOGLE_CLIENT_ID ? process.env.GOOGLE_CLIENT_ID.trim() : null;
   if (googleClientId && payload.aud && parts[2] !== 'mock-signature') {
-    if (payload.aud !== googleClientId) {
+    const validIds = googleClientId.split(',').map(id => id.trim());
+    if (!validIds.includes(payload.aud.trim())) {
       const err = new Error("Invalid token audience");
       err.statusCode = 400;
       throw err;
