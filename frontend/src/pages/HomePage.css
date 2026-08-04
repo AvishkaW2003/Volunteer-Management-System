@@ -2212,3 +2212,225 @@
 .vh-category-pill svg {
   flex-shrink: 0;
 }
+
+/* ==========================================================================
+   RESPONSIVE MOBILE STYLES
+   ========================================================================== */
+
+/* ── Tablet breakpoint (≤ 1024px) ──────────────────────────────────────── */
+@media (max-width: 1024px) {
+
+  /* Navbar: hide desktop nav links and auth, show hamburger */
+  .vh-nav-links {
+    display: none;
+  }
+
+  .vh-nav-auth {
+    display: none;
+  }
+
+  .vh-mobile-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Mobile nav drawer becomes flex column when .vh-show is applied */
+  .vh-mobile-nav.vh-show {
+    display: flex;
+  }
+
+  /* Features: 2 columns on tablet */
+  .vh-features-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  /* Stats: 2 columns on tablet */
+  .vh-stats-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+
+  /* Action gallery: 2 columns */
+  .vh-action-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Testimonials grid: 1 or 2 columns */
+  .vh-testimonials-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1.5rem;
+  }
+}
+
+/* ── Mobile breakpoint (≤ 768px) ───────────────────────────────────────── */
+@media (max-width: 768px) {
+
+  /* Navbar padding tighter */
+  .vh-navbar {
+    padding: 0 1rem;
+  }
+
+  /* Mobile nav drawer full-width compact */
+  .vh-mobile-nav {
+    padding: 1.25rem 1rem;
+    gap: 1rem;
+  }
+
+  /* Features: single column */
+  .vh-features-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  /* Feature card padding reduce */
+  .vh-feature-card {
+    padding: 1.5rem 1.25rem;
+  }
+
+  /* Stats: single column */
+  .vh-stats-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  .vh-stat-number {
+    font-size: 2.25rem;
+  }
+
+  /* Action gallery: single column */
+  .vh-action-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .vh-action-card {
+    height: 280px;
+  }
+
+  /* Section headings scale down */
+  .vh-section-title {
+    font-size: 1.75rem;
+  }
+
+  /* Section padding reduce */
+  .vh-features,
+  .vh-action,
+  .vh-stats {
+    padding: 3.5rem 1rem;
+  }
+
+  /* Steps/process grid: single column */
+  .vh-steps-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.25rem;
+  }
+
+  /* Testimonials: single column */
+  .vh-testimonials-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem;
+  }
+
+  /* CTA section buttons stack vertically */
+  .vh-cta-actions {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.75rem;
+  }
+
+  .vh-cta-actions a,
+  .vh-cta-actions button {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+
+  /* Footer grid: single column */
+  .vh-footer-grid {
+    grid-template-columns: 1fr !important;
+    gap: 2rem;
+  }
+
+  /* Footer bottom row: stack vertically */
+  .vh-footer-bottom {
+    flex-direction: column !important;
+    gap: 0.75rem;
+    text-align: center;
+  }
+
+  /* Categories section padding */
+  .vh-categories-section {
+    padding: 3rem 1rem;
+  }
+
+  .vh-categories-title {
+    font-size: 1.65rem;
+  }
+
+  /* Club logos pill bar: allow wrapping */
+  .vh-club-logos-list {
+    flex-wrap: wrap;
+    overflow-x: visible;
+  }
+
+  .vh-club-logos-section {
+    padding: 1.5rem 1rem;
+  }
+}
+
+/* ── Small mobile breakpoint (≤ 480px) ─────────────────────────────────── */
+@media (max-width: 480px) {
+
+  /* Navbar: tighter logo */
+  .vh-logo span {
+    font-size: 1.1rem;
+  }
+
+  /* Mobile nav link bigger tap targets */
+  .vh-mobile-nav .vh-nav-link {
+    font-size: 1rem;
+    padding: 0.65rem 0;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  /* Auth buttons in mobile nav full width */
+  .vh-mobile-auth-stack .vh-btn-create,
+  .vh-mobile-auth-stack .vh-btn-logout,
+  .vh-mobile-auth-stack .vh-btn-signin {
+    width: 100%;
+    display: block;
+    text-align: center;
+    padding: 0.75rem 1rem;
+  }
+
+  /* Stats: still 2-column on small phones */
+  .vh-stats-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .vh-stat-number {
+    font-size: 1.85rem;
+  }
+
+  .vh-stat-label {
+    font-size: 0.75rem;
+  }
+
+  /* Section titles smallest */
+  .vh-section-title {
+    font-size: 1.5rem;
+  }
+
+  /* Action card smallest */
+  .vh-action-card {
+    height: 240px;
+  }
+
+  /* Footer social icons center */
+  .vh-footer-social {
+    justify-content: center;
+  }
+}
