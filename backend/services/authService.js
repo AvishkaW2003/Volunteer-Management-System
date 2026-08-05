@@ -355,10 +355,16 @@ export const googleLoginUser = async (idToken, targetRole = "student") => {
   }
 
   // Verify audience if configured and this is a real token
-  const googleClientId = process.env.GOOGLE_CLIENT_ID ? process.env.GOOGLE_CLIENT_ID.trim() : null;
-  if (googleClientId && payload.aud && parts[2] !== 'mock-signature') {
-    const validIds = googleClientId.split(',').map(id => id.trim());
+  const googleClientId = process.env.GOOGLE_CLIENT_ID ? process.env.GOOGLE_CLIENT_ID.replace(/["']/g, "").trim() : null;
+  if (payload.aud && parts[2] !== 'mock-signature') {
+    const defaultClientId = "527555008291-hs544883ee4apu936ltu543sorp9g2b2.apps.googleusercontent.com";
+    const validIds = googleClientId ? googleClientId.split(',').map(id => id.replace(/["']/g, "").trim()) : [];
+    if (!validIds.includes(defaultClientId)) {
+      validIds.push(defaultClientId);
+    }
+    
     if (!validIds.includes(payload.aud.trim())) {
+      console.error(`[GOOGLE AUTH MISMATCH] Token aud: "${payload.aud}" | Configured IDs:`, validIds);
       const err = new Error("Invalid token audience");
       err.statusCode = 400;
       throw err;
