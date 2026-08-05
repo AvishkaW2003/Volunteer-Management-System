@@ -224,17 +224,15 @@ export const forgotPassword = async (email) => {
   const clientUrl = process.env.CLIENT_URL ? process.env.CLIENT_URL.split(",")[0].trim().replace(/\/$/, "") : "http://localhost:5173";
   const resetUrl = `${clientUrl}/reset-password/${resetToken}`;
 
-  // Send password reset email using SMTP service
-  try {
-    await sendPasswordResetEmail({
-      to: email,
-      userName: user.name,
-      resetUrl,
-      resetOtp
-    });
-  } catch (mailError) {
-    console.error("[SMTP ERROR] Failed to send email via SMTP:", mailError.message);
-  }
+  // Send password reset email non-blockingly so API returns instantly
+  sendPasswordResetEmail({
+    to: email,
+    userName: user.name,
+    resetUrl,
+    resetOtp
+  }).catch((mailError) => {
+    console.error("[EMAIL ERROR] Failed to send password reset email:", mailError.message);
+  });
 
   return true;
 };

@@ -27,18 +27,16 @@ export const getTransporter = async () => {
     });
     console.log(`[SMTP SERVICE] Configured SMTP Transporter for host: ${smtpHost}:${smtpPort || 587}`);
   } else {
-    console.log("[SMTP SERVICE] EMAIL_HOST/USER not found in .env. Initializing Ethereal SMTP test server...");
-    const testAccount = await nodemailer.createTestAccount();
+    console.log("[SMTP SERVICE] EMAIL_HOST/USER not set in environment. Using fallback transporter...");
     transporter = nodemailer.createTransport({
       host: "smtp.ethereal.email",
       port: 587,
       secure: false,
       auth: {
-        user: testAccount.user,
-        pass: testAccount.pass
+        user: "fallback@ethereal.email",
+        pass: "fallbackpass"
       }
     });
-    console.log(`[SMTP SERVICE] Ethereal SMTP test account initialized: ${testAccount.user}`);
   }
 
   return transporter;
