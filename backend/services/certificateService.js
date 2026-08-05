@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import Certificate from "../models/certificateModel.js";
 import Event from "../models/eventModel.js";
 import User from "../models/userModel.js";
@@ -241,7 +242,18 @@ export const getCertificateById = async (certificateId, userId, userRole) => {
  */
 export const getLeaderboard = async () => {
   const leaderboard = await User.findAll({
-    where: { role: "student" },
+    where: {
+      role: "student",
+      [Op.and]: [
+        { name: { [Op.notLike]: "%Student One%" } },
+        { name: { [Op.notLike]: "%Student Two%" } },
+        { name: { [Op.notLike]: "%Test Student%" } },
+        { name: { [Op.notLike]: "%Absent Student%" } },
+        { name: { [Op.notLike]: "%Notif Student%" } },
+        { email: { [Op.notLike]: "%student_%@uni.lk" } },
+        { email: { [Op.notLike]: "%test_%@test.com" } }
+      ]
+    },
     attributes: [
       "id",
       "name",
@@ -277,7 +289,7 @@ export const getLeaderboard = async () => {
       {
         model: StudentProfile,
         as: "studentProfile",
-        attributes: ["faculty"]
+        attributes: ["faculty", "privacy"]
       }
     ],
     order: [
@@ -285,12 +297,20 @@ export const getLeaderboard = async () => {
     ]
   });
 
-  return leaderboard.map(student => ({
-    id: student.id,
-    name: student.name,
-    faculty: student.studentProfile?.faculty || "General",
-    totalCertificates: parseInt(student.getDataValue("totalCertificates"), 10) || 0,
-    totalHours: parseInt(student.getDataValue("totalHours"), 10) || 0,
-    reputationPoints: parseInt(student.getDataValue("reputationPoints"), 10) || 0
-  }));
+  return leaderboard
+    .filter(student => {
+      const privacy = student.studentProfile?.privacy;
+      if (privacy && typeof privacy === 'object' && privacy.showProfileOnLeaderboard === false) {
+        return false;
+      }
+      return true;
+    })
+    .map(student => ({
+      id: student.id,
+      name: student.name,
+      faculty: student.studentProfile?.faculty || "General",
+      totalCertificates: parseInt(student.getDataValue("totalCertificates"), 10) || 0,
+      totalHours: parseInt(student.getDataValue("totalHours"), 10) || 0,
+      reputationPoints: parseInt(student.getDataValue("reputationPoints"), 10) || 0
+    }));
 };
