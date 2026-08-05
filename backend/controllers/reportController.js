@@ -297,7 +297,18 @@ export const getEventPerformance = async (req, res) => {
 export const getLeaderboardReport = async (req, res) => {
   try {
     const leaderboard = await User.findAll({
-      where: { role: "student" },
+      where: {
+        role: "student",
+        [Op.and]: [
+          { name: { [Op.notLike]: "%Student One%" } },
+          { name: { [Op.notLike]: "%Student Two%" } },
+          { name: { [Op.notLike]: "%Test Student%" } },
+          { name: { [Op.notLike]: "%Absent Student%" } },
+          { name: { [Op.notLike]: "%Notif Student%" } },
+          { email: { [Op.notLike]: "%student_%@uni.lk" } },
+          { email: { [Op.notLike]: "%test_%@test.com" } }
+        ]
+      },
       attributes: [
         "id",
         "name",
@@ -333,7 +344,7 @@ export const getLeaderboardReport = async (req, res) => {
         {
           model: StudentProfile,
           as: "studentProfile",
-          attributes: ["faculty"]
+          attributes: ["faculty", "privacy"]
         }
       ],
       order: [
@@ -341,14 +352,22 @@ export const getLeaderboardReport = async (req, res) => {
       ]
     });
 
-    const formatted = leaderboard.map(student => ({
-      id: student.id,
-      name: student.name,
-      faculty: student.studentProfile?.faculty || "General",
-      totalCertificates: parseInt(student.getDataValue("totalCertificates"), 10) || 0,
-      totalHours: parseInt(student.getDataValue("totalHours"), 10) || 0,
-      reputationPoints: parseInt(student.getDataValue("reputationPoints"), 10) || 0
-    }));
+    const formatted = leaderboard
+      .filter(student => {
+        const privacy = student.studentProfile?.privacy;
+        if (privacy && typeof privacy === 'object' && privacy.showProfileOnLeaderboard === false) {
+          return false;
+        }
+        return true;
+      })
+      .map(student => ({
+        id: student.id,
+        name: student.name,
+        faculty: student.studentProfile?.faculty || "General",
+        totalCertificates: parseInt(student.getDataValue("totalCertificates"), 10) || 0,
+        totalHours: parseInt(student.getDataValue("totalHours"), 10) || 0,
+        reputationPoints: parseInt(student.getDataValue("reputationPoints"), 10) || 0
+      }));
 
     res.status(200).json(formatted);
   } catch (error) {
