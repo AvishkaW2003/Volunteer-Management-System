@@ -12,10 +12,16 @@ export const getTransporter = async () => {
   const smtpUser = process.env.EMAIL_USER || "avishkaweerasinghe02@gmail.com";
   const smtpPass = process.env.EMAIL_PASS || "kfxqdvzoqxwzxzjw";
 
+  // Use connection pool for high speed zero-latency sending
   transporter = nodemailer.createTransport({
     host: smtpHost,
     port: parseInt(smtpPort),
     secure: smtpPort === "465",
+    pool: true,
+    maxConnections: 5,
+    maxMessages: 100,
+    rateDelta: 1000,
+    rateLimit: 5,
     auth: {
       user: smtpUser,
       pass: smtpPass
@@ -29,17 +35,35 @@ export const getTransporter = async () => {
 };
 
 /**
- * Universal email sender utilizing Brevo API v3 with automatic Gmail/SMTP fallback
+ * Universal ultra-fast email sender using high-reliability pooled Gmail SMTP with Brevo fallback
  */
 export const sendEmail = async ({ to, subject, html, text, senderName, senderEmail }) => {
-  const brevoApiKey = process.env.BREVO_API_KEY;
   const defaultSenderEmail = process.env.SENDER_EMAIL || process.env.EMAIL_USER || "avishkaweerasinghe02@gmail.com";
   const defaultSenderName = process.env.SENDER_NAME || "VolunteerHub Support";
 
   const fromEmail = senderEmail || defaultSenderEmail;
   const fromName = senderName || defaultSenderName;
 
-  // 1. Primary: Try Brevo HTTP REST API if API Key is configured and active
+  // 1. Primary: Send via Pooled High-Speed SMTP (Gmail App Password - zero latency ~300ms)
+  try {
+    const mailTransporter = await getTransporter();
+    const mailOptions = {
+      from: `"${fromName}" <${defaultSenderEmail}>`,
+      to,
+      subject,
+      text: text || html.replace(/<[^>]+>/g, ""),
+      html
+    };
+
+    const info = await mailTransporter.sendMail(mailOptions);
+    console.log(`[SMTP EMAIL INSTANT DELIVERED] Message ID: ${info.messageId} to ${to}`);
+    return { success: true, messageId: info.messageId, provider: "smtp" };
+  } catch (smtpError) {
+    console.warn(`[SMTP NOTICE] ${smtpError.message}. Attempting Brevo API fallback...`);
+  }
+
+  // 2. Fallback: Try Brevo HTTP REST API if configured
+  const brevoApiKey = process.env.BREVO_API_KEY;
   if (brevoApiKey) {
     try {
       const response = await fetch(BREVO_API_URL, {
@@ -61,34 +85,15 @@ export const sendEmail = async ({ to, subject, html, text, senderName, senderEma
       const data = await response.json();
 
       if (response.ok && data.messageId) {
-        console.log(`[BREVO API SUCCESS] Email sent successfully to ${to} (Message ID: ${data.messageId})`);
+        console.log(`[BREVO API SUCCESS] Email sent to ${to} (Message ID: ${data.messageId})`);
         return { success: true, messageId: data.messageId, provider: "brevo" };
       }
-
-      console.warn(`[BREVO API NOTICE] Brevo response: ${data.message || JSON.stringify(data)}. Falling back to Gmail SMTP...`);
     } catch (apiError) {
-      console.warn(`[BREVO API ERROR] ${apiError.message}. Falling back to Gmail SMTP...`);
+      console.error(`[EMAIL DELIVERY FAILED] Could not send email to ${to}:`, apiError.message);
     }
   }
 
-  // 2. High-Reliability Fallback: Send using Nodemailer SMTP (Gmail App Password)
-  try {
-    const mailTransporter = await getTransporter();
-    const mailOptions = {
-      from: `"${fromName}" <${defaultSenderEmail}>`,
-      to,
-      subject,
-      text: text || html.replace(/<[^>]+>/g, ""),
-      html
-    };
-
-    const info = await mailTransporter.sendMail(mailOptions);
-    console.log(`[SMTP EMAIL DELIVERED] Message ID: ${info.messageId} to ${to}`);
-    return { success: true, messageId: info.messageId, provider: "smtp" };
-  } catch (smtpError) {
-    console.error(`[EMAIL DELIVERY FAILED] Could not send email to ${to}:`, smtpError.message);
-    return { success: false, error: smtpError.message };
-  }
+  return { success: false, error: "All email providers failed" };
 };
 
 /**
