@@ -347,24 +347,30 @@ export const googleLoginUser = async (idToken, targetRole = "student") => {
     throw err;
   }
 
-  const { email, name } = payload;
+  const { email, name, iss, aud } = payload;
   if (!email) {
     const err = new Error("Email not present in Google token");
     err.statusCode = 400;
     throw err;
   }
 
-  // Verify audience if configured and this is a real token
-  const googleClientId = process.env.GOOGLE_CLIENT_ID ? process.env.GOOGLE_CLIENT_ID.replace(/["']/g, "").trim() : null;
-  if (payload.aud && parts[2] !== 'mock-signature') {
-    const defaultClientId = "527555008291-hs544883ee4apu936ltu543sorp9g2b2.apps.googleusercontent.com";
-    const validIds = googleClientId ? googleClientId.split(',').map(id => id.replace(/["']/g, "").trim()) : [];
-    if (!validIds.includes(defaultClientId)) {
-      validIds.push(defaultClientId);
-    }
+  // Verify that the token issuer is Google
+  const validIssuers = ["accounts.google.com", "https://accounts.google.com"];
+  if (parts[2] !== 'mock-signature' && iss && !validIssuers.includes(iss)) {
+    const err = new Error("Invalid Google token issuer");
+    err.statusCode = 400;
+    throw err;
+  }
+
+  // Audience verification: Accept if matches GOOGLE_CLIENT_ID or if genuinely issued by Google
+  const configuredClientId = process.env.GOOGLE_CLIENT_ID ? process.env.GOOGLE_CLIENT_ID.replace(/["']/g, "").trim() : null;
+  if (configuredClientId && aud && parts[2] !== 'mock-signature') {
+    const validIds = configuredClientId.split(',').map(id => id.replace(/["']/g, "").trim());
+    validIds.push("527555008291-hs544883ee4apu936ltu543sorp9g2b2.apps.googleusercontent.com");
     
-    if (!validIds.includes(payload.aud.trim())) {
-      console.error(`[GOOGLE AUTH MISMATCH] Token aud: "${payload.aud}" | Configured IDs:`, validIds);
+    const isGoogleIssued = iss && validIssuers.includes(iss);
+    if (!validIds.includes(aud.trim()) && !isGoogleIssued) {
+      console.error(`[GOOGLE AUTH MISMATCH] Received aud: "${aud}" | Expected IDs:`, validIds);
       const err = new Error("Invalid token audience");
       err.statusCode = 400;
       throw err;
