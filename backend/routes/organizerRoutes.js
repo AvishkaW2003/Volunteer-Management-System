@@ -3,6 +3,7 @@ import {
   getOrganizerSettings,
   updateOrganizerSettings,
 } from "../controllers/organizerController.js";
+import { changePassword } from "../controllers/volunteerController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 import roleMiddleware from "../middleware/roleMiddleware.js";
 
@@ -22,6 +23,14 @@ router.put(
   authMiddleware,
   roleMiddleware("organizer"),
   updateOrganizerSettings
+);
+
+// PUT /api/organizer/change-password — update organizer password
+router.put(
+  "/change-password",
+  authMiddleware,
+  roleMiddleware("organizer"),
+  changePassword
 );
 
 export default router;

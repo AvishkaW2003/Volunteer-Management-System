@@ -68,3 +68,13 @@ export const updateOrganizerSettings = async (data) => {
     });
     return response.data;
 };
+
+/**
+ * Change organizer password.
+ */
+export const changeOrganizerPassword = async (data) => {
+    const response = await axios.put(`${ORGANIZER_API_URL}/change-password`, data, {
+        headers: getAuthHeader(),
+    });
+    return response.data;
+};

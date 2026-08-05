@@ -3,7 +3,7 @@ import { useAuth } from '../../context/AuthContext';
 import {
   getOrganizerSettings,
   updateOrganizerSettings,
-  changePassword
+  changeOrganizerPassword
 } from '../../services/userService';
 import {
   Building,
@@ -412,7 +412,7 @@ const OrganizerSettings = () => {
         await new Promise(resolve => setTimeout(resolve, 800));
         setPasswordSuccess('Password successfully updated!');
       } else {
-        await changePassword({ currentPassword: current, newPassword: newPass });
+        await changeOrganizerPassword({ currentPassword: current, newPassword: newPass });
         setPasswordSuccess('Password successfully updated!');
       }
       setPasswords({ current: '', newPass: '', confirm: '' });
