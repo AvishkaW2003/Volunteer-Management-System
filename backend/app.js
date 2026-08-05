@@ -23,8 +23,26 @@ import { checkMaintenanceMode } from "./middleware/maintenanceMiddleware.js";
 const app = express();
 
 // Global Middlewares
+const allowedOrigins = process.env.CLIENT_URL 
+  ? process.env.CLIENT_URL.split(",").map(url => url.trim().replace(/\/$/, ""))
+  : [];
+
 const corsOptions = {
-  origin: process.env.CLIENT_URL ? process.env.CLIENT_URL.split(",") : true,
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    const cleanOrigin = origin.replace(/\/$/, "");
+    if (
+      cleanOrigin.includes("localhost") || 
+      cleanOrigin.includes("127.0.0.1") ||
+      cleanOrigin.endsWith(".vercel.app") ||
+      allowedOrigins.includes(cleanOrigin) ||
+      allowedOrigins.includes("*") ||
+      allowedOrigins.length === 0
+    ) {
+      return callback(null, true);
+    }
+    return callback(null, true);
+  },
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
   allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"]
