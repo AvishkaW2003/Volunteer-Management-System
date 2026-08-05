@@ -6,7 +6,8 @@ import { getMyEvents } from '../../services/eventService';
 import {
   getOrganizerCertificates,
   generateCertificate,
-  generateBulkCertificates
+  generateBulkCertificates,
+  downloadCertificatePdf
 } from '../../services/certificateService';
 
 const Certificates = () => {
@@ -129,6 +130,28 @@ const Certificates = () => {
   // Action: Download
   const handleDownloadAll = () => {
     showToast("Downloading all certificates as ZIP package...");
+  };
+
+  const handleDownloadPdf = async (cert) => {
+    try {
+      const certId = cert.certId || cert.id;
+      if (!certId) {
+        window.print();
+        return;
+      }
+      const blobData = await downloadCertificatePdf(certId);
+      const blob = new Blob([blobData], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `certificate-${cert.certId || cert.id}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error("PDF download fallback to print", error);
+      window.print();
+    }
   };
 
   const handlePrint = () => {
@@ -305,10 +328,16 @@ const Certificates = () => {
               </h3>
               <div className="flex items-center gap-2">
                 <button
+                  onClick={() => handleDownloadPdf(previewCert)}
+                  className="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white rounded-xl text-sm font-bold flex items-center gap-1.5 transition-colors shadow-sm"
+                >
+                  <Download className="w-4 h-4" /> Download PDF
+                </button>
+                <button
                   onClick={handlePrint}
                   className="px-4 py-2 border border-gray-200 hover:bg-gray-50 text-gray-700 rounded-xl text-sm font-bold flex items-center gap-1.5 transition-colors"
                 >
-                  <Printer className="w-4 h-4" /> Print / PDF
+                  <Printer className="w-4 h-4" /> Print
                 </button>
                 <button
                   onClick={() => setPreviewCert(null)}

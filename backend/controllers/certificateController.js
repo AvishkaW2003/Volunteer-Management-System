@@ -1,3 +1,4 @@
+import PDFDocument from "pdfkit";
 import * as certificateService from "../services/certificateService.js";
 import Certificate from "../models/certificateModel.js";
 import Event from "../models/eventModel.js";
@@ -279,21 +280,192 @@ export const getCertificateById = async (req, res, next) => {
   }
 };
 
+const buildCertificatePdfBuffer = (certificate) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const doc = new PDFDocument({
+        layout: "landscape",
+        size: "A4",
+        margin: 40,
+      });
+
+      const buffers = [];
+      doc.on("data", (chunk) => buffers.push(chunk));
+      doc.on("end", () => resolve(Buffer.concat(buffers)));
+      doc.on("error", (err) => reject(err));
+
+      const width = doc.page.width;
+      const height = doc.page.height;
+
+      // Outer Decorative Border (Double Amber/Navy border)
+      doc
+        .rect(20, 20, width - 40, height - 40)
+        .lineWidth(4)
+        .strokeColor("#B45309")
+        .stroke();
+
+      doc
+        .rect(26, 26, width - 52, height - 52)
+        .lineWidth(1.5)
+        .strokeColor("#1E3A8A")
+        .stroke();
+
+      // Top Background Accent Banner
+      doc
+        .rect(28, 28, width - 56, 55)
+        .fillColor("#F8FAFC")
+        .fill();
+
+      // Header Brand Text
+      doc
+        .fillColor("#1E3A8A")
+        .fontSize(16)
+        .font("Helvetica-Bold")
+        .text("VOLUNTEERHUB", 0, 44, { align: "center" });
+
+      doc
+        .fillColor("#64748B")
+        .fontSize(9)
+        .font("Helvetica")
+        .text("NATIONAL VOLUNTEER MANAGEMENT SYSTEM", 0, 64, { align: "center" });
+
+      // Certificate Title
+      doc
+        .fillColor("#B45309")
+        .fontSize(28)
+        .font("Helvetica-Bold")
+        .text("CERTIFICATE OF PARTICIPATION", 0, 125, { align: "center" });
+
+      doc
+        .fillColor("#64748B")
+        .fontSize(12)
+        .font("Helvetica-Oblique")
+        .text("This certificate is proudly awarded to", 0, 170, { align: "center" });
+
+      // Volunteer Name
+      const volunteerName = certificate.volunteer?.name || certificate.volunteerName || "Valued Volunteer";
+      doc
+        .fillColor("#0F172A")
+        .fontSize(32)
+        .font("Helvetica-Bold")
+        .text(volunteerName, 0, 200, { align: "center" });
+
+      // Underline accent for name
+      const nameWidth = doc.widthOfString(volunteerName);
+      const startX = (width - nameWidth) / 2;
+      doc
+        .moveTo(Math.max(startX - 20, 100), 240)
+        .lineTo(Math.min(startX + nameWidth + 20, width - 100), 240)
+        .lineWidth(1)
+        .strokeColor("#CBD5E1")
+        .stroke();
+
+      // Service Statement
+      const eventTitle = certificate.event?.title || certificate.eventName || "Community Service Event";
+      const hours = certificate.hours || 4;
+      const organizerName = certificate.event?.User?.name || certificate.issuer?.name || certificate.organizer || "Student Club";
+
+      doc
+        .fillColor("#334155")
+        .fontSize(13)
+        .font("Helvetica")
+        .text(
+          `for successfully participating and completing ${hours} hours of voluntary service in`,
+          0,
+          260,
+          { align: "center" }
+        );
+
+      doc
+        .fillColor("#1E3A8A")
+        .fontSize(18)
+        .font("Helvetica-Bold")
+        .text(`"${eventTitle}"`, 0, 285, { align: "center" });
+
+      doc
+        .fillColor("#475569")
+        .fontSize(12)
+        .font("Helvetica")
+        .text(`organized by ${organizerName}`, 0, 315, { align: "center" });
+
+      // Signatures & Verification Footer Row
+      const footerY = height - 120;
+      const certNum = certificate.certificateNumber || `CERT-${certificate.id}`;
+      const issueDate = certificate.issueDate || new Date().toISOString().split("T")[0];
+
+      // Left: Issue Date & Cert ID
+      doc
+        .fillColor("#0F172A")
+        .fontSize(10)
+        .font("Helvetica-Bold")
+        .text(`Issue Date: ${issueDate}`, 60, footerY);
+
+      doc
+        .fillColor("#64748B")
+        .fontSize(9)
+        .font("Helvetica")
+        .text(`Cert ID: ${certNum}`, 60, footerY + 16);
+
+      // Center: Official Stamp / Verification
+      doc
+        .rect(width / 2 - 60, footerY - 10, 120, 50)
+        .lineWidth(1)
+        .strokeColor("#CBD5E1")
+        .stroke();
+
+      doc
+        .fillColor("#B45309")
+        .fontSize(9)
+        .font("Helvetica-Bold")
+        .text("OFFICIAL VERIFIED", width / 2 - 50, footerY, { width: 100, align: "center" });
+
+      doc
+        .fillColor("#64748B")
+        .fontSize(8)
+        .font("Helvetica")
+        .text("VolunteerHub Registry", width / 2 - 50, footerY + 14, { width: 100, align: "center" });
+
+      // Right: Authorized Signature Line
+      const rightX = width - 240;
+      doc
+        .moveTo(rightX, footerY + 15)
+        .lineTo(rightX + 180, footerY + 15)
+        .lineWidth(1)
+        .strokeColor("#94A3B8")
+        .stroke();
+
+      doc
+        .fillColor("#0F172A")
+        .fontSize(10)
+        .font("Helvetica-Bold")
+        .text("Authorized Signature", rightX, footerY + 22, { width: 180, align: "center" });
+
+      doc
+        .fillColor("#64748B")
+        .fontSize(8)
+        .font("Helvetica")
+        .text(`${organizerName} Coordinator`, rightX, footerY + 36, { width: 180, align: "center" });
+
+      doc.end();
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
 /**
  * Download certificate as a dynamic PDF file.
  */
 export const downloadCertificate = async (req, res, next) => {
   try {
     const certificate = await certificateService.getCertificateById(req.params.id, req.user.id, req.user.role);
-    
-    // Generate valid raw PDF buffer dynamically
-    const mockPdf = Buffer.from(
-      `%PDF-1.4\n1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>\nendobj\n4 0 obj\n<< /Length 200 >>\nstream\nBT\n/F1 24 Tf\n70 700 Td\n(VOLUNTEERHUB SERVICE CERTIFICATE) Tj\n/F1 14 Tf\n0 -50 Td\n(Certificate Number: ${certificate.certificateNumber}) Tj\n0 -30 Td\n(This certifies that ${certificate.volunteer?.name || 'Volunteer'} has completed ${certificate.hours} hours) Tj\n0 -20 Td\n(of volunteer work at "${certificate.event?.title || 'Event'}".) Tj\n0 -40 Td\n(Issued by: ${certificate.issuer?.name || 'Organizer'} on ${certificate.issueDate}) Tj\nET\nendstream\nendobj\n5 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>\nendobj\nxref\n0 6\n0000000000 65535 f\n0000000010 00000 n\n0000000060 00000 n\n0000000120 00000 n\n0000000250 00000 n\n0000000500 00000 n\ntrailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n570\n%%EOF`
-    );
+    const pdfBuffer = await buildCertificatePdfBuffer(certificate);
 
+    const certNum = certificate.certificateNumber || certificate.id;
     res.setHeader("Content-Type", "application/pdf");
-    res.setHeader("Content-Disposition", `attachment; filename=certificate-${certificate.certificateNumber}.pdf`);
-    res.status(200).send(mockPdf);
+    res.setHeader("Content-Disposition", `attachment; filename=certificate-${certNum}.pdf`);
+    res.setHeader("Content-Length", pdfBuffer.length);
+    res.status(200).send(pdfBuffer);
   } catch (error) {
     next(error);
   }
