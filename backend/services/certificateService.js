@@ -6,6 +6,7 @@ import VolunteerRegistration from "../models/volunteerRegistration.js";
 import Attendance from "../models/attendanceModel.js";
 import AuditLog from "../models/auditLogModel.js";
 import { createNotification } from "./notificationService.js";
+import { sendCertificateIssuedEmail } from "../utils/emailService.js";
 import StudentProfile from "../models/studentProfileModel.js";
 import sequelize from "../config/database.js";
 
@@ -125,6 +126,17 @@ export const generateCertificate = async (eventId, userId, hours, organizerId) =
     }, { transaction });
 
     await transaction.commit();
+
+    // Trigger Email Notification asynchronously
+    if (student && student.email) {
+      sendCertificateIssuedEmail({
+        to: student.email,
+        userName: studentName,
+        eventTitle: event?.title || "Volunteer Event",
+        certificateNumber: certificate.certificateNumber
+      }).catch(err => console.error("[EMAIL ERROR] Certificate email failed:", err.message));
+    }
+
     return certificate;
   } catch (error) {
     await transaction.rollback();

@@ -2,6 +2,7 @@ import VolunteerRegistration from "../models/volunteerRegistration.js";
 import Event from "../models/eventModel.js";
 import User from "../models/userModel.js";
 import { createNotification } from "./notificationService.js";
+import { sendApplicationStatusEmail } from "../utils/emailService.js";
 import StudentProfile from "../models/studentProfileModel.js";
 import sequelize from "../config/database.js";
 
@@ -208,6 +209,17 @@ export const approveApplication = async (applicationId, organizerId) => {
     }, { transaction });
 
     await transaction.commit();
+
+    // Trigger Email Notification asynchronously
+    if (application.volunteer?.email) {
+      sendApplicationStatusEmail({
+        to: application.volunteer.email,
+        userName: studentName,
+        eventTitle,
+        status: "Approved"
+      }).catch(err => console.error("[EMAIL ERROR] Application approval email failed:", err.message));
+    }
+
     return application;
   } catch (error) {
     if (!transaction.finished) {
@@ -226,7 +238,7 @@ export const rejectApplication = async (applicationId, organizerId) => {
     const application = await VolunteerRegistration.findByPk(applicationId, {
       include: [
         { model: Event, as: "event" },
-        { model: User, as: "volunteer", attributes: ["id", "name"] }
+        { model: User, as: "volunteer", attributes: ["id", "name", "email"] }
       ],
       transaction
     });
@@ -253,6 +265,7 @@ export const rejectApplication = async (applicationId, organizerId) => {
     }
 
     const eventTitle = application.event?.title || "the event";
+    const studentName = application.volunteer?.name || "Volunteer";
 
     // Create Student Notification
     await createNotification({
@@ -263,6 +276,17 @@ export const rejectApplication = async (applicationId, organizerId) => {
     }, { transaction });
 
     await transaction.commit();
+
+    // Trigger Email Notification asynchronously
+    if (application.volunteer?.email) {
+      sendApplicationStatusEmail({
+        to: application.volunteer.email,
+        userName: studentName,
+        eventTitle,
+        status: "Rejected"
+      }).catch(err => console.error("[EMAIL ERROR] Application rejection email failed:", err.message));
+    }
+
     return application;
   } catch (error) {
     if (!transaction.finished) {

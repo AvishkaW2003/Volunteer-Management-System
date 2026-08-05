@@ -8,7 +8,7 @@ import User from "../models/userModel.js";
 import StudentProfile from "../models/studentProfileModel.js";
 import OrganizerProfile from "../models/organizerProfileModel.js";
 import jwtConfig from "../config/jwt.js";
-import { sendPasswordResetEmail } from "../utils/emailService.js";
+import { sendPasswordResetEmail, sendWelcomeEmail } from "../utils/emailService.js";
 import { getSettings } from "./settingsService.js";
 
 /**
@@ -55,6 +55,11 @@ export const registerStudent = async (studentData) => {
     }, { transaction });
 
     await transaction.commit();
+
+    // Trigger Welcome Email asynchronously
+    sendWelcomeEmail({ to: user.email, userName: user.name, role: "Student" }).catch(err => 
+      console.error("[EMAIL ERROR] Welcome email failed:", err.message)
+    );
 
     const result = user.toJSON();
     delete result.password;
@@ -108,6 +113,11 @@ export const registerOrganizer = async (organizerData) => {
     }, { transaction });
 
     await transaction.commit();
+
+    // Trigger Welcome Email asynchronously
+    sendWelcomeEmail({ to: user.email, userName: organizationName, role: "Organizer" }).catch(err => 
+      console.error("[EMAIL ERROR] Welcome email failed:", err.message)
+    );
 
     const result = user.toJSON();
     delete result.password;
