@@ -22,19 +22,24 @@ export const rateLimiter = (options = {}) => {
     if (process.env.NODE_ENV === "test") {
       return next();
     }
-    const ip = req.ip || req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+    // Extract true client IP safely behind proxy/load-balancers
+    const forwardedHeader = req.headers["x-forwarded-for"];
+    const clientIp = forwardedHeader 
+      ? forwardedHeader.split(",")[0].trim() 
+      : req.ip || req.socket.remoteAddress || "127.0.0.1";
+      
     const now = Date.now();
 
-    if (!rateLimitMap[ip]) {
-      rateLimitMap[ip] = [];
+    if (!rateLimitMap[clientIp]) {
+      rateLimitMap[clientIp] = [];
     }
 
     // Filter out timestamps outside the active window
-    rateLimitMap[ip] = rateLimitMap[ip].filter(
+    rateLimitMap[clientIp] = rateLimitMap[clientIp].filter(
       (record) => now - record.timestamp < windowMs
     );
 
-    if (rateLimitMap[ip].length >= max) {
+    if (rateLimitMap[clientIp].length >= max) {
       return res.status(429).json({
         success: false,
         message,
@@ -42,7 +47,7 @@ export const rateLimiter = (options = {}) => {
     }
 
     // Add current request timestamp
-    rateLimitMap[ip].push({ timestamp: now, windowMs });
+    rateLimitMap[clientIp].push({ timestamp: now, windowMs });
     next();
   };
 };
@@ -50,13 +55,13 @@ export const rateLimiter = (options = {}) => {
 // Rate limiter for authentication attempts
 export const authRateLimiter = rateLimiter({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 50,
+  max: 100,
   message: "Too many authentication attempts. Please try again after 15 minutes."
 });
 
 // Rate limiter for sensitive password recovery actions
 export const resetRateLimiter = rateLimiter({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5,
+  max: 30,
   message: "Too many password recovery requests. Please try again after 15 minutes."
 });

@@ -21,6 +21,7 @@ import xssSanitizer from "./middleware/xssSanitizer.js";
 import { checkMaintenanceMode } from "./middleware/maintenanceMiddleware.js";
 
 const app = express();
+app.set("trust proxy", 1);
 
 // Global Middlewares
 const allowedOrigins = process.env.CLIENT_URL 
