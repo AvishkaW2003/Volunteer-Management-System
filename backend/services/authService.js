@@ -221,7 +221,8 @@ export const forgotPassword = async (email) => {
     resetOtpExpires: tokenExpiry
   });
 
-  const resetUrl = `http://localhost:5173/reset-password/${resetToken}`;
+  const clientUrl = process.env.CLIENT_URL ? process.env.CLIENT_URL.split(",")[0].trim().replace(/\/$/, "") : "http://localhost:5173";
+  const resetUrl = `${clientUrl}/reset-password/${resetToken}`;
 
   // Send password reset email using SMTP service
   try {
