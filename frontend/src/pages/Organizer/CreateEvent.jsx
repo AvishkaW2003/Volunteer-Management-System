@@ -180,7 +180,7 @@ const CreateEvent = () => {
 
           {/* Event Mode (In-Person vs Online) */}
           <Field label="Event Mode & Venue" required>
-            <div className="grid grid-cols-2 gap-3 mb-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-2">
               <button
                 type="button"
                 onClick={() => handleEventTypeChange('In-Person')}

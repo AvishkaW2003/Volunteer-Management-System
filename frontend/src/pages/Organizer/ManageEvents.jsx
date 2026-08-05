@@ -309,7 +309,7 @@ const ManageEvents = () => {
                 <label className="block text-base font-medium text-gray-700 mb-1.5">
                   Event Mode & Platform
                 </label>
-                <div className="grid grid-cols-2 gap-3 mb-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-2">
                   <button
                     type="button"
                     onClick={() => setEditForm(prev => ({ ...prev, eventType: 'In-Person' }))}
@@ -409,7 +409,7 @@ const ManageEvents = () => {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-base font-medium text-gray-700 mb-1.5">Category <span className="text-red-400">*</span></label>
                   <select name="category" value={editForm.category || ''} onChange={handleEditChange} required className={fieldClass}>
@@ -424,7 +424,7 @@ const ManageEvents = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-base font-medium text-gray-700 mb-1.5">Date <span className="text-red-400">*</span></label>
                   <input type="date" name="date" value={editForm.date || ''} onChange={handleEditChange} required className={fieldClass} />

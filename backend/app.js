@@ -23,9 +23,17 @@ import { checkMaintenanceMode } from "./middleware/maintenanceMiddleware.js";
 const app = express();
 
 // Global Middlewares
-app.use(cors());
+const corsOptions = {
+  origin: process.env.CLIENT_URL ? process.env.CLIENT_URL.split(",") : true,
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"]
+};
+
+app.use(cors(corsOptions));
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
+app.use("/uploads", express.static("uploads"));
 app.use(xssSanitizer);
 
 // Unauthenticated public settings endpoint

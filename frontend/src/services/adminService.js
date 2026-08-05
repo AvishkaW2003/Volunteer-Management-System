@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { API_BASE_URL } from './apiConfig';
 
-const API_URL = 'http://localhost:5000/api/admin';
+const API_URL = `${API_BASE_URL}/api/admin`;
 
 const getAuthHeader = () => {
   const token = localStorage.getItem('token');
@@ -72,7 +73,7 @@ export const updateSettings = async (settingsData) => {
 };
 
 export const getAuditLogs = async () => {
-  const response = await axios.get('http://localhost:5000/api/admin/logs', {
+  const response = await axios.get(`${API_BASE_URL}/api/admin/logs`, {
     headers: getAuthHeader(),
   });
   return response.data;

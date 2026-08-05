@@ -35,20 +35,38 @@ const StudentLogin = () => {
   };
 
   useEffect(() => {
-    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com";
-    if (window.google) {
-      try {
-        window.google.accounts.id.initialize({
-          client_id: clientId,
-          callback: handleGoogleCredentialResponse,
-        });
-        window.google.accounts.id.renderButton(
-          document.getElementById("google-signin-btn"),
-          { theme: "outline", size: "large", width: 384 }
-        );
-      } catch (err) {
-        console.error("Google Sign-In initialization failed:", err);
+    const rawClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || import.meta.env.GOOGLE_CLIENT_ID || "527555008291-hs544883ee4apu936ltu543sorp9g2b2.apps.googleusercontent.com";
+    const clientId = rawClientId.trim();
+    
+    const initGoogle = () => {
+      const btn = document.getElementById("google-signin-btn");
+      if (btn && window.google?.accounts?.id) {
+        try {
+          window.google.accounts.id.initialize({
+            client_id: clientId,
+            callback: handleGoogleCredentialResponse,
+            cancel_on_tap_outside: false,
+          });
+          btn.innerHTML = "";
+          window.google.accounts.id.renderButton(
+            btn,
+            { type: "standard", theme: "outline", size: "large", width: 320, text: "signin_with", shape: "rectangular" }
+          );
+          return true;
+        } catch (err) {
+          console.error("Google Sign-In initialization failed:", err);
+        }
       }
+      return false;
+    };
+
+    if (!initGoogle()) {
+      const interval = setInterval(() => {
+        if (initGoogle()) {
+          clearInterval(interval);
+        }
+      }, 150);
+      return () => clearInterval(interval);
     }
   }, []);
 
@@ -85,53 +103,35 @@ const StudentLogin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col
-                    items-center justify-center px-4 pt-28 pb-10">
-
-
-
-      {/* Page Heading */}
-      <h1 className="text-3xl font-bold text-gray-800 mb-1">
-        Welcome Back
-      </h1>
-      <p className="text-gray-500 text-base mb-8">
-        Sign in to your student account
-      </p>
-
-      {/* Card */}
-      <div className="bg-white rounded-2xl shadow-md w-full
-                      max-w-md px-8 py-8">
-
-        {/* Card Header */}
-        <div className="flex items-center gap-2.5 mb-6">
-          <div className="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-sm flex-shrink-0">
-            <User className="w-4.5 h-4.5" />
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex flex-col items-center justify-center p-4 pt-24 pb-10">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8">
+        
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+            <User className="w-6 h-6 text-blue-600" />
           </div>
-          <h2 className="text-lg font-bold text-gray-800">
-            Student Login
-          </h2>
+          <h2 className="text-2xl font-bold text-gray-900">Student Sign In</h2>
+          <p className="text-sm text-gray-500 mt-1">
+            Access your volunteer opportunities and track your impact
+          </p>
         </div>
 
-        {/* Error Message */}
+        {/* Error Alert */}
         {error && (
-          <div className="bg-red-50 text-red-500 text-sm px-4
-                          py-3 rounded-lg mb-4 border border-red-200">
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-5">
           {/* Email */}
           <div>
-            <label className="block text-sm font-medium
-                              text-gray-700 mb-1">
-              Email
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Email Address
             </label>
-            <div className="flex items-center border border-gray-300
-                            rounded-lg px-3 py-2 gap-2
-                            focus-within:border-blue-400
-                            transition-colors">
+            <div className="flex items-center border border-gray-300 rounded-xl px-3 py-2.5 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500">
               <svg xmlns="http://www.w3.org/2000/svg"
                 className="w-4 h-4 text-gray-400 flex-shrink-0"
                 fill="none" viewBox="0 0 24 24"
@@ -149,49 +149,30 @@ const StudentLogin = () => {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="flex-1 outline-none text-sm
-                           text-gray-700 placeholder-gray-400
-                           bg-transparent w-full"
+                className="flex-1 outline-none text-sm text-gray-700 placeholder-gray-400 bg-transparent w-full"
               />
             </div>
           </div>
 
           {/* Password */}
           <div>
-            <label className="block text-sm font-medium
-                              text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Password
             </label>
-            <div className="flex items-center border border-gray-300
-                            rounded-lg px-3 py-2 gap-2
-                            focus-within:border-blue-400
-                            transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg"
-                className="w-4 h-4 text-gray-400 flex-shrink-0"
-                fill="none" viewBox="0 0 24 24"
-                stroke="currentColor">
-                <path strokeLinecap="round"
-                  strokeLinejoin="round" strokeWidth={2}
-                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0
-                     00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10
-                     -10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
+            <div className="flex items-center border border-gray-300 rounded-xl px-3 py-2.5 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500">
               <input
-                type={showPassword ? "text" : "password"}
+                type={showPassword ? 'text' : 'password'}
                 name="password"
-                placeholder="Enter your password"
+                placeholder="••••••••"
                 value={formData.password}
                 onChange={handleChange}
                 required
-                className="flex-1 outline-none text-sm
-                           text-gray-700 placeholder-gray-400
-                           bg-transparent w-full"
+                className="flex-1 outline-none text-sm text-gray-700 placeholder-gray-400 bg-transparent w-full"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="text-gray-400 hover:text-blue-500 transition-colors focus:outline-none"
-              >
+                className="text-gray-400 hover:text-gray-600 focus:outline-none">
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
@@ -210,19 +191,14 @@ const StudentLogin = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-xl text-white
-                       font-semibold text-base
-                       bg-blue-600 hover:bg-blue-700
-                       transition-all duration-200 mt-2
-                       disabled:opacity-60
-                       disabled:cursor-not-allowed">
+            className="w-full py-3 rounded-xl text-white font-semibold text-base bg-blue-600 hover:bg-blue-700 transition-all duration-200 mt-2 disabled:opacity-60 disabled:cursor-not-allowed">
             {loading ? 'Signing In...' : 'Sign In'}
           </button>
 
         </form>
 
         {/* Google OAuth Login Button */}
-        <div className="mt-4 flex justify-center">
+        <div className="mt-4 flex justify-center w-full min-h-[44px]">
           <div id="google-signin-btn" className="w-full flex justify-center"></div>
         </div>
 
@@ -238,31 +214,27 @@ const StudentLogin = () => {
         {/* Register Link */}
         <button
           onClick={() => navigate('/register/student')}
-          className="w-full py-3 rounded-xl text-white
-                     font-semibold text-base bg-blue-600
-                     hover:bg-blue-700 shadow-sm hover:shadow transition-all duration-200">
+          className="w-full py-3 rounded-xl text-blue-600 border border-blue-200 hover:bg-blue-50 font-semibold text-sm transition-all duration-200">
           Create Student Account
         </button>
 
       </div>
 
       {/* Link to Organizer Login */}
-      <p className="mt-6 text-sm text-gray-500">
+      <p className="mt-6 text-sm text-gray-300">
         Are you an organization?{' '}
         <span
           onClick={() => navigate('/login/organizer')}
-          className="text-blue-500 font-medium cursor-pointer
-                     hover:underline">
+          className="text-blue-400 font-medium cursor-pointer hover:underline">
           Log in as an organizer
         </span>
       </p>
 
       {/* Link to Admin Portal */}
-      <p className="mt-3 text-sm text-gray-500">
+      <p className="mt-3 text-sm text-gray-400">
         <span
           onClick={() => navigate('/admin/login')}
-          className="text-blue-500 font-medium cursor-pointer
-                     hover:underline">
+          className="text-blue-400 font-medium cursor-pointer hover:underline">
           Admin Portal &rarr;
         </span>
       </p>

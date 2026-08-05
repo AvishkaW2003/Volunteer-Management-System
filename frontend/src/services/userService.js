@@ -1,6 +1,8 @@
 import axios from 'axios';
+import { API_BASE_URL } from './apiConfig';
 
-const API_URL = 'http://localhost:5000/api/volunteers';
+const API_URL = `${API_BASE_URL}/api/volunteers`;
+const ORGANIZER_API_URL = `${API_BASE_URL}/api/organizer`;
 
 const getAuthHeader = () => {
     const token = localStorage.getItem('token');
@@ -46,8 +48,6 @@ export const changePassword = async (data) => {
     });
     return response.data;
 };
-
-const ORGANIZER_API_URL = 'http://localhost:5000/api/organizer';
 
 /**
  * Fetch organizer profile settings.

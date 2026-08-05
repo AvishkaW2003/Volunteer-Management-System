@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { API_BASE_URL } from './apiConfig';
 
-const API_URL = 'http://localhost:5000/api/notifications';
+const API_URL = `${API_BASE_URL}/api/notifications`;
 
 const getAuthHeader = () => {
   const token = localStorage.getItem('token');
@@ -53,7 +54,7 @@ export const deleteNotification = async (id) => {
 
 // Fetch admin notifications
 export const getAdminNotifications = async () => {
-  const response = await axios.get('http://localhost:5000/api/admin/notifications', {
+  const response = await axios.get(`${API_BASE_URL}/api/admin/notifications`, {
     headers: getAuthHeader(),
   });
   return response.data;

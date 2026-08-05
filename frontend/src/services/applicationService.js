@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { API_BASE_URL } from './apiConfig';
 
-const API_URL = 'http://localhost:5000/api/applications';
+const API_URL = `${API_BASE_URL}/api/applications`;
 
 const getAuthHeader = () => {
   const token = localStorage.getItem('token');
@@ -71,7 +72,7 @@ export const getApplicationById = async (id) => {
 
 // Organizer retrieves all applications across all their events
 export const getOrganizerAllApplications = async () => {
-  const response = await axios.get('http://localhost:5000/api/volunteers/applications', {
+  const response = await axios.get(`${API_BASE_URL}/api/volunteers/applications`, {
     headers: getAuthHeader(),
   });
   return response.data;
