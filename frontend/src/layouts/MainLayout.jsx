@@ -25,8 +25,6 @@ const MainLayout = () => {
   
   // State for mobile drawer menu
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  // State for profile dropdown menu
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   // State for notifications dropdown
   const [notifications, setNotifications] = useState([]);
   const [notiDropdownOpen, setNotiDropdownOpen] = useState(false);
@@ -320,66 +318,14 @@ const MainLayout = () => {
                     className={`w-10 h-10 rounded-full border-2 cursor-pointer object-cover hover:scale-105 transition-transform ${
                       user?.role === 'admin' ? 'border-[#14B8A6]' : 'border-blue-500'
                     }`}
-                    onClick={() => { setDropdownOpen(!dropdownOpen); setNotiDropdownOpen(false); }}
+                    title="Go to Dashboard"
+                    onClick={() => {
+                      if (user?.role === 'student') navigate('/student/dashboard');
+                      else if (user?.role === 'organizer') navigate('/organizer/dashboard');
+                      else if (user?.role === 'admin') navigate('/admin/dashboard');
+                      else navigate('/');
+                    }}
                   />
-
-                  {dropdownOpen && (
-                    <div 
-                      className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-2xl shadow-xl py-2 z-50 overflow-hidden"
-                      style={{ right: 0 }}
-                      onMouseLeave={() => setDropdownOpen(false)}
-                    >
-                      {/* User Info Header */}
-                      <div className="px-4 py-3 bg-gray-50 border-b border-gray-100 flex flex-col">
-                        <p className="text-sm font-extrabold text-gray-900 truncate">{user?.name || 'User Profile'}</p>
-                        <p className="text-xs font-medium text-gray-500 truncate mt-0.5">{user?.email}</p>
-                        <span className="inline-block mt-2 w-max px-2.5 py-0.5 text-[10px] font-extrabold uppercase rounded-full bg-blue-100 text-blue-700">
-                          {user?.role || 'student'}
-                        </span>
-                      </div>
-                      
-                      {/* Quick Profile Actions */}
-                      <div className="py-1">
-                        <button
-                          onClick={() => {
-                            setDropdownOpen(false);
-                            if (user?.role === 'student') navigate('/student/dashboard');
-                            else if (user?.role === 'organizer') navigate('/organizer/dashboard');
-                            else if (user?.role === 'admin') navigate('/admin/dashboard');
-                            else navigate('/');
-                          }}
-                          className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors font-medium flex items-center gap-2 cursor-pointer"
-                        >
-                          Dashboard
-                        </button>
-                        <button
-                          onClick={() => {
-                            setDropdownOpen(false);
-                            if (user?.role === 'student') navigate('/student/settings');
-                            else if (user?.role === 'organizer') navigate('/organizer/settings');
-                            else if (user?.role === 'admin') navigate('/admin/settings');
-                          }}
-                          className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors font-medium flex items-center gap-2 cursor-pointer"
-                        >
-                          Settings
-                        </button>
-                      </div>
-                      
-                      <hr className="border-gray-100" />
-                      <div className="py-1">
-                        <button
-                          onClick={() => {
-                            setDropdownOpen(false);
-                            logout();
-                            navigate('/');
-                          }}
-                          className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors font-medium flex items-center gap-2 cursor-pointer"
-                        >
-                          Logout
-                        </button>
-                      </div>
-                    </div>
-                  )}
                 </div>
               </div>
             ) : (
