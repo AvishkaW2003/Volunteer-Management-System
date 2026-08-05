@@ -95,20 +95,14 @@ const ReportsAnalytics = () => {
           totalCertificates
         });
 
-        // 6. Chart 1: Event Participation Data (Top 5 events)
+        // 6. Chart 1: Event Participation Data (Top 5 events by applications)
         const top5Events = (allEvents || [])
           .slice(0, 5)
           .map(ev => ({
-            name: ev.title || ev.name || '',
-            Volunteers: ev.applicationsCount || 0
+            name: ev.title || ev.name || 'Event',
+            Volunteers: ev.applicationsCount || ev.acceptedCount || 0
           }));
-        setParticipationData(top5Events.length > 0 ? top5Events : [
-          { name: 'Tree Plantation', Volunteers: 42 },
-          { name: 'Community Teach', Volunteers: 28 },
-          { name: 'Beach Cleanup', Volunteers: 80 },
-          { name: 'First Aid', Volunteers: 115 },
-          { name: 'School Donation', Volunteers: 60 }
-        ]);
+        setParticipationData(top5Events);
 
         // 7. Chart 2: Organization Performance
         const orgsChart = (topOrgs || []).map(org => ({
@@ -116,29 +110,22 @@ const ReportsAnalytics = () => {
           Events: org.eventsCreated,
           Volunteers: org.applicationsReceived
         }));
-        setOrgPerformanceData(orgsChart.length > 0 ? orgsChart : [
-          { name: 'IEEE', Events: 14, Volunteers: 310 },
-          { name: 'Rotaract', Events: 22, Volunteers: 550 },
-          { name: 'Leo Club', Events: 8, Volunteers: 180 },
-          { name: 'AIESEC', Events: 11, Volunteers: 240 }
-        ]);
+        setOrgPerformanceData(orgsChart);
 
         // 8. Chart 3: Volunteer Hours Trend
-        const volunteerHoursTrend = [
-          { name: 'Jan', Hours: Math.round(totalHoursVal * 0.2) },
-          { name: 'Feb', Hours: Math.round(totalHoursVal * 0.4) },
-          { name: 'Mar', Hours: Math.round(totalHoursVal * 0.6) },
-          { name: 'Apr', Hours: Math.round(totalHoursVal * 0.8) },
-          { name: 'May', Hours: totalHoursVal }
-        ];
-        setVolunteerHoursData(totalHoursVal > 0 ? volunteerHoursTrend : [
-          { name: 'Jan', Hours: 150 },
-          { name: 'Feb', Hours: 320 },
-          { name: 'Mar', Hours: 580 },
-          { name: 'Apr', Hours: 940 },
-          { name: 'May', Hours: 1420 },
-          { name: 'Jun', Hours: 1840 }
-        ]);
+        const now = new Date();
+        const monthsList = [];
+        for (let i = 5; i >= 0; i--) {
+          const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+          monthsList.push(d.toLocaleString("default", { month: "short" }));
+        }
+
+        const step = Math.round(totalHoursVal / (monthsList.length || 1));
+        const volunteerHoursTrend = monthsList.map((m, idx) => ({
+          name: m,
+          Hours: Math.min(totalHoursVal, Math.round(step * (idx + 1)))
+        }));
+        setVolunteerHoursData(volunteerHoursTrend);
 
       } catch (error) {
         console.error("Error loading reports and analytics:", error);

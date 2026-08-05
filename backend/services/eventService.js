@@ -215,7 +215,7 @@ export const getOrganizerDashboardStats = async (organizerId) => {
   const todayStr = new Date().toISOString().split("T")[0];
 
   const myEvents = await Event.findAll({
-    where: { UserId: organizerId },
+    where: { UserId: organizerId, status: { [Op.ne]: "Archived" } },
     order: [["eventDate", "DESC"]]
   });
 
@@ -225,31 +225,111 @@ export const getOrganizerDashboardStats = async (organizerId) => {
     return {
       activeEvents: 0,
       totalApplications: 0,
-      approvedVolunteers: 0,
+      approvedVolunteersCount: 0,
+      approvedVolunteers: [],
       successRate: "0%",
-      myCreatedEvents: []
+      myCreatedEvents: [],
+      recentApplications: [],
+      lineData: [],
+      pieData: []
     };
   }
 
   const allApplications = await VolunteerRegistration.findAll({
-    where: { EventId: eventIds }
+    where: { EventId: eventIds },
+    include: [
+      { model: User, as: "volunteer", attributes: ["id", "name", "email"] },
+      { model: Event, as: "event", attributes: ["id", "title"] }
+    ],
+    order: [["createdAt", "DESC"]]
   });
 
   const totalApplications = allApplications.length;
-  const approvedVolunteers = allApplications.filter((app) => app.status === "Approved").length;
+  const approvedApps = allApplications.filter((app) => app.status === "Approved");
+  const approvedVolunteersCount = approvedApps.length;
 
   const activeEventsCount = myEvents.filter(
     (e) => e.approvalStatus === "Approved" && e.eventDate >= todayStr
   ).length;
 
   const successRateStr = totalApplications > 0
-    ? Math.round((approvedVolunteers / totalApplications) * 100) + "%"
+    ? Math.round((approvedVolunteersCount / totalApplications) * 100) + "%"
     : "0%";
+
+  // 1. Line Chart: Applications Over Time (Past 6 Months)
+  const now = new Date();
+  const months = [];
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    months.push({
+      year: d.getFullYear(),
+      monthIndex: d.getMonth(),
+      month: d.toLocaleString("default", { month: "short" }),
+      applications: 0
+    });
+  }
+
+  allApplications.forEach((app) => {
+    const d = new Date(app.createdAt);
+    const match = months.find((m) => m.year === d.getFullYear() && m.monthIndex === d.getMonth());
+    if (match) {
+      match.applications++;
+    }
+  });
+
+  const lineData = months.map((m) => ({
+    month: m.month,
+    applications: m.applications
+  }));
+
+  // 2. Pie Chart: Event Participation Rate (%) per event
+  const pieData = myEvents.slice(0, 5).map((ev) => {
+    const eventAppsCount = allApplications.filter((a) => a.EventId === ev.id).length;
+    const percentage = totalApplications > 0 ? Math.round((eventAppsCount / totalApplications) * 100) : 0;
+    return {
+      name: ev.title,
+      value: percentage
+    };
+  }).filter((p) => p.value > 0);
+
+  // If no percentages calculated yet, return application counts
+  if (pieData.length === 0 && myEvents.length > 0) {
+    myEvents.slice(0, 5).forEach((ev) => {
+      const cnt = allApplications.filter((a) => a.EventId === ev.id).length;
+      pieData.push({
+        name: ev.title,
+        value: cnt
+      });
+    });
+  }
+
+  // 3. Approved Volunteers list with attendance
+  const allAttendances = await Attendance.findAll({
+    where: { EventId: eventIds }
+  });
+
+  const approvedVolunteersList = approvedApps.map((app) => {
+    const att = allAttendances.find((a) => a.EventId === app.EventId && a.UserId === app.UserId);
+    return {
+      id: app.id,
+      userId: app.UserId,
+      eventId: app.EventId,
+      name: app.volunteer?.name || app.User?.name || "Volunteer",
+      email: app.volunteer?.email || app.User?.email || "",
+      eventName: app.event?.title || "Event",
+      attendanceStatus: att?.status || "Absent"
+    };
+  });
 
   return {
     activeEvents: activeEventsCount,
     totalApplications,
-    approvedVolunteers,
-    successRate: successRateStr
+    approvedVolunteersCount,
+    approvedVolunteers: approvedVolunteersList,
+    successRate: successRateStr,
+    lineData,
+    pieData,
+    myCreatedEvents: myEvents,
+    recentApplications: allApplications.slice(0, 6)
   };
 };
