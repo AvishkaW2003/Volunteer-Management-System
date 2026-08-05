@@ -1,3 +1,5 @@
+import sequelize from "../config/database.js";
+import bcrypt from "bcryptjs";
 import Event from "../models/eventModel.js";
 import User from "../models/userModel.js";
 import VolunteerRegistration from "../models/volunteerRegistration.js";
