@@ -244,6 +244,30 @@ const Home = () => {
 
   const [events, setEvents] = useState([]);
   const [activeTab, setActiveTab] = useState("IEEE");
+  const [publicStats, setPublicStats] = useState({
+    activeVolunteers: 112,
+    eventsHosted: 85,
+    partnerClubs: 61,
+    volunteerHours: 164
+  });
+
+  const fetchPublicStats = async () => {
+    try {
+      const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const res = await fetch(`${apiBaseUrl}/api/public-stats`);
+      if (res.ok) {
+        const data = await res.json();
+        setPublicStats({
+          activeVolunteers: data.activeVolunteers ?? 112,
+          eventsHosted: data.eventsHosted ?? 85,
+          partnerClubs: data.partnerClubs ?? 61,
+          volunteerHours: data.volunteerHours ?? 164
+        });
+      }
+    } catch (err) {
+      console.error("Could not load dynamic public stats", err);
+    }
+  };
 
   const fetchHomeEvents = async () => {
     const isApprovedAndNotArchived = ev => (ev.approvalStatus || 'Approved') === 'Approved' && ev.status !== 'Archived';
@@ -285,6 +309,7 @@ const Home = () => {
 
   useEffect(() => {
     fetchHomeEvents();
+    fetchPublicStats();
   }, []);
 
   const currentClubEvents = events.filter(ev => {
@@ -407,22 +432,22 @@ const Home = () => {
               {/* Minimalist Stats Highlights Row */}
               <div className="vh-minimal-stats-row">
                 <div className="vh-minimal-stat-item">
-                  <span className="vh-minimal-stat-num">500+</span>
+                  <span className="vh-minimal-stat-num">{publicStats.activeVolunteers}+</span>
                   <span className="vh-minimal-stat-label">Active Volunteers</span>
                 </div>
                 <div className="vh-minimal-stat-sep"></div>
                 <div className="vh-minimal-stat-item">
-                  <span className="vh-minimal-stat-num">120+</span>
+                  <span className="vh-minimal-stat-num">{publicStats.eventsHosted}+</span>
                   <span className="vh-minimal-stat-label">Events Hosted</span>
                 </div>
                 <div className="vh-minimal-stat-sep"></div>
                 <div className="vh-minimal-stat-item">
-                  <span className="vh-minimal-stat-num">20+</span>
+                  <span className="vh-minimal-stat-num">{publicStats.partnerClubs}+</span>
                   <span className="vh-minimal-stat-label">Partner Clubs</span>
                 </div>
                 <div className="vh-minimal-stat-sep"></div>
                 <div className="vh-minimal-stat-item">
-                  <span className="vh-minimal-stat-num">1500+</span>
+                  <span className="vh-minimal-stat-num">{publicStats.volunteerHours}+</span>
                   <span className="vh-minimal-stat-label">Volunteer Hours</span>
                 </div>
               </div>
@@ -674,19 +699,19 @@ const Home = () => {
       <section className="vh-stats">
         <div className="vh-stats-container">
           <div className="vh-stat-item">
-            <AnimatedCounter end={500} suffix="+" />
+            <AnimatedCounter end={publicStats.activeVolunteers} suffix="+" />
             <p className="vh-stat-label">Active Volunteers</p>
           </div>
           <div className="vh-stat-item">
-            <AnimatedCounter end={120} suffix="+" />
+            <AnimatedCounter end={publicStats.eventsHosted} suffix="+" />
             <p className="vh-stat-label">Events Hosted</p>
           </div>
           <div className="vh-stat-item">
-            <AnimatedCounter end={20} suffix="+" />
+            <AnimatedCounter end={publicStats.partnerClubs} suffix="+" />
             <p className="vh-stat-label">Partner Clubs</p>
           </div>
           <div className="vh-stat-item">
-            <AnimatedCounter end={1500} suffix="+" />
+            <AnimatedCounter end={publicStats.volunteerHours} suffix="+" />
             <p className="vh-stat-label">Volunteer Hours</p>
           </div>
         </div>

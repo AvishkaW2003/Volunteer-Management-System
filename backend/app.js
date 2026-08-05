@@ -12,7 +12,7 @@ import certificateRoutes from "./routes/certificateRoutes.js";
 import organizerRoutes from "./routes/organizerRoutes.js";
 import reportRoutes from "./routes/reportRoutes.js";
 import { getSettings, updateSettings, reports } from "./controllers/adminController.js";
-import { getPublicSettings } from "./controllers/settingsController.js";
+import { getPublicSettings, getPublicStats } from "./controllers/settingsController.js";
 import { getLeaderboard } from "./controllers/certificateController.js";
 import authMiddleware from "./middleware/authMiddleware.js";
 import roleMiddleware from "./middleware/roleMiddleware.js";
@@ -36,8 +36,9 @@ app.use(express.urlencoded({ limit: "10mb", extended: true }));
 app.use("/uploads", express.static("uploads"));
 app.use(xssSanitizer);
 
-// Unauthenticated public settings endpoint
+// Unauthenticated public settings and stats endpoints
 app.get("/api/public-settings", getPublicSettings);
+app.get("/api/public-stats", getPublicStats);
 
 // Maintenance Mode middleware check
 app.use(checkMaintenanceMode);
