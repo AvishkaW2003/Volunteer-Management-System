@@ -28,12 +28,12 @@ export const getUserProfile = async (token) => {
 };
 
 export const forgotPassword = async (email) => {
-  const response = await axios.post(`${API_URL}/forgot-password`, { email });
+  const response = await axios.post(`${API_URL}/forgot-password`, { email }, { timeout: 30000 });
   return response.data;
 };
 
 export const verifyOtp = async (email, otp) => {
-  const response = await axios.post(`${API_URL}/verify-otp`, { email, otp });
+  const response = await axios.post(`${API_URL}/verify-otp`, { email, otp }, { timeout: 30000 });
   return response.data;
 };
 

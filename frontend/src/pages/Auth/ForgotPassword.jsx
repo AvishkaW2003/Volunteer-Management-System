@@ -49,7 +49,7 @@ const ForgotPassword = () => {
       }, 150);
     } catch (err) {
       if (!err.response) {
-        setError('Could not connect to backend server. Please check your network or ensure backend is running.');
+        setError('Could not connect to backend server. If using Render, please wait 15–30 seconds for the server to wake up and try again, or check your backend connection.');
       } else {
         setError(err.response?.data?.message || 'Something went wrong. Please try again.');
       }
