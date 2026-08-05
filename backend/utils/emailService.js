@@ -7,53 +7,39 @@ let transporter = null;
 export const getTransporter = async () => {
   if (transporter) return transporter;
 
-  const smtpHost = process.env.EMAIL_HOST;
-  const smtpPort = process.env.EMAIL_PORT;
-  const smtpUser = process.env.EMAIL_USER;
-  const smtpPass = process.env.EMAIL_PASS;
+  const smtpHost = process.env.EMAIL_HOST || "smtp.gmail.com";
+  const smtpPort = process.env.EMAIL_PORT || "587";
+  const smtpUser = process.env.EMAIL_USER || "avishkaweerasinghe02@gmail.com";
+  const smtpPass = process.env.EMAIL_PASS || "kfxqdvzoqxwzxzjw";
 
-  if (smtpHost && smtpUser && smtpPass) {
-    transporter = nodemailer.createTransport({
-      host: smtpHost,
-      port: parseInt(smtpPort || "587"),
-      secure: smtpPort === "465",
-      auth: {
-        user: smtpUser,
-        pass: smtpPass
-      },
-      tls: {
-        rejectUnauthorized: false
-      }
-    });
-    console.log(`[SMTP SERVICE] Configured SMTP Transporter for host: ${smtpHost}:${smtpPort || 587}`);
-  } else {
-    console.log("[SMTP SERVICE] EMAIL_HOST/USER not set in environment. Using fallback transporter...");
-    transporter = nodemailer.createTransport({
-      host: "smtp.ethereal.email",
-      port: 587,
-      secure: false,
-      auth: {
-        user: "fallback@ethereal.email",
-        pass: "fallbackpass"
-      }
-    });
-  }
+  transporter = nodemailer.createTransport({
+    host: smtpHost,
+    port: parseInt(smtpPort),
+    secure: smtpPort === "465",
+    auth: {
+      user: smtpUser,
+      pass: smtpPass
+    },
+    tls: {
+      rejectUnauthorized: false
+    }
+  });
 
   return transporter;
 };
 
 /**
- * Universal email sender utilizing Brevo API v3 with automatic SMTP fallback
+ * Universal email sender utilizing Brevo API v3 with automatic Gmail/SMTP fallback
  */
 export const sendEmail = async ({ to, subject, html, text, senderName, senderEmail }) => {
   const brevoApiKey = process.env.BREVO_API_KEY;
-  const defaultSenderEmail = process.env.SENDER_EMAIL || process.env.EMAIL_USER || "supportvolunteerhub@gmail.com";
+  const defaultSenderEmail = process.env.SENDER_EMAIL || process.env.EMAIL_USER || "avishkaweerasinghe02@gmail.com";
   const defaultSenderName = process.env.SENDER_NAME || "VolunteerHub Support";
 
   const fromEmail = senderEmail || defaultSenderEmail;
   const fromName = senderName || defaultSenderName;
 
-  // 1. Primary: Send using Brevo HTTP REST API
+  // 1. Primary: Try Brevo HTTP REST API if API Key is configured and active
   if (brevoApiKey) {
     try {
       const response = await fetch(BREVO_API_URL, {
@@ -79,17 +65,17 @@ export const sendEmail = async ({ to, subject, html, text, senderName, senderEma
         return { success: true, messageId: data.messageId, provider: "brevo" };
       }
 
-      console.warn(`[BREVO API NOTICE] Brevo API status: ${response.status} - ${data.message || JSON.stringify(data)}. Falling back to SMTP...`);
+      console.warn(`[BREVO API NOTICE] Brevo response: ${data.message || JSON.stringify(data)}. Falling back to Gmail SMTP...`);
     } catch (apiError) {
-      console.warn(`[BREVO API ERROR] ${apiError.message}. Falling back to SMTP...`);
+      console.warn(`[BREVO API ERROR] ${apiError.message}. Falling back to Gmail SMTP...`);
     }
   }
 
-  // 2. Secondary Fallback: Send using Nodemailer SMTP
+  // 2. High-Reliability Fallback: Send using Nodemailer SMTP (Gmail App Password)
   try {
     const mailTransporter = await getTransporter();
     const mailOptions = {
-      from: `"${fromName}" <${fromEmail}>`,
+      from: `"${fromName}" <${defaultSenderEmail}>`,
       to,
       subject,
       text: text || html.replace(/<[^>]+>/g, ""),
